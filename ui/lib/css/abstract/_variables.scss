@@ -16,6 +16,7 @@ $site-header-outer-height: calc($site-header-height + $site-header-margin + var(
 $main-margin: var(---main-margin);
 $main-max-width: 1300px;
 $topnav-visible: 1020px; // where topnav menu & WWWWWWWWWWWWWWWWWWWW both fit at 100%
+$col3-visible: 1024px; // where the 3 column layout kicks in; upstream gates this on $x-large
 
 $xxx-small: 400px;
 $xx-small: 500px;

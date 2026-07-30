@@ -23,13 +23,13 @@
 }
 
 @mixin mq-at-least-col3 {
-  @media (min-width: at-least($x-large)) {
+  @media (min-width: at-least($col3-visible)) {
     @content;
   }
 }
 
 @mixin mq-less-than-col3 {
-  @media (max-width: at-most($x-large)) {
+  @media (max-width: at-most($col3-visible)) {
     @content;
   }
 }
