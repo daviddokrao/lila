@@ -9,6 +9,51 @@
 
   position: relative;
 
+  // Theme and language shortcuts. Both are plain forms, so they need to sit inline
+  // with the icon row rather than stack as block elements.
+  &__bg,
+  &__lang {
+    @extend %flex-center-nowrap;
+
+    margin: 0;
+  }
+
+  // No sun or moon exists in the icon font, so the glyph is a mask here. It follows
+  // the same colour transitions as its neighbours because it paints with currentColor.
+  .bg-toggle::before {
+    content: '';
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    background: currentColor;
+    mask: center / contain no-repeat;
+  }
+
+  .bg-toggle--dark::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Cpath d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z'/%3E%3C/svg%3E");
+  }
+
+  .bg-toggle--light::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cg stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  &__lang select {
+    max-width: 8rem;
+    border: none;
+    background: none;
+    color: $c-font;
+    cursor: pointer;
+  }
+
+  // The language list is long, so keep the two shortcuts out of the way once the
+  // header has to compete for room with the nav.
+  @include mq-topnav-hidden {
+    &__bg,
+    &__lang {
+      display: none;
+    }
+  }
+
   .link {
     @include transition(color);
     @extend %top-icon;

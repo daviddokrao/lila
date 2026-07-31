@@ -75,6 +75,35 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
       )
     )
 
+  // Theme and language also live in the dasher, but they are the two settings people
+  // reach for most, so they get their own header controls next to search. Plain forms
+  // rather than JS: the header ships no bundle of its own, and both endpoints already
+  // accept a normal post.
+  def bgToggle(using ctx: Context) =
+    val toDark = ctx.pref.currentBg != "dark"
+    postForm(cls := "site-buttons__bg", action := routes.Pref.set("bg"))(
+      input(tpe := "hidden", name := "bg", value := (if toDark then "dark" else "light")),
+      submitButton(
+        cls := s"toggle link bg-toggle bg-toggle--${if toDark then "dark" else "light"}",
+        title := (if toDark then trans.site.dark.txt() else trans.site.light.txt()),
+        aria.label := (if toDark then trans.site.dark.txt() else trans.site.light.txt())
+      )
+    )
+
+  def langSelect(using ctx: Context) =
+    val label = trans.site.language.txt()
+    postForm(cls := "site-buttons__lang", action := routes.I18n.select)(
+      select(name := "lang", aria.label := label, title := label)(
+        langList.popularLanguages.map: l =>
+          // st.option: bare option is ambiguous here, lila.ui exports one too.
+          st.option(
+            value := l.value,
+            (ctx.lang.language == l.value).option(selected)
+          )(langList.nameByLanguage(l))
+      ),
+      submitButton(cls := "toggle link", dataIcon := Icon.Globe, aria.label := label)
+    )
+
   val warnNoAutoplay =
     div(id := "warn-no-autoplay")(
       a(dataIcon := Icon.Mute, targetBlank, href := s"${routes.Main.faq}#autoplay")
@@ -324,6 +353,7 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
         div(cls := "site-buttons")(
           warnNoAutoplay,
           (!isAppealUser).option(clinput),
+          (!isAppealUser).option(frag(bgToggle, langSelect)),
           privileges,
           teamRequests(ctx.teamNbRequests),
           if isAppealUser then
