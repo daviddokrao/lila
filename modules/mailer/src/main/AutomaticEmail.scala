@@ -52,7 +52,7 @@ The Lichess team"""
   If you already have an account linked to this email, you can try to log in with it, or reset your password if you forgot it."""
         Mailer.Message(
           to = email,
-          subject = "Could not verify your new Lichess account",
+          subject = "Could not verify your new 9Kings account",
           text = text,
           htmlBody = standardEmail(text).some
         )
@@ -62,7 +62,7 @@ The Lichess team"""
     mailer.canSend.so:
       mailer.sendOrSkip:
         val text =
-          """Your new Lichess account has already been verified, so you can log in and start playing right away."""
+          """Your new 9Kings account has already been verified, so you can log in and start playing right away."""
         Mailer.Message(
           to = email,
           subject = "Your account is verified and ready to use",
@@ -219,7 +219,7 @@ ${routeUrl(routes.Plan.index())}"""
           .so: email =>
             given Lang = userLang(userWithEmail.user)
             val hello =
-              "Hello and thank you for playing correspondence chess on Lichess!"
+              "Hello and thank you for playing correspondence chess on 9Kings!"
             val disableSettingNotice =
               "You are receiving this email because you have correspondence email notification turned on. You can turn it off in your settings:"
             val disableLink =

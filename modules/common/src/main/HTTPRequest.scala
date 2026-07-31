@@ -52,7 +52,7 @@ object HTTPRequest:
   val isChrome113Plus = UaMatcher("""Chrome/(?:11[3-9]|1[2-9]\d)""")
   val isFirefox119Plus = UaMatcher("""Firefox/(?:119|1[2-9]\d)""")
   val isMobileBrowser = UaMatcher("""(?i)iphone|ipad|ipod|android.+mobile""")
-  def isLichessMobile(ua: UserAgent): Boolean = ua.value.startsWith("Lichess Mobile/")
+  def isLichessMobile(ua: UserAgent): Boolean = ua.value.startsWith("9Kings Mobile/")
   def isLichessMobile(req: RequestHeader): Boolean = isLichessMobile(userAgent(req))
   def isLichobile(ua: UserAgent): Boolean = ua.value.contains("Lichobile/")
   def isLichobile(req: RequestHeader): Boolean = isLichobile(userAgent(req))
@@ -154,7 +154,7 @@ object HTTPRequest:
     req.headers.get("X-Ip-Tier").flatMap(_.toIntOption).exists(_ > 1)
 
   def isKid(req: RequestHeader) =
-    req.headers.get("X-Lichess-KidMode").exists(trueish)
+    req.headers.get("X-9Kings-KidMode").exists(trueish)
 
 enum ClientName:
   case lichobile, xhr, mobile, crawler, browser, fishnet, unknown

@@ -29,7 +29,7 @@ object UserAgentParser:
       .parse(agent)
       .map: m =>
         Client(
-          UserAgent("Lichess Mobile", m.version.some),
+          UserAgent("9Kings Mobile", m.version.some),
           OS(m.osName, m.osVersion.some),
           Device(m.device)
         )

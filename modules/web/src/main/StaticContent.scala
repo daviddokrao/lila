@@ -22,7 +22,7 @@ Allow: /game/export/gif/thumbnail/
   def manifest(net: NetConfig) =
     Json.obj(
       "name" -> net.domain,
-      "short_name" -> "Lichess",
+      "short_name" -> "9Kings",
       "start_url" -> "/",
       "display" -> "standalone",
       "background_color" -> "#161512",

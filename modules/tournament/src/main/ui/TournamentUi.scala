@@ -138,7 +138,7 @@ final class TournamentUi(helpers: Helpers)(getTourName: GetTourName):
     private val replacements =
       given lila.core.i18n.Translate = transDefault
       List(
-        "Lichess " -> "",
+        "9Kings " -> "",
         "Marathon" -> icon(Icon.Globe),
         "HyperBullet" -> s"H${icon(PerfType.Bullet.icon)}",
         "SuperBlitz" -> s"S${icon(PerfType.Blitz.icon)}"

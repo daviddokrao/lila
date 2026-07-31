@@ -46,7 +46,7 @@ object CrudForm:
   val maxHomepageHours = 24
 
   val imageChoices = List(
-    "" -> "Lichess",
+    "" -> "9Kings",
     "offerspill.logo.png" -> "Offerspill"
   )
   val imageDefault = ""

@@ -40,7 +40,7 @@ final class TvUi(helpers: lila.ui.Helpers)(
       .graph(
         title = s"Watch the best ${channel.name.toLowerCase} games of lichess.org",
         description =
-          s"Sit back, relax, and watch the best ${channel.name.toLowerCase} Lichess players compete on Lichess TV",
+          s"Sit back, relax, and watch the best ${channel.name.toLowerCase} 9Kings players compete on 9Kings TV",
         url = routeUrl(routes.Tv.onChannel(channel.key))
       )
       .flag(_.zen)

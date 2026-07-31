@@ -11,7 +11,7 @@ final class TutorBits(helpers: Helpers)(
 ):
   import helpers.{ *, given }
 
-  def page(menu: Frag, title: String = "Lichess Tutor", pageSmall: Boolean = false)(mods: AttrPair*): Page =
+  def page(menu: Frag, title: String = "9Kings Tutor", pageSmall: Boolean = false)(mods: AttrPair*): Page =
     Page(title)
       .css("tutor.report")
       .js(Esm("tutor"))

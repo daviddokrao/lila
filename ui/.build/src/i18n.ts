@@ -158,6 +158,17 @@ async function updated(cat: string, locale?: string): Promise<fs.Stats | false> 
     : xml.value.size > 64 && xml.value;
 }
 
+// Swap the upstream brand out of every translated string at build time instead of
+// editing translation/dest, so all ~100 language files stay byte-identical to upstream
+// and keep merging cleanly. Domains are left alone: a trailing .org/.dev means the
+// mention is a link target, not the product name. Mirrors project/I18n.scala, which
+// does the same for server rendered strings.
+const unescape = (text: string): string =>
+  text
+    .replaceAll('\\"', '"')
+    .replaceAll("\\'", "'")
+    .replace(/\b([Ll])ichess\b(?!\.(?:org|dev))/g, (_, c) => (c === 'L' ? '9Kings' : '9kings'));
+
 function parseXml(xmlData: string): Map<string, string | Plural> {
   const i18nMap = new Map<string, string | Plural>();
   if (!xmlData) return i18nMap;
@@ -165,11 +176,11 @@ function parseXml(xmlData: string): Map<string, string | Plural> {
   const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '' });
   const { string: strings, plurals } = parser.parse(xmlData).resources;
   for (const item of strings ? (Array.isArray(strings) ? strings : [strings]) : [])
-    i18nMap.set(item.name, item['#text'].replaceAll('\\"', '"').replaceAll("\\'", "'"));
+    i18nMap.set(item.name, unescape(item['#text']));
   for (const plural of plurals ? (Array.isArray(plurals) ? plurals : [plurals]) : []) {
     const group: Record<string, string> = {};
     for (const item of Array.isArray(plural.item) ? plural.item : [plural.item]) {
-      group[item.quantity] = item['#text'].replaceAll('\\"', '"').replaceAll("\\'", "'");
+      group[item.quantity] = unescape(item['#text']);
     }
     i18nMap.set(plural.name, group as Plural);
   }

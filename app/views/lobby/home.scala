@@ -99,11 +99,11 @@ object home:
               div(cls := "about-side")(
                 ctx.blind.option(h2(trans.site.about())),
                 trans.site.xIsAFreeYLibreOpenSourceChessServer(
-                  "Lichess",
+                  "9Kings",
                   a(cls := "blue", href := routes.Plan.features)(trans.site.really.txt())
                 ),
                 " ",
-                a(href := "/about")(trans.site.aboutX("Lichess"), "...")
+                a(href := "/about")(trans.site.aboutX("9Kings"), "...")
               )
           ),
           currentGame
@@ -144,7 +144,7 @@ object home:
           ctx.noBot.option(bits.underboards(tours, simuls)),
           div(cls := "lobby__about")(
             ctx.blind.option(h2(trans.site.about())),
-            a(href := "/about")(trans.site.aboutX("Lichess")),
+            a(href := "/about")(trans.site.aboutX("9Kings")),
             a(href := "/faq")(trans.faq.faqAbbreviation()),
             a(href := "/contact")(trans.contact.contact()),
             a(href := "/app")(trans.site.mobileApp()),

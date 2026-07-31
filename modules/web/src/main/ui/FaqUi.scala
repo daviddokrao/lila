@@ -35,7 +35,7 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
       .css("bits.faq"):
         div(cls := "faq box box-pad")(
           h1(cls := "box__top")(trf.frequentlyAskedQuestions()),
-          h2("Lichess"),
+          h2("9Kings"),
           question(
             "name",
             trf.whyIsLichessCalledLichess.txt(),
@@ -67,7 +67,7 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             )
           ),
           question(
-            "sites_based_on_Lichess",
+            "sites_based_on_9Kings",
             trf.areThereWebsitesBasedOnLichess.txt(),
             p(
               trf.yesLichessInspiredOtherOpenSourceWebsites(
@@ -227,7 +227,7 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             p(
               trf.showYourTitle(
                 a(href := routes.TitleVerify.index)(trf.verificationForm()),
-                a(href := "#lm")("Lichess Master (LM)")
+                a(href := "#lm")("9Kings Master (LM)")
               )
             )
           ),
@@ -372,10 +372,10 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
           ),
           question(
             "make-a-bot",
-            "Make a Lichess bot?",
+            "Make a 9Kings bot?",
             p(
               "To learn how to create a ",
-              a(href := "https://lichess.org/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")("Lichess bot"),
+              a(href := "https://lichess.org/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")("9Kings bot"),
               ", please read ",
               a(href := "https://lichess.org/@/thibault/blog/how-to-create-a-lichess-bot/FuKyvDuB")(
                 "this blog post"

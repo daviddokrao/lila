@@ -34,7 +34,7 @@ final class PlanStyle(helpers: Helpers):
       p(
         "Thank you ",
         userLink(me),
-        " for supporting Lichess ",
+        " for supporting 9Kings ",
         if plan.lifetime then "as a Lifetime Patron"
         else frag("for ", strong(pluralize("month", plan.months))),
         ". You may choose one of the wing colors you unlocked."

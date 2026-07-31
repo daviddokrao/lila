@@ -18,7 +18,7 @@ final class TopNav(helpers: Helpers):
           "/",
           frag(
             span(cls := "play")(trans.site.play()),
-            span(cls := "home")("lichess.org")
+            span(cls := "home")("9Kings")
           )
         ),
         div(role := "group")(
@@ -70,7 +70,7 @@ final class TopNav(helpers: Helpers):
           linkTitle(broadcastUrl, trans.site.watch()),
           div(role := "group")(
             a(href := routes.RelayTour.index())(trans.broadcast.broadcasts()),
-            a(href := langHref(routes.Tv.index))("Lichess TV"),
+            a(href := langHref(routes.Tv.index))("9Kings TV"),
             a(href := routes.Tv.games)(trans.site.currentGames()),
             (ctx.kid.no && ctx.noBot).option(a(href := routes.Streamer.index())(trans.site.streamersMenu())),
             ctx.noBot.option(a(href := langHref(routes.Video.index))(trans.site.videoLibrary()))

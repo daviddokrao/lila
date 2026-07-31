@@ -28,7 +28,7 @@ object Mobile:
   import lila.core.net.LichessMobileUa
 
   object LichessMobileUa:
-    def is(ua: UserAgent): Boolean = ua.value.startsWith("Lichess Mobile/")
+    def is(ua: UserAgent): Boolean = ua.value.startsWith("9Kings Mobile/")
     private val Regex =
       """(?i)lichess mobile/(\S+)(?: \(\d*\))? as:(\S+) sri:(\S+) os:(Android|iOS)/(\S+) dev:(.*)""".r
     def parse(req: RequestHeader): Option[LichessMobileUa] = parse(HTTPRequest.userAgent(req))

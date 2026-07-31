@@ -171,7 +171,7 @@ final class EventUi(helpers: Helpers)(modMenu: Context ?=> Frag):
         ,
         form3.group(
           form("hostedBy"),
-          raw("Hosted by Lichess user"),
+          raw("Hosted by 9Kings user"),
           help = raw("Username that must not be featured while the event is ongoing").some,
           half = true
         ): f =>

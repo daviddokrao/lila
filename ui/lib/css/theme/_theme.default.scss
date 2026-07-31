@@ -2,7 +2,8 @@
 // $c-<color-name>: var(--c-<color-name>);
 
 @mixin shared-color-defs {
-  ---site-hue: 37deg;
+  // HungKings navy #244084. Drives every derived neutral and accent in both themes.
+  ---site-hue: 222deg;
   --c-bg: hsl(var(---site-hue) 7% 14%);
   --c-bg-box: var(--c-bg);
   --c-bg-high: var(--c-bg);
@@ -46,7 +47,9 @@
   --c-border-page: hsl(0 0% 22%);
   --c-border-tour: color-mix(in oklab, hsl(0 0% 22%) 50%, var(--c-bg-page));
   --c-border-light: hsl(0 0% 40%);
-  --c-primary: hsl(209 79% 56%);
+  // HungKings navy hue and saturation, but lila's lightness: this also feeds the link
+  // colour, so the brand's own 40% would cost link contrast on dark.
+  --c-primary: hsl(222 60% 56%);
   --c-primary-clear: color-mix(in oklab, var(--c-clearer) 20%, var(--c-primary));
   --c-secondary: hsl(88 62% 37%);
   --c-secondary-dim: color-mix(in oklab, var(--c-dimmer) 20%, var(--c-secondary));
@@ -55,7 +58,9 @@
   --c-link-dim: var(--c-primary-dim);
   --c-link-clear: var(--c-primary-clear);
   --c-over: white;
-  --c-brag: hsl(var(---site-hue) 74% 43%);
+  // Pinned rather than derived from the site hue: brag is the gold accent and must stay
+  // gold now that the site hue is navy. HungKings #FFBF00.
+  --c-brag: hsl(45 100% 50%);
   --c-brag-hover: hsl(from var(--c-brag) h 100 70);
   --c-contours: color-mix(in oklab, var(--c-brag) 80%, var(--c-shade));
   --c-accent: hsl(22 100% 42%);

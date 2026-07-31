@@ -29,7 +29,7 @@ final class TutorQueueUi(helpers: Helpers, bits: TutorBits):
 
   def whatTutorIsAbout = frag(
     h2("What are your strengths and weaknesses?"),
-    p("Lichess can examine your games and compare your playstyle to other players with similar rating."),
+    p("9Kings can examine your games and compare your playstyle to other players with similar rating."),
     br,
     p(
       "Tutor is all about statistical analysis and comparison to peers.",

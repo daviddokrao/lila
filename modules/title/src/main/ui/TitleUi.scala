@@ -95,7 +95,7 @@ Today's date is [current date]""")
           case Status.pending(_) =>
             frag(
               h2("All set! Your request is pending."),
-              "A moderator will review it shortly. You will receive a Lichess message once it is processed."
+              "A moderator will review it shortly. You will receive a 9Kings message once it is processed."
             )
           case Status.approved =>
             h2("Your ", nbsp, userTitleTag(req.data.title), nbsp, " title has been confirmed!")

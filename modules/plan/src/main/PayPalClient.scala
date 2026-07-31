@@ -57,12 +57,12 @@ final private class PayPalClient(
       if data.isLifetime then
         (
           "Lifetime Patron",
-          "Support Lichess and get the Patron wings permanently. One-time lifetime contribution."
+          "Support 9Kings and get the Patron wings permanently. One-time lifetime contribution."
         )
       else
         (
           "One-time Patron",
-          "Support Lichess and get the Patron wings for one month. Will not renew automatically."
+          "Support 9Kings and get the Patron wings for one month. Will not renew automatically."
         )
     postOne[PayPalOrderCreated](
       path.orders,
@@ -153,7 +153,7 @@ final private class PayPalClient(
       Json.obj(
         "product_id" -> patronMonthProductId,
         "name" -> s"Monthly Patron $currency",
-        "description" -> s"Support Lichess and get Patron wings. The subscription is renewed every month. Currency: $currency",
+        "description" -> s"Support 9Kings and get Patron wings. The subscription is renewed every month. Currency: $currency",
         "status" -> "ACTIVE",
         "billing_cycles" -> Json.arr(
           Json.obj(

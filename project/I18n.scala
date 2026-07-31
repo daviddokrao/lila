@@ -54,7 +54,15 @@ object I18n:
     result
 
   private def unescapeQuotes(s: String) =
-    s.replace("\\\"", "\"").replace("\\'", "'")
+    rebrand(s.replace("\\\"", "\"").replace("\\'", "'"))
+
+  // Swap the upstream brand out of every translated string at build time instead of
+  // editing translation/dest, so all ~100 language files stay byte-identical to
+  // upstream and keep merging cleanly. Domains are left alone: a trailing .org/.dev
+  // means the mention is a link target, not the product name.
+  private val brandRe = """\b([Ll])ichess\b(?!\.(?:org|dev))""".r
+  private def rebrand(s: String) =
+    brandRe.replaceAllIn(s, m => if m.group(1) == "L" then "9Kings" else "9kings")
 
   private def toKey(e: scala.xml.Node, db: String) =
     if db == "site" then e.\("@name").toString

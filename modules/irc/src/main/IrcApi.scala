@@ -250,7 +250,7 @@ final class IrcApi(
       markdown.lichessLink(s"/training/$id", "Solve the daily puzzle") +
         markdown.link(Url(s"${net.assetBaseUrl}/training/export/gif/thumbnail/$id.gif"), ":")
 
-  def stop(): Funit = zulip(_.general, "lila")("Lichess is restarting.")
+  def stop(): Funit = zulip(_.general, "lila")("9Kings is restarting.")
 
   private[irc] def publishInfo(msg: String): Funit =
     zulip(_.general, "lila")(s":info: ${markdown.linkifyUsers(msg)}")

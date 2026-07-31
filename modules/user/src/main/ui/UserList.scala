@@ -135,7 +135,7 @@ final class UserList(helpers: Helpers, bits: UserBits):
 
   def bots(users: List[UserWithPerfs], bestPerfs: UserPerfs => List[PerfKey])(using Context) =
     val title = s"${users.size} Online bots"
-    val aboutLink = a(href := "/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")("About Lichess Bots")
+    val aboutLink = a(href := "/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")("About 9Kings Bots")
     val (featured, community) = users.partition(_.isVerified)
     Page(title)
       .css("bits.slist")
@@ -154,7 +154,7 @@ final class UserList(helpers: Helpers, bits: UserBits):
             div(cls := "box box-pad bots__categ")(
               boxTop(h1("Community bots"), aboutLink),
               p(
-                "More chess engines created by the Lichess community. They are hosted by their creators, and as such might not always be online."
+                "More chess engines created by the 9Kings community. They are hosted by their creators, and as such might not always be online."
               ),
               botGrid(community, bestPerfs)
             )

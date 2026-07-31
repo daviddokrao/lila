@@ -40,7 +40,7 @@ final class OAuthSignedClients(appConfig: Configuration, baseUrl: BaseUrl)(using
     ),
     OAuthScope.Web.Mobile,
     signersOf("mobile"),
-    displayName = "Lichess Mobile"
+    displayName = "9Kings Mobile"
   )
 
   val takex3 = OAuthSignedClient(

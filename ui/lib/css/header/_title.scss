@@ -39,6 +39,18 @@
     @media (min-height: at-least($tall)) {
       font-size: 36px;
     }
+
+    // Upstream draws the logo as a glyph from lila's icon font. Ours is a mask on the
+    // same pseudo element, so it keeps inheriting font-size the way the glyph did.
+    &::before {
+      content: '';
+      display: block;
+      width: 1em;
+      height: 1em;
+      background: $c-brag;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M 7.55 14.5 L 40.45 14.5 L 24 43 Z' fill='none' stroke='black' stroke-width='4.25' stroke-linejoin='miter'/%3E%3C/svg%3E")
+        center / contain no-repeat;
+    }
   }
 
   @media (max-width: at-least($xx-small)) {

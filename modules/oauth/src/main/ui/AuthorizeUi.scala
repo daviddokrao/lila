@@ -75,7 +75,7 @@ final class AuthorizeUi(helpers: Helpers)(
                     ),
                     dataIcon := danger.option(Icon.CautionTriangle),
                     signedClient.isEmpty.option(disabled),
-                    title := s"The website ${prompt.redirectUri.host | prompt.redirectUri.withoutQuery} will get access to your Lichess account. Continue?"
+                    title := s"The website ${prompt.redirectUri.host | prompt.redirectUri.withoutQuery} will get access to your 9Kings account. Continue?"
                   ):
                     signedClient.fold("Authorize"): c =>
                       s"Sign in with ${c.displayName}"

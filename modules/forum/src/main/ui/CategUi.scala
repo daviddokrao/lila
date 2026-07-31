@@ -15,14 +15,14 @@ final class CategUi(helpers: Helpers, bits: ForumBits):
       .css("bits.forum")
       .csp(_.withInlineIconFont)
       .graph(
-        title = "Lichess community forum",
+        title = "9Kings community forum",
         url = routeUrl(routes.ForumCateg.index),
-        description = "Chess discussions and feedback about Lichess development"
+        description = "Chess discussions and feedback about 9Kings development"
       ):
         val (teamCategs, globalCategs) = categs.partition(_.categ.isTeam)
         main(cls := "forum index box")(
           boxTop(
-            h1(dataIcon := Icon.BubbleConvo, cls := "text")("Lichess Forum"),
+            h1(dataIcon := Icon.BubbleConvo, cls := "text")("9Kings Forum"),
             bits.searchForm()
           ),
           showCategs(globalCategs),
