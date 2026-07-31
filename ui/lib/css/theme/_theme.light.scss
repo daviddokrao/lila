@@ -3,19 +3,22 @@
 html.light {
   @include shared-color-defs;
 
-  --c-bg: hsl(0 0% 100%);
-  --c-bg-page: hsl(var(---site-hue) 10% 92%);
-  --c-bg-low: hsl(0 0% 89%);
-  --c-bg-mid: hsl(var(---site-hue) 7% 97%);
-  --c-bg-zebra: hsl(var(---site-hue) 12% 96.5%);
-  --c-bg-zebra2: hsl(var(---site-hue) 12% 92%);
-  --c-bg-popup: hsl(0 0% 100%);
-  --c-bg-opaque: hsl(0 0% 100%);
-  --c-body-gradient: hsl(var(---site-hue) 12% 84%);
-  --c-font: hsl(0 0% 30%);
-  --c-font-dim: hsl(0 0% 47%);
-  --c-primary: hsl(222 60% 42%);
-  --c-brag: hsl(45 100% 42%);
+  // HungKings light tokens: bg #F3F6FC, surface #FFFFFF, surface-2 #EEF2FB.
+  --c-bg: #ffffff;
+  --c-bg-page: #f3f6fc;
+  --c-bg-low: #eef2fb;
+  --c-bg-mid: #f8fafd;
+  --c-bg-zebra: #f7f9fd;
+  --c-bg-zebra2: #eef2fb;
+  --c-bg-popup: #ffffff;
+  --c-bg-opaque: #ffffff;
+  --c-body-gradient: #e3eaf7;
+  // fg #0D1733, muted #465579.
+  --c-font: #0d1733;
+  --c-font-dim: #465579;
+  --c-primary: #244084;
+  // Gold as text rather than the logo gold: #FFBF00 does not reach AA on white.
+  --c-brag: #785900;
   --c-brag-hover: hsl(from var(--c-brag) h 100 30);
   --c-shade: hsl(0 0% 84%);
   --c-inaccuracy: hsl(202 78% 40%);
@@ -25,7 +28,12 @@ html.light {
   --c-interesting: hsl(307 80% 59%);
   --c-future: hsl(274 65% 70%);
   --c-paper: hsl(60 56% 86%);
-  --c-border: hsl(0 0% 85%);
+  --c-border: #d5dff4;
+  // Not declared upstream, so they would inherit the dark values: HungKings success and
+  // danger are lighter in dark mode and would wash out on white.
+  --c-secondary: #1e7a54;
+  --c-good: #1e7a54;
+  --c-bad: #c0392b;
   --c-dimmer: white;
   --c-clearer: black;
   --c-bg-input: hsl(from var(--c-bg-page) h s 98);
@@ -47,9 +55,9 @@ html.light {
   --c-chat-host-bg: rgb(125 170 73 / 0.4);
   --c-chat-mention-bg: rgb(161 194 124 / 0.4);
   --c-fancy: hsl(294 61% 62%);
-  --c-border-page: hsl(0 0% 80%);
-  --c-border-tour: color-mix(in oklab, hsl(0 0% 80%) 50%, var(--c-bg-page));
-  --c-border-light: hsl(0 0% 80%);
+  --c-border-page: #c6d4ee;
+  --c-border-tour: color-mix(in oklab, #c6d4ee 50%, var(--c-bg-page));
+  --c-border-light: #d5dff4;
   --c-patron-1: hsl(90 60% 43%);
   --c-patron-2: hsl(120 52% 52%);
   --c-patron-3: hsl(162.9 65% 44%);
