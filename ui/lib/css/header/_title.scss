@@ -70,10 +70,18 @@
     }
   }
 
-  // Chữ chỉ hiện khi thật sự có chỗ. Thanh nav trên xuất hiện từ 1020px
-  // ($topnav-visible) nên dải 1120-1500px là dải chật nhất: nav, ô tìm kiếm và
-  // tiêu đề cùng chen nhau. Ở đó ưu tiên icon, để chữ lại cho khổ rộng hơn.
-  @media (min-width: at-least($xx-large)) {
+  // Ngưỡng hiện chữ là số ĐO ĐƯỢC, không phải chọn cho đẹp. Chỗ trống còn lại của
+  // thanh đầu trang khi bật chữ, đo ở trạng thái CHƯA đăng nhập (xấu hơn đã đăng
+  // nhập, vì có thêm hai nút Đăng nhập/Đăng ký):
+  //
+  //   1120px ->  0px    sát mép, một bản dịch dài hơn tiếng Anh là tràn
+  //   1280px -> 76px    đủ biên
+  //
+  // Nên lấy $x-large (1260px): laptop 13" (1280-1440) và 11" (1366) đều hiện chữ,
+  // còn dải 1020-1260 — nơi thanh nav xuất hiện và chen với ô tìm kiếm — chỉ hiện
+  // icon. Đo lại bằng cách bật .site-name rồi so tổng bề rộng các con của #top với
+  // bề rộng #top; đừng đo lúc đang đăng nhập.
+  @media (min-width: at-least($x-large)) {
     .site-name {
       display: block;
     }
