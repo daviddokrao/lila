@@ -13,7 +13,12 @@ object userId:
       def isGhost: Boolean = id == ghost || id.startsWith("!")
       def noGhost: Boolean = !isGhost
     given UserIdOf[UserId] = _.value
-    val lichess: UserId = "lichess"
+    // Tên ký hiệu giữ nguyên `lichess` để 91 chỗ dùng nó không phải sửa và diff với
+    // upstream còn merge được; chỉ GIÁ TRỊ đổi. Đây là tài khoản chính thức của site
+    // — nó đứng tên blog chính thức, tin nhắn hệ thống, và hiện ở /@/<id>, nên giá
+    // trị này là chuỗi NGƯỜI DÙNG NHÌN THẤY. Phải khớp với tài khoản mà lila-db-seed
+    // tạo ra (spamdb/modules/user.py), đổi một bên là hỏng cả hai.
+    val lichess: UserId = "hungkings"
     val lichessAsMe: MyId = lichess.into(MyId)
     val ghost: UserId = "ghost"
     val explorer: UserId = "openingexplorer"
@@ -61,7 +66,8 @@ object userId:
     // what existing usernames are like
     val historicalRegex = "[a-zA-Z0-9_-]{2,30}".r
     val anonymous: UserName = "Anonymous"
-    val lichess: UserName = "lichess"
+    // Chữ hoa ở đây là chữ người dùng đọc được: lila hiện UserName nguyên văn.
+    val lichess: UserName = "HungKings"
     val anonMod: String = "A HungKings Moderator"
     // Matches a lichess username with an '@' prefix if it is used as a single
     // word (i.e. preceded and followed by space or appropriate punctuation):

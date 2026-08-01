@@ -81,7 +81,10 @@ object LameName:
     "xyuta"
   )
 
-  private def usernameWords = baseWords ::: List("lichess", "corona", "covid")
+  // Danh sách chặn tên đăng nhập mạo danh. Giữ "lichess" (kho mã đến từ đó, vẫn có
+  // người thử mạo danh) và thêm "hungkings" — nếu không, bất kỳ ai cũng đăng ký được
+  // tên na ná tài khoản chính thức đang đứng tên blog và tin nhắn hệ thống.
+  private def usernameWords = baseWords ::: List("lichess", "hungkings", "corona", "covid")
 
   private val usernameRegex = lameWords(usernameWords).r
 

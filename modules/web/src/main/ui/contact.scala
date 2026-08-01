@@ -36,7 +36,7 @@ object contact:
     frag(
       ul(
         li(
-          a(href := routes.ForumCateg.show(ForumCategId("lichess-feedback")))(reportBugInForum())
+          a(href := routes.ForumCateg.show(ForumCategId("hungkings-feedback")))(reportBugInForum())
         ),
         li(
           a(href := "https://github.com/lichess-org/lila/issues")(reportWebsiteIssue())

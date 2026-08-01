@@ -276,4 +276,7 @@ object RemoteSocket:
       def respond(reqId: Int, payload: JsObject) = s"req/response $reqId ${Json.stringify(payload)}"
       def stop(reqId: Int) = s"lila/stop $reqId"
 
-  val initialUserIds = Set(UserId("lichess"))
+  // Dùng hằng số chứ đừng viết lại chuỗi: đây là tài khoản chính thức, tên nó đi
+  // theo thương hiệu. Viết cứng "lichess" ở đây thì socket coi một tài khoản không
+  // tồn tại là luôn trực tuyến, mà không lỗi gì cả.
+  val initialUserIds = Set(UserId.lichess)

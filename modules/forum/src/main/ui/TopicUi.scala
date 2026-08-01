@@ -281,7 +281,10 @@ final class TopicUi(helpers: Helpers, bits: ForumBits, postUi: PostUi)(
 
   private val relocateTo = List(
     "general-chess-discussion" -> "General Chess Discussion",
-    "lichess-feedback" -> "HungKings Feedback",
+    // Mã chuyên mục sinh từ TÊN chuyên mục lúc seed (lila-db-seed forum.py:
+    // normalize_id(name)), nên đổi tên "Lichess Feedback" -> "HungKings Feedback"
+    // kéo theo đổi cả mã. Hai chỗ phải khớp nhau, chỗ còn lại ở web/ui/contact.scala.
+    "hungkings-feedback" -> "HungKings Feedback",
     "game-analysis" -> "Game Analysis",
     "off-topic-discussion" -> "Off-Topic Discussion"
   )
