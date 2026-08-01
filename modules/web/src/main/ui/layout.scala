@@ -20,7 +20,10 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
 
   val doctype = raw("<!DOCTYPE html>")
   def htmlTag(using lang: Lang) = html(st.lang := lang.code, dir := isRTL(lang).option("rtl"))
-  val topComment = raw("""<!-- HungKings is open source! See https://lichess.org/source -->""")
+  // Ghi công nguồn mở, phát ra ở đầu MỌI trang. Trước đó trỏ lichess.org/source,
+  // tức mời người đọc xem mã nguồn của bên khác. Kho của chính mình mới là thứ
+  // AGPL-3.0 buộc phải công khai.
+  val topComment = raw("""<!-- HungKings is open source, forked from Lichess. See /source -->""")
   val charset = raw("""<meta charset="utf-8">""")
   val viewport = raw:
     """<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover">"""

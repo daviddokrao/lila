@@ -125,7 +125,10 @@ final class StreamerBits(helpers: Helpers)(picfitUrl: lila.memo.PicfitUrl):
       a(
         dataIcon := Icon.InfoCircle,
         cls := "text",
-        href := "/blog/Wk5z0R8AACMf6ZwN/join-the-lichess-streamer-community"
+        // Trước là "/blog/Wk5z0R8AACMf6ZwN/join-the-lichess-streamer-community":
+        // đường dẫn TƯƠNG ĐỐI tới một bài blog của Lichess, nên trên site mình nó
+        // trả 404. Trỏ về trang Liên hệ cho tới khi HungKings tự viết bài hướng dẫn.
+        href := "/contact"
       )(
         "Streamer community"
       ),
