@@ -98,5 +98,22 @@ final class TopNav(helpers: Helpers):
           a(href := routes.Importer.importGame)(trans.site.importGame()),
           a(href := routes.Search.index())(trans.search.advancedSearch())
         )
+      ),
+      // Đăng nhập/Đăng ký cho khách, CHỈ hiện ở menu ngăn kéo trên điện thoại
+      // (`mobile-only` bị ẩn khi menu ngang hiện — xem _topnav-visible.scss).
+      //
+      // Trên điện thoại, hai nút ấy đã được gỡ khỏi thanh đầu trang: chữ tiếng Việt
+      // "Đăng nhập/Đăng ký" cần ~178px, đo được là không thể đứng cạnh chữ thương
+      // hiệu mà không xuống dòng và lòi ra ngoài thanh. Nhưng menu trái vốn KHÔNG có
+      // mục nào dẫn tới đăng nhập, nên gỡ mà không thêm vào đây là chặn hẳn đường
+      // vào tài khoản trên điện thoại.
+      ctx.me.isEmpty.option(
+        st.section(cls := "mobile-only")(
+          linkTitle(routes.Auth.login.url, trans.site.signIn()),
+          div(role := "group")(
+            a(href := routes.Auth.login)(trans.site.signIn()),
+            a(href := routes.Auth.signup)(trans.site.signUp())
+          )
+        )
       )
     )

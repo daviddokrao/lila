@@ -18,6 +18,15 @@
     top: 0;
     width: $site-header-height;
     height: $site-header-height;
+
+    // Trên điện thoại thu bề ngang còn 44px để lấy chỗ cho chữ "HungKings" cạnh
+    // mark. Chiều cao giữ nguyên nên vùng bấm vẫn 44x60, đạt ngưỡng 44px tối thiểu.
+    // Ba vạch (.hbg__in) neo ở 8.5px tính từ mép nên vẫn nằm gọn trong 44px.
+    // Số 44 này lặp lại ở `margin-inline-start` của .site-title (_title.scss) —
+    // đổi ở đây thì phải đổi ở đó, không thì logo đè lên nút.
+    @media (max-width: at-least($xx-small)) {
+      width: 44px;
+    }
     cursor: pointer;
     z-index: $z-topnav-111;
 

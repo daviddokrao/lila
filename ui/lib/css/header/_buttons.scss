@@ -131,6 +131,39 @@
     gap: 0.5em;
   }
 
+  // ĐIỆN THOẠI (≤500px) — dọn chỗ cho chữ "HungKings" bên cạnh mark.
+  //
+  // Ngân sách ở 360px, tiếng Việt, chưa đăng nhập (trường hợp chật nhất: chữ
+  // "Đăng nhập/Đăng ký" rộng hơn tiếng Anh, và khách chưa đăng nhập có hai nút đó
+  // thay vì một avatar). Đo được: bỏ ô tìm kiếm và thu hai nút còn 44px thì vừa;
+  // giữ nguyên một trong hai là tràn.
+  @media (max-width: at-least($xx-small)) {
+    // Ô tìm kiếm nhường chỗ. Nó không mất: mục Cộng đồng > Kỳ thủ trong menu trái
+    // vẫn tìm được người chơi, còn trên điện thoại thì thương hiệu và hai menu
+    // đáng chỗ hơn một ô nhập liệu.
+    #clinput {
+      display: none;
+    }
+
+    // Nút ngôn ngữ và bánh răng hợp thành "menu đầu bên phải". Thu bề ngang chứ
+    // KHÔNG thu chiều cao — vùng bấm vẫn 44x60, không xuống dưới ngưỡng 44px.
+    .site-buttons__lang,
+    .dasher > button {
+      width: 44px;
+      min-width: 44px;
+      padding-inline: 0;
+      text-align: center;
+    }
+
+    // "Đăng nhập"/"Đăng ký" chuyển vào menu trái (TopNav.scala, mục `mobile-only`).
+    // Chúng cần ~178px ở tiếng Việt; để lại trên thanh thì hai nút TỰ XUỐNG DÒNG và
+    // lòi 7px ra ngoài thanh đầu trang — đo được ở cả 360px lẫn 390px. Đó là kiểu
+    // hỏng không gây tràn ngang nên mọi phép đo `scrollWidth` đều báo "vừa".
+    .signin-or-signup {
+      display: none;
+    }
+  }
+
   .link-center {
     height: inherit;
     line-height: inherit;
