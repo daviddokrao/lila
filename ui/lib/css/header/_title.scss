@@ -58,15 +58,29 @@
     }
   }
 
-  // Dưới 500px upstream ẩn nguyên khối tiêu đề để nhường chỗ. Nay chỉ thu gọn:
-  // bỏ đệm ngang và hạ cỡ icon, đủ để mark vẫn còn trên màn điện thoại.
+  // Dưới 500px upstream ẩn nguyên khối tiêu đề để nhường chỗ. Nay chỉ bỏ đệm ngang.
+  //
+  // TUYỆT ĐỐI KHÔNG đè `margin-inline-start` ở đây. Nút menu `.hbg` là
+  // `position: absolute` ở mép trái, rộng đúng `$site-header-height` (60px), nên nó
+  // KHÔNG chiếm chỗ trong dòng — khoảng trống tránh nó hoàn toàn do dòng
+  // `margin-inline-start` trong `mq-topnav-hidden` bên trên tạo ra. Đè nó là logo
+  // nằm ĐÈ LÊN nút menu: đo được icon ở 3-27px trong khi nút menu chiếm 0-60px.
+  // Lỗi này không sinh cảnh báo nào, chỉ nhìn mới thấy.
+  //
+  // Không sợ hết chỗ: cụm nút bên phải co giãn được. Đo ở 390px, tiếng Việt (chữ
+  // "Đăng nhập/Đăng ký" dài hơn tiếng Anh), icon 24/28/32px đều không tràn và
+  // không cắt chữ nút.
   @media (max-width: at-least($xx-small)) {
     padding: 0;
-    margin-inline-start: 0.25rem;
-    gap: 0;
+    gap: 0.5rem;
+  }
 
+  // Mark là thứ duy nhất còn lại trên điện thoại, nên cho nó to hơn mặc định 24px
+  // một chút — nó là ba tam giác chồng nhau xoay thành ngôi sao 9 cạnh, nhỏ quá thì
+  // các nét dính vào nhau. 28px đo được vẫn dư chỗ (nút đăng nhập còn 122px).
+  @media (max-width: at-least($small)) {
     .site-icon {
-      font-size: 20px;
+      font-size: 28px;
     }
   }
 
