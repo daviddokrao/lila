@@ -1,21 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
   <!--
     Mark động — 1 tam giác cân chĩa xuống ↔ ngôi sao 9 cạnh (3 tam giác đồng tâm
-    xoè 0/40/80 độ), chu kỳ 18s ease-in-out. Tự chứa (CSS keyframes), nền trong suốt.
+    xoè 0/40/80 độ), chu kỳ 18s ease-in-out. Tự chứa, nền trong suốt.
     Đổi màu: sửa stroke="#FFBF00" bên dưới (hoặc để "currentColor" rồi set màu ở cha).
-    Nhúng: <img alt="…"> hoặc inline. prefers-reduced-motion → đứng yên = 1 tam giác.
+
+    XOAY BẰNG SMIL (<animateTransform>) CHỨ KHÔNG PHẢI CSS @keyframes — CỐ Ý.
+    Tệp này được nạp qua `background-image` (ui/lib/css/header/_title.scss). Khi SVG
+    đóng vai một ẢNH, WebKit (Safari trên iOS) KHÔNG chạy CSS animation bên trong:
+    nó vẽ khung hình đầu rồi đứng im, còn Chrome với Firefox thì vẫn xoay. Triệu
+    chứng đúng như báo ngày 02/08: PC xoay, điện thoại đứng yên. SMIL thì WebKit chạy.
+    Muốn quay lại CSS animation thì phải NHÚNG THẲNG svg vào trang, đừng dùng
+    background-image, nếu không mark sẽ chết trên iPhone.
+
+    prefers-reduced-motion: SMIL không nghe CSS `animation: none`, nên ẩn hẳn hai
+    tam giác xoay — nhìn giống hệt trạng thái đứng yên, vì cả ba vốn chồng khít lên
+    nhau ở 0 độ.
   -->
   <style>
-    .m-g { transform-box: view-box; transform-origin: 24px 24px; }
-    .m-2 { animation: m-2 18s ease-in-out infinite; }
-    .m-3 { animation: m-3 18s ease-in-out infinite; }
-    @keyframes m-2 { 0%,44% { transform: rotate(0deg); } 56%,88% { transform: rotate(40deg); } 100% { transform: rotate(0deg); } }
-    @keyframes m-3 { 0%,44% { transform: rotate(0deg); } 56%,88% { transform: rotate(80deg); } 100% { transform: rotate(0deg); } }
-    @media (prefers-reduced-motion: reduce) { .m-2, .m-3 { animation: none; } }
+    @media (prefers-reduced-motion: reduce) { .m-2, .m-3 { display: none; } }
   </style>
   <g fill="none" stroke="#FFBF00" stroke-width="4.25" stroke-linejoin="miter" stroke-linecap="butt">
-    <g class="m-g"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/></g>
-    <g class="m-g m-2"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/></g>
-    <g class="m-g m-3"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/></g>
+    <g><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/></g>
+    <g class="m-2">
+      <path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+      <animateTransform attributeName="transform" attributeType="XML" type="rotate"
+        values="0 24 24; 0 24 24; 40 24 24; 40 24 24; 0 24 24"
+        keyTimes="0; 0.44; 0.56; 0.88; 1"
+        calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+        dur="18s" repeatCount="indefinite"/>
+    </g>
+    <g class="m-3">
+      <path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+      <animateTransform attributeName="transform" attributeType="XML" type="rotate"
+        values="0 24 24; 0 24 24; 80 24 24; 80 24 24; 0 24 24"
+        keyTimes="0; 0.44; 0.56; 0.88; 1"
+        calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+        dur="18s" repeatCount="indefinite"/>
+    </g>
   </g>
 </svg>
