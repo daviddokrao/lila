@@ -76,7 +76,10 @@ object page:
           favicons,
           (p.flags(PageFlags.noRobots) || !netConfig.crawlable).option(noRobots),
           noTranslate,
-          p.openGraph.map(lila.web.ui.openGraph),
+          // No caller ever sets the site name on an OpenGraph, so without this every page
+          // advertises the upstream default when shared. Taken from config rather than
+          // hardcoded, so each environment names itself correctly.
+          p.openGraph.map(og => lila.web.ui.openGraph(og.copy(siteName = siteName))),
           p.atomLinkTag | dailyNewsAtom,
           (pref.bg == lila.pref.Pref.Bg.TRANSPARENT).option(pref.bgImgOrDefault).map { loc =>
             val url =

@@ -18,7 +18,7 @@ trait AssetFullHelper:
   private lazy val socketDomains = netConfig.socketDomains ::: netConfig.socketAlts
 
   def siteName: String =
-    if netConfig.siteName == "localhost:9663" then "lichess.dev"
+    if netConfig.siteName == "localhost:9663" then "9kings.dev"
     else netConfig.siteName
 
   def assetVersion = lila.core.net.AssetVersion.current
