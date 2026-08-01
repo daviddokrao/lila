@@ -33,7 +33,11 @@
   }
 
   .site-icon {
-    display: none;
+    // LUÔN hiện. Upstream bật/tắt icon qua bốn dải bề rộng, để lại hai dải không có
+    // dấu hiệu thương hiệu nào: dưới 500px thì ẩn cả khối, và 1120-1500px thì chỉ
+    // còn chữ (đúng dải màn 13 inch). Mark là thứ nhận diện được ở mọi khổ, chữ thì
+    // không, nên icon là thứ phải sống sót chứ không phải thứ bị hi sinh đầu tiên.
+    display: block;
     font-size: 24px;
 
     @media (min-height: at-least($tall)) {
@@ -54,28 +58,23 @@
     }
   }
 
+  // Dưới 500px upstream ẩn nguyên khối tiêu đề để nhường chỗ. Nay chỉ thu gọn:
+  // bỏ đệm ngang và hạ cỡ icon, đủ để mark vẫn còn trên màn điện thoại.
   @media (max-width: at-least($xx-small)) {
-    display: none;
-  }
-
-  @media (min-width: at-least($xx-small)) {
-    .site-icon {
-      display: block;
-    }
-  }
-
-  @media (min-width: at-least($large)) {
-    .site-name {
-      display: block;
-    }
+    padding: 0;
+    margin-inline-start: 0.25rem;
+    gap: 0;
 
     .site-icon {
-      display: none;
+      font-size: 20px;
     }
   }
 
+  // Chữ chỉ hiện khi thật sự có chỗ. Thanh nav trên xuất hiện từ 1020px
+  // ($topnav-visible) nên dải 1120-1500px là dải chật nhất: nav, ô tìm kiếm và
+  // tiêu đề cùng chen nhau. Ở đó ưu tiên icon, để chữ lại cho khổ rộng hơn.
   @media (min-width: at-least($xx-large)) {
-    .site-icon {
+    .site-name {
       display: block;
     }
   }
