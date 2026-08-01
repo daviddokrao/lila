@@ -43,7 +43,11 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
       // HungKings, cạnh Webmasters và API, nó đọc như kho dữ liệu của mình — mà
       // HungKings không xuất kho ván nào cả. Trang Câu đố vẫn ghi công nguồn thật,
       // ở đó lời ghi công là đúng vì bộ câu đố lấy từ Lichess.
-      a(activeCls("api"), href := "/api")("API", external),
+      // /api KHÔNG có route trong lila: trên lichess.org nó do một site tài liệu
+      // riêng phục vụ, bản fork này không dựng site đó nên link cũ trả 404 ở chân
+      // MỌI trang. API của HungKings đúng là API của lila nên tài liệu upstream
+      // dùng được nguyên văn; đánh dấu external cho người đọc biết là rời site.
+      a(activeCls("api"), href := "https://lichess.org/api")("API", external),
       sep,
       a(activeCls("lag"), href := routes.Main.lag)(trans.lag.isLichessLagging()),
       a(activeCls("ads"), href := "/ads")("Block ads")
@@ -70,9 +74,10 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
           st.section(cls := "box box-pad developers")(
             h1(cls := "box__top")("HTTP API"),
             p(
-              "HungKings exposes a RESTish HTTP/JSON API that you are welcome to use. Read the ",
-              a(href := "/api")("HTTP API documentation"),
-              "."
+              "HungKings exposes a RESTish HTTP/JSON API that you are welcome to use. ",
+              "It is the same API as Lichess's, so their ",
+              a(href := "https://lichess.org/api", targetBlank)("HTTP API documentation"),
+              " applies here unchanged — point your client at this server instead."
             )
           ),
           br,
