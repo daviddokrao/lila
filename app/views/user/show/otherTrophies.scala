@@ -62,6 +62,6 @@ object otherTrophies:
             "trophy award icon3d streamer" -> true,
             "streaming" -> streaming
           ),
-          ariaTitle(if streaming then "Live now!" else "9Kings Streamer")
+          ariaTitle(if streaming then "Live now!" else "HungKings Streamer")
         )(Icon.Mic)
     )

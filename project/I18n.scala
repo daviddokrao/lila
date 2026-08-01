@@ -58,11 +58,29 @@ object I18n:
 
   // Swap the upstream brand out of every translated string at build time instead of
   // editing translation/dest, so all ~100 language files stay byte-identical to
-  // upstream and keep merging cleanly. Domains are left alone: a trailing .org/.dev
-  // means the mention is a link target, not the product name.
-  private val brandRe = """\b([Ll])ichess\b(?!\.(?:org|dev))""".r
+  // upstream and keep merging cleanly. Mirrors ui/.build/src/i18n.ts, which does the
+  // same for the browser bundles — keep the two in sync.
+  //
+  // URLs are skipped wholesale rather than guarded by a domain suffix: \b treats the
+  // hyphens in a slug as word boundaries, so a bare brand regex rewrites the middle of
+  // //lichess.org/blog/V0KrLSkAAMo3hsi4/study-chess-the-lichess-way and the link 404s.
+  // A bare domain outside a URL (lichess.com) is a link target too, hence the .[a-z]
+  // lookahead. Compounds keep working: Lichess-Konto -> HungKings-Konto.
+  private val brandRe = """\b([Ll])ichess\b(?!\.[a-z])""".r
+  private val urlRe = """(?:https?:)?//[^\s'"<>)\]]+""".r
+
   private def rebrand(s: String) =
-    brandRe.replaceAllIn(s, m => if m.group(1) == "L" then "9Kings" else "9kings")
+    val out = new StringBuilder
+    var end = 0
+    for url <- urlRe.findAllMatchIn(s) do
+      out ++= brandRe.replaceAllIn(s.substring(end, url.start), brandFor)
+      out ++= url.matched
+      end = url.end
+    out ++= brandRe.replaceAllIn(s.substring(end), brandFor)
+    out.toString
+
+  private def brandFor(m: scala.util.matching.Regex.Match) =
+    if m.group(1) == "L" then "HungKings" else "hungkings"
 
   private def toKey(e: scala.xml.Node, db: String) =
     if db == "site" then e.\("@name").toString

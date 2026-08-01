@@ -134,8 +134,8 @@ final class CoachEditUi(helpers: Helpers, ui: CoachUi):
               div(cls := "panel contents")(
                 form3.group(
                   form("profile.publicStudies"),
-                  raw("Featured public 9Kings studies"),
-                  help = raw("Up to 6 9Kings study URLs, one per line").some
+                  raw("Featured public HungKings studies"),
+                  help = raw("Up to 6 HungKings study URLs, one per line").some
                 )(form3.textarea(_)()),
                 form3.group(form("profile.youtubeChannel"), raw("URL of your Youtube channel"))(
                   form3.input(_)

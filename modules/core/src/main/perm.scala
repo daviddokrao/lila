@@ -101,7 +101,7 @@ enum Permission(val key: String, val alsoGrants: List[Permission], val name: Str
       extends Permission("SETTINGS", "Lila settings base permission") // tho most settings require SUPER_ADMIN
   case Streamers extends Permission("STREAMERS", "Manage streamers")
   case Verified extends Permission("VERIFIED", "Verified badge")
-  case Pages extends Permission("PAGES", "9Kings pages")
+  case Pages extends Permission("PAGES", "HungKings pages")
   case Feed extends Permission("DAILY_FEED", "Feed updates")
   case MonitoredCheatMod extends Permission("MONITORED_MOD_CHEAT", "Monitored mod: cheat")
   case MonitoredBoostMod extends Permission("MONITORED_MOD_BOOST", "Monitored mod: boost")
@@ -109,7 +109,7 @@ enum Permission(val key: String, val alsoGrants: List[Permission], val name: Str
   case StudyAdmin extends Permission("STUDY_ADMIN", List(Relay, RelayStream), "Study/Broadcast admin")
   case ApiHog extends Permission("API_HOG", "API hog")
   case ApiChallengeAdmin extends Permission("API_CHALLENGE_ADMIN", "API Challenge admin")
-  case LichessTeam extends Permission("LICHESS_TEAM", List(Beta), "9Kings team")
+  case LichessTeam extends Permission("LICHESS_TEAM", List(Beta), "HungKings team")
   case BotEditor extends Permission("BOT_EDITOR", "Bot editor")
   case Diagnostics extends Permission("DIAGNOSTICS", "Diagnostics")
   case DeveloperTeam

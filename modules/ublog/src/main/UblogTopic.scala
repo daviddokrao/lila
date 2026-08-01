@@ -28,7 +28,7 @@ object UblogTopic extends OpaqueString[UblogTopic]:
   val offTopic: UblogTopic = "Off topic"
   val all: List[UblogTopic] = chess ::: List(
     "Software Development",
-    "9Kings",
+    "HungKings",
     offTopic
   )
   val exists: Set[UblogTopic] = all.toSet

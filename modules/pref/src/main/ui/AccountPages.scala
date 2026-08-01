@@ -72,7 +72,7 @@ final class AccountPages(helpers: Helpers, ui: AccountUi, flagApi: lila.core.use
           postForm(cls := "form3", action := routes.Account.deleteConfirm)(
             div(cls := "form-group")(h2("We're sorry to see you go.")),
             div(cls := "form-group")(
-              "Once you delete your account, it’s removed from 9Kings and our administrators won’t be able to bring it back for you."
+              "Once you delete your account, it’s removed from HungKings and our administrators won’t be able to bring it back for you."
             ),
             div(cls := "form-group")(trs.cantOpenSimilarAccount()),
             div(cls := "form-group")(
@@ -90,12 +90,12 @@ final class AccountPages(helpers: Helpers, ui: AccountUi, flagApi: lila.core.use
                   "One of the rights GDPR grants to European citizens is the right to erasure of their personal information, also known as the \"right to be forgotten\"."
                 ),
                 p(
-                  "9Kings generally complies with these requests from citizens of any country, because individuals should have control of their data against organisations. However, in certain cases where accounts broke our ",
+                  "HungKings generally complies with these requests from citizens of any country, because individuals should have control of their data against organisations. However, in certain cases where accounts broke our ",
                   a(href := routes.Cms.tos)("Terms of Service"),
                   ", we cannot comply with those requests."
                 ),
                 p(
-                  "That is because the GDPR allows for exceptions in certain cases, and one of those is where an organisation's overriding legitimate interests would be compromised by erasing the data. In short, by deleting your data, it would make it harder for us to keep 9Kings safe and secure from people who have broken our rules."
+                  "That is because the GDPR allows for exceptions in certain cases, and one of those is where an organisation's overriding legitimate interests would be compromised by erasing the data. In short, by deleting your data, it would make it harder for us to keep HungKings safe and secure from people who have broken our rules."
                 ),
                 p(
                   "When you delete your account, your personal data will be hidden from the public, and only accessible by admins."
@@ -281,7 +281,7 @@ final class AccountPages(helpers: Helpers, ui: AccountUi, flagApi: lila.core.use
       div(cls := "security personal-data box box-pad")(
         h1(cls := "box__top")("My personal data"),
         div(cls := "personal-data__header")(
-          p("Here is all personal information 9Kings has about ", userLink(u)),
+          p("Here is all personal information HungKings has about ", userLink(u)),
           a(cls := "button", href := s"${routes.Account.data}?user=${u.id}&text=1", downloadAttr):
             trans.site.download()
         )

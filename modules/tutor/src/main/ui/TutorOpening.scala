@@ -34,7 +34,7 @@ final class TutorOpening(helpers: Helpers, bits: TutorBits, perfUi: TutorPerfUi)
       as: Color
   )(using Context) =
     bits.page(
-      title = s"9Kings Tutor • ${perfReport.perf.trans} • ${as.name} • ${report.family.name.value}",
+      title = s"HungKings Tutor • ${perfReport.perf.trans} • ${as.name} • ${report.family.name.value}",
       menu = perfUi.menu(perfReport, "opening".some)(using full.config)
     )(cls := "tutor__opening tutor-layout"):
       frag(

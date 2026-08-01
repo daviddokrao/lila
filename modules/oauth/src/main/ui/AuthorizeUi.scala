@@ -75,7 +75,7 @@ final class AuthorizeUi(helpers: Helpers)(
                     ),
                     dataIcon := danger.option(Icon.CautionTriangle),
                     signedClient.isEmpty.option(disabled),
-                    title := s"The website ${prompt.redirectUri.host | prompt.redirectUri.withoutQuery} will get access to your 9Kings account. Continue?"
+                    title := s"The website ${prompt.redirectUri.host | prompt.redirectUri.withoutQuery} will get access to your HungKings account. Continue?"
                   ):
                     signedClient.fold("Authorize"): c =>
                       s"Sign in with ${c.displayName}"
@@ -106,7 +106,7 @@ final class AuthorizeUi(helpers: Helpers)(
         case Some(client) => p(s"Not using ${client.displayName}? ", a(href := prompt.cancelUrl)("Cancel"))
         case None =>
           prompt.trusted.not.option:
-            p(cls := List("danger" -> prompt.isDanger))("Not owned or operated by lichess.org")
+            p(cls := List("danger" -> prompt.isDanger))("Not owned or operated by HungKings")
     )
 
   private def oauthClientLanguage(using orig: Translate, custom: Option[AuthCustomUi]): Translate =

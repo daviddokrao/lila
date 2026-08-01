@@ -64,7 +64,7 @@ final class UblogPostUi(helpers: Helpers, ui: UblogUi)(connectLinks: Frag):
               )(userLinkContent(user)),
               iconTag(Icon.InfoCircle)(
                 cls := "ublog-post__meta__disclaimer",
-                st.title := "Opinions expressed by 9Kings contributors are their own."
+                st.title := "Opinions expressed by HungKings contributors are their own."
               ),
               post.lived.map: live =>
                 span(cls := "ublog-post__meta__date")(semanticDate(live.at)),

@@ -139,7 +139,7 @@ final class RelayFormUi(helpers: Helpers, ui: RelayUi, pageMenu: RelayMenuUi):
           standardFlash,
           nav.targetRound.map: tr =>
             flashMessage("success")(
-              "Your tournament round is officially broadcasted by 9Kings!",
+              "Your tournament round is officially broadcasted by HungKings!",
               br,
               strong(a(href := tr.path, cls := "text", dataIcon := Icon.RadioTower)(tr.fullName)),
               "."
@@ -168,13 +168,16 @@ final class RelayFormUi(helpers: Helpers, ui: RelayUi, pageMenu: RelayMenuUi):
         url: play.api.mvc.Call,
         nav: FormNavigation
     )(using ctx: Context) =
-      val broadcastEmailContact = a(href := "mailto:broadcast@lichess.org")("broadcast@lichess.org")
+      // Trước là mailto:broadcast@lichess.org — hòm thư của Lichess, HungKings không
+      // đọc được. Trỏ về trang Liên hệ của chính mình: nó luôn đúng kể cả khi
+      // net.email đổi, và không cần luồn contactEmail xuống tận form này.
+      val broadcastEmailContact = a(href := "/contact")("HungKings contact page")
       val lccWarning = for
         round <- nav.round
         upstream <- round.sync.upstream
         if upstream.hasLcc
       yield flashMessage("box relay-form__warning")(
-        p(strong("Please use the ", a(href := broadcasterUrl)("9Kings Broadcaster App"))),
+        p(strong("Please use the ", a(href := broadcasterUrl)("HungKings Broadcaster App"))),
         p(
           "LiveChessCloud support is deprecated and will be removed soon.",
           br,
@@ -186,7 +189,7 @@ final class RelayFormUi(helpers: Helpers, ui: RelayUi, pageMenu: RelayMenuUi):
       val contactUsForOfficial = nav.featurableRound.isDefined.option:
         flashMessage("box relay-form__contact-us")(
           p(
-            "Is this a tournament you organize? Do you want 9Kings to feature it on the ",
+            "Is this a tournament you organize? Do you want HungKings to feature it on the ",
             a(href := routes.RelayTour.index(1))("broadcast page"),
             "?"
           ),
@@ -275,14 +278,14 @@ final class RelayFormUi(helpers: Helpers, ui: RelayUi, pageMenu: RelayMenuUi):
           )(form3.input(_))(cls := "relay-form__sync relay-form__sync-ids none"),
           form3.group(
             form("syncUsers"),
-            "Up to 100 9Kings usernames, separated by spaces",
+            "Up to 100 HungKings usernames, separated by spaces",
             half = false
           )(form3.input(_))(cls := "relay-form__sync relay-form__sync-users none"),
           div(cls := "form-group relay-form__sync relay-form__sync-push none")(
             contactUsForOfficial,
             p(
-              "Send your local games to 9Kings using the ",
-              a(href := broadcasterUrl)("9Kings Broadcaster App"),
+              "Send your local games to HungKings using the ",
+              a(href := broadcasterUrl)("HungKings Broadcaster App"),
               "."
             )
           ),
@@ -359,7 +362,7 @@ final class RelayFormUi(helpers: Helpers, ui: RelayUi, pageMenu: RelayMenuUi):
               form("status"),
               "Current status",
               help = frag(
-                "9Kings can usually detect the round status, but you can also set it manually if needed."
+                "HungKings can usually detect the round status, but you can also set it manually if needed."
               ).some,
               half = true
             ):
@@ -764,7 +767,7 @@ Team Dogs ; Scooby Doo"""),
               form3.split(
                 form3.group(
                   form("tier"),
-                  raw("Official 9Kings broadcast tier"),
+                  raw("Official HungKings broadcast tier"),
                   help = raw("Priority and ranking - for admins only").some,
                   half = true
                 )(form3.select(_, RelayTour.Tier.options)),

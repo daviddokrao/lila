@@ -30,8 +30,11 @@ object bits:
             )
           case h => raw(h.replaceIf('\n', "<br>"))
 
+  // Chỉ hiện khi net.stage.banner = true (mặc định false, bản demo không bật).
+  // Upstream dùng nó để đẩy người dùng từ site thử sang site thật; HungKings không
+  // có site thứ hai nên biển chỉ nói đây là bản thử, không dẫn đi đâu khác.
   lazy val stage = a(
-    href := "https://lichess.org",
+    href := "/",
     style := """
 background: #7f1010;
 color: #fff;
@@ -43,33 +46,28 @@ border-top-right-radius: 3px;
 z-index: 99;
 """
   ):
-    "This is an empty 9Kings preview website, go to lichess.org instead"
+    "This is a HungKings preview website"
 
+  // Khối này hiện ngay trên TRANG CHỦ. Upstream liệt kê Mastodon/Discord/Bluesky/
+  // YouTube/Twitch của Lichess; để nguyên dưới thương hiệu HungKings là dẫn người
+  // dùng sang cộng đồng của người khác mà làm như của mình. Đã gỡ, chỉ giữ GitHub
+  // trỏ về kho nguồn thật của bản fork — AGPL-3.0 buộc phải công khai nó.
+  // Thêm lại từng mục khi HungKings có tài khoản thật trên các nền tảng đó.
   val connectLinks: Frag = div(cls := "connect-links")(
     a(
-      href := "https://mastodon.online/@lichess",
-      targetBlank,
-      noFollow,
-      relMe
-    )("Mastodon"),
-    a(
-      href := "https://github.com/lichess-org",
+      href := "https://github.com/daviddokrao/lila",
       targetBlank,
       noFollow
-    )("GitHub"),
-    a(href := "https://discord.gg/lichess", targetBlank, noFollow)("Discord"),
-    a(href := "https://bsky.app/profile/lichess.org", targetBlank, noFollow)("Bluesky"),
-    a(
-      href := "https://youtube.com/@LichessDotOrg",
-      targetBlank,
-      noFollow
-    )("YouTube"),
-    a(
-      href := "https://www.twitch.tv/lichessdotorg",
-      targetBlank,
-      noFollow
-    )("Twitch")
+    )("GitHub")
   )
 
+  // Hiện ở trang cấp quyền OAuth và trang đăng nhập Take Take Take. Trước đây vẫn là
+  // logo con mã của Lichess — thương hiệu của tổ chức khác, đặt cạnh chữ "HungKings"
+  // thì sai hẳn. Nay là mark tam giác dùng chung của hệ sinh thái, cùng hình với
+  // public/logo/lichess.svg (tên tệp giữ nguyên để khỏi phá manifest asset).
+  //
+  // fill/stroke đặt thẳng trên <path>: CSS ở 3 tệp scss gán màu cho <svg>, mà giá trị
+  // KẾ THỪA thua giá trị đặt trực tiếp trên phần tử con, nên nét vẫn ăn theo màu chữ
+  // trong khi ruột tam giác không bị tô đặc.
   val logo = raw:
-    """<svg class="lichess-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path stroke-linejoin="round" d="M38.956.5c-3.53.418-6.452.902-9.286 2.984C5.534 1.786-.692 18.533.68 29.364 3.493 50.214 31.918 55.785 41.329 41.7c-7.444 7.696-19.276 8.752-28.323 3.084S-.506 27.392 4.683 17.567C9.873 7.742 18.996 4.535 29.03 6.405c2.43-1.418 5.225-3.22 7.655-3.187l-1.694 4.86 12.752 21.37c-.439 5.654-5.459 6.112-5.459 6.112-.574-1.47-1.634-2.942-4.842-6.036-3.207-3.094-17.465-10.177-15.788-16.207-2.001 6.967 10.311 14.152 14.04 17.663 3.73 3.51 5.426 6.04 5.795 6.756 0 0 9.392-2.504 7.838-8.927L37.4 7.171z"/></svg>"""
+    """<svg class="lichess-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z" fill="none" stroke="currentColor" stroke-width="4.25" stroke-linejoin="miter" stroke-linecap="butt"/></svg>"""

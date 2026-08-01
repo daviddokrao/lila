@@ -57,7 +57,7 @@ object concept:
       InsightMetric.MeanAccuracy.description,
       frag(
         "Accuracy is computed from engine evaluation and the ",
-        winPercentLink("9Kings winning chances formula"),
+        winPercentLink("HungKings winning chances formula"),
         ". It applies to all your moves, and reflects the global objective quality of your play."
       ).some,
       percent,

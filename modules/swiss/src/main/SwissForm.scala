@@ -157,7 +157,7 @@ object SwissForm:
     Swiss.ChatFor.NONE -> "No chat",
     Swiss.ChatFor.LEADERS -> "Team leaders only",
     Swiss.ChatFor.MEMBERS -> "Team members only",
-    Swiss.ChatFor.ALL -> "All 9Kings players"
+    Swiss.ChatFor.ALL -> "All HungKings players"
   )
 
   case class SwissData(

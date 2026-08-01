@@ -104,7 +104,7 @@ private object TournamentScheduler:
           val yo = date.getYear - 2010
           Schedule(Unique, Rapid, Standard, none, date).plan {
             _.copy(
-              name = s"${date.getYear} 9Kings Anniversary",
+              name = s"${date.getYear} HungKings Anniversary",
               minutes = 12 * 60,
               description = s"""
 We've had $yo great chess years together!

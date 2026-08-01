@@ -6,8 +6,12 @@ import lila.ui.*
 
 import ScalatagsTemplate.{ *, given }
 
-final class SitePages(helpers: Helpers):
+final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
   import helpers.{ *, given }
+  // Nhãn "Giới thiệu về X" phải đi theo net.site.name, đừng viết cứng: bản dịch
+  // được thay thương hiệu lúc build, còn tham số truyền vào đây thì không — viết
+  // cứng là chỗ duy nhất trong menu tụt lại tên cũ mỗi lần đổi thương hiệu.
+  import assetHelper.siteName
 
   def SitePage(title: String, active: String, contentCls: String = "")(using Context): Page =
     Page(title).wrap: body =>
@@ -21,8 +25,8 @@ final class SitePages(helpers: Helpers):
     val external = frag(" ", iconTag(Icon.ExternalArrow))
     def activeCls(c: String) = cls := active.activeO(c)
     lila.ui.bits.pageMenuSubnav(
-      a(activeCls("about"), href := "/about")(trans.site.aboutX("lichess.org")),
-      a(activeCls("news"), href := routes.Feed.index(1))("9Kings updates"),
+      a(activeCls("about"), href := "/about")(trans.site.aboutX(siteName)),
+      a(activeCls("news"), href := routes.Feed.index(1))("HungKings updates"),
       a(activeCls("faq"), href := routes.Main.faq)(trans.faq.faqAbbreviation()),
       a(activeCls("contact"), href := routes.Main.contact)(trans.contact.contact()),
       a(activeCls("tos"), href := routes.Cms.tos)(trans.site.termsOfService()),
@@ -35,7 +39,10 @@ final class SitePages(helpers: Helpers):
       a(activeCls("thanks"), href := "/thanks")(trans.site.thankYou()),
       sep,
       a(activeCls("webmasters"), href := routes.Main.webmasters)(trans.site.webmasters()),
-      a(activeCls("database"), href := "https://database.lichess.org")(trans.site.database(), external),
+      // Bỏ mục "Database": nó trỏ tới database.lichess.org. Nằm trong menu của
+      // HungKings, cạnh Webmasters và API, nó đọc như kho dữ liệu của mình — mà
+      // HungKings không xuất kho ván nào cả. Trang Câu đố vẫn ghi công nguồn thật,
+      // ở đó lời ghi công là đúng vì bộ câu đố lấy từ Lichess.
       a(activeCls("api"), href := "/api")("API", external),
       sep,
       a(activeCls("lag"), href := routes.Main.lag)(trans.lag.isLichessLagging()),
@@ -63,7 +70,7 @@ final class SitePages(helpers: Helpers):
           st.section(cls := "box box-pad developers")(
             h1(cls := "box__top")("HTTP API"),
             p(
-              "9Kings exposes a RESTish HTTP/JSON API that you are welcome to use. Read the ",
+              "HungKings exposes a RESTish HTTP/JSON API that you are welcome to use. Read the ",
               a(href := "/api")("HTTP API documentation"),
               "."
             )
@@ -74,7 +81,7 @@ final class SitePages(helpers: Helpers):
               """style="width: 400px; aspect-ratio: 10/11;" allowtransparency="true" frameborder="0""""
             frag(
               a(href := "#embed-tv")(
-                h1(cls := "box__top", id := "embed-tv")("Embed 9Kings TV in your site")
+                h1(cls := "box__top", id := "embed-tv")("Embed HungKings TV in your site")
               ),
               div(cls := "body")(
                 div(cls := "center")(raw(s"""<iframe src="/tv/frame?theme=brown&bg=dark" $args></iframe>""")),
@@ -190,7 +197,7 @@ final class SitePages(helpers: Helpers):
                 div(cls := "center")(raw(iframe)),
                 p(
                   "Embeds the ",
-                  a(href := routes.UserAnalysis.index)("fully-featured 9Kings analysis board"),
+                  a(href := routes.UserAnalysis.index)("fully-featured HungKings analysis board"),
                   " with stockfish evaluation, opening explorer and tablebase."
                 ),
                 copyMeInput(iframe),
@@ -256,7 +263,7 @@ final class SitePages(helpers: Helpers):
 
   def lag(using Context) =
     import trans.lag as trl
-    SitePage(title = "Is 9Kings lagging?", active = "lag")
+    SitePage(title = "Is HungKings lagging?", active = "lag")
       .css("bits.lag")
       .js(esmInit("chart.lag")):
         div(cls := "box box-pad lag")(

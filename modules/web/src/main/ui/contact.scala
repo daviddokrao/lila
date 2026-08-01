@@ -263,7 +263,7 @@ object contact:
               "GDPR erasure",
               p(
                 "You may request the ",
-                a(href := routes.Account.delete)("complete deletion of your 9Kings account.")
+                a(href := routes.Account.delete)("complete deletion of your HungKings account.")
               )
             ),
             Leaf(
@@ -272,7 +272,7 @@ object contact:
               p(
                 a(href := "/dmca")("Complete this form"),
                 " ",
-                "if you are the original copyright holder, or an agent acting on behalf of the copyright holder, and believe 9Kings is hosting work(s) you hold the copyright to."
+                "if you are the original copyright holder, or an agent acting on behalf of the copyright holder, and believe HungKings is hosting work(s) you hold the copyright to."
               )
             ),
             Leaf(
@@ -282,7 +282,10 @@ object contact:
                 p(ifYouWantToBroadcastClause1()),
                 p(
                   ifYouWantToBroadcastClause2(
-                    contactEmailLink("broadcast@lichess.org"),
+                    // Dùng địa chỉ đã cấu hình (net.email) chứ không phải hòm thư
+                    // broadcast@lichess.org của Lichess — thư gửi tới đó không ai
+                    // ở HungKings đọc được.
+                    contactEmailLink(contactEmail.value),
                     a(href := "https://discord.gg/Syx9CbN8Jv")(ourDiscordServer())
                   )
                 )

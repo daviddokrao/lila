@@ -84,7 +84,7 @@ object OAuthScope:
     case object Write extends OAuthScope("engine:write", trans.engineWrite)
 
   object Web:
-    case object Mobile extends OAuthScope("web:mobile", I18nKey("Official 9Kings mobile app"))
+    case object Mobile extends OAuthScope("web:mobile", I18nKey("Official HungKings mobile app"))
     case object Takex3 extends OAuthScope("web:polygon", I18nKey("Take Take Take"))
     case object Mod extends OAuthScope("web:mod", trans.webMod)
 

@@ -17,9 +17,9 @@ final class GatheringUi(helpers: Helpers)(prizeTournamentMakers: () => UserIds):
   def userPrizeDisclaimer(ownerId: UserId): Option[Frag] =
     (!prizeTournamentMakers().value.contains(ownerId)).option:
       st.section(cls := "tour__prize")(
-        "This tournament is not organized by 9Kings.",
+        "This tournament is not organized by HungKings.",
         br,
-        "If it has prizes, 9Kings is not responsible for paying them."
+        "If it has prizes, HungKings is not responsible for paying them."
       )
 
   def verdicts(vs: WithVerdicts, pk: PerfKey, relevant: Boolean = true)(using
@@ -67,7 +67,9 @@ final class GatheringUi(helpers: Helpers)(prizeTournamentMakers: () => UserIds):
   def payouts(txt: Payouts) =
     st.section(cls := "description"):
       p(
-        a(href := routes.Cms.lonePage(lila.core.id.CmsPageKey("lichess-prizes")))("Prizes: "),
+        // Khoá trang CMS lộ ra trong URL người dùng thấy được (/page/<khoá>), nên
+        // nó cũng là chuỗi thương hiệu — không phải mã nội bộ.
+        a(href := routes.Cms.lonePage(lila.core.id.CmsPageKey("prizes")))("Prizes: "),
         txt
       )
 
@@ -139,7 +141,7 @@ final class GatheringFormUi(helpers: Helpers):
           field,
           frag("Prize payouts"),
           help = frag(
-            "Only if 9Kings is responsible for the payout",
+            "Only if HungKings is responsible for the payout",
             br,
             "Amounts in USD: e.g. $500/$250/$100/$50/$25"
           ).some,

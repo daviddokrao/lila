@@ -26,7 +26,7 @@ final class Env(
   lazy val api: IrcApi = wire[IrcApi]
 
   if mode.isProd then
-    api.publishInfo("9Kings has started!")
+    api.publishInfo("HungKings has started!")
     Lilakka.shutdown(shutdown, _.PhaseBeforeServiceUnbind, "Tell IRC"): () =>
       api.stop()
       funit // don't wait for zulip aknowledgment to restart lila.

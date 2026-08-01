@@ -125,9 +125,9 @@ final class ClasPages(helpers: Helpers, clasUi: ClasUi, dashUi: DashboardUi):
       ),
       form3.checkboxGroup(
         form("hasTeam"),
-        frag("Make a 9Kings team for this class"),
+        frag("Make a HungKings team for this class"),
         help = frag(
-          "9Kings teams can organize tournaments. Your class students will automatically join the team and its tournaments."
+          "HungKings teams can organize tournaments. Your class students will automatically join the team and its tournaments."
         ).some
       )(id := "clas-team")
     )

@@ -263,7 +263,7 @@ trait UserHelper:
       title := s"${trans.patron.lichessPatron.txt()} (${p.tier.name})"
     )
 
-  val moderatorIcon: Frag = iconTag(cls := "line moderator", title := "9Kings Mod")
+  val moderatorIcon: Frag = iconTag(cls := "line moderator", title := "HungKings Mod")
   @targetName("lineIconPatron")
   private def lineIcon(p: Option[PatronTier.AndColor])(using Translate): Frag =
     p.fold(lineIcon)(patronIcon)

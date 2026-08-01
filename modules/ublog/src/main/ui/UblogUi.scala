@@ -135,7 +135,7 @@ final class UblogUi(helpers: Helpers, atomUi: AtomUi, modMenu: Context ?=> Frag)
       .copy(
         atomLinkTag = link(
           href := routes.Ublog.communityAtom(languageOrAll),
-          st.title := "9Kings community blogs"
+          st.title := "HungKings community blogs"
         ).some
       )
       .hrefLangs(lila.ui.LangPath(langHref(routes.Ublog.communityAll(filter.some)))):
@@ -528,7 +528,7 @@ final class UblogUi(helpers: Helpers, atomUi: AtomUi, modMenu: Context ?=> Frag)
         elems = posts,
         htmlCall = routes.Ublog.communityLang(language),
         atomCall = routes.Ublog.communityAtom(language),
-        title = "9Kings community blogs",
+        title = "HungKings community blogs",
         updated = posts.headOption.flatMap(_.lived).map(_.at)
       ) { post =>
         renderPost(post, authorOfBlog(post.blog))

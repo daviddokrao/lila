@@ -35,53 +35,53 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
       .css("bits.faq"):
         div(cls := "faq box box-pad")(
           h1(cls := "box__top")(trf.frequentlyAskedQuestions()),
-          h2("9Kings"),
+          h2("HungKings"),
+          // Ba câu hỏi đầu của upstream nói về CHÍNH Lichess: tên bắt nguồn từ
+          // live/light/libre, mã nguồn tên "lila", và danh sách site dựng TRÊN Lichess.
+          // Bộ thay thương hiệu lúc build biến chúng thành lời khẳng định sai về mình
+          // ("HungKings là ghép của live/light/libre", "các site dựng trên HungKings"),
+          // nên phải viết lại chứ không dịch được. Viết thẳng tiếng Anh: khoá dịch của
+          // upstream không mang nghĩa mới này, dùng lại là nói dối trong 94 ngôn ngữ.
           question(
             "name",
-            trf.whyIsLichessCalledLichess.txt(),
+            "Why is it called HungKings?",
             p(
-              trf.lichessCombinationLiveLightLibrePronounced(em(trf.leechess())),
-              " ",
-              a(href := "https://www.youtube.com/watch?v=KRpPqcrdE-o")(trf.hearItPronouncedBySpecialist())
+              "The site is named after the Hùng Kings, the legendary founders of Vietnam. ",
+              "This chess server is one part of the wider HungKings family of products."
+            )
+          ),
+          question(
+            "built-on-lichess",
+            "What is HungKings built on?",
+            p(
+              "HungKings is a fork of ",
+              a(href := "https://lichess.org")("Lichess"),
+              ", a free chess server run as a charity. Nearly everything you see here — the ",
+              "analysis board, puzzles, tournaments, studies, the chess variants — was built by ",
+              "the Lichess community over many years. We use it under the AGPL-3.0 licence."
             ),
             p(
-              trf.whyLiveLightLibre()
-            ),
-            p(
-              trf.whyIsLilaCalledLila(
-                a(href := "https://github.com/lichess-org/lila")("lila"),
-                a(href := "https://scala-lang.org/")("Scala")
-              )
+              "The engine behind it is ",
+              a(href := "https://github.com/lichess-org/lila")("lila"),
+              ", written in ",
+              a(href := "https://scala-lang.org/")("Scala"),
+              "."
             )
           ),
           question(
             "contributing",
-            trf.howCanIContributeToLichess.txt(),
-            p(trf.lichessPoweredByDonationsAndVolunteers()),
+            "How can I contribute to HungKings?",
             p(
-              trf.findMoreAndSeeHowHelp(
-                a(href := routes.Plan.index())(trf.beingAPatron()),
-                a(href := routes.Main.costs)(trf.breakdownOfOurCosts()),
-                a(href := routes.Cms.help)(trf.otherWaysToHelp())
-              )
-            )
-          ),
-          question(
-            "sites_based_on_9Kings",
-            trf.areThereWebsitesBasedOnLichess.txt(),
-            p(
-              trf.yesLichessInspiredOtherOpenSourceWebsites(
-                a(href := "/source")(trans.site.sourceCode()),
-                a(href := "/api")("API"),
-                a(href := "https://database.lichess.org")(trans.site.database())
-              )
+              "HungKings is free and open source. That same AGPL-3.0 licence obliges us to ",
+              "publish our own changes, so you can read every line, report a problem, or send ",
+              "a patch on ",
+              a(href := "https://github.com/daviddokrao/lila")("GitHub"),
+              "."
             ),
-            ul(
-              li(a(href := "https://blitztactics.com/about")("Blitz Tactics")),
-              li(a(href := "https://tailuge.github.io/chess-o-tron/html/blunder-bomb.html")("Blunder Bomb")),
-              li(a(href := "https://lidraughts.org")("lidraughts.org")),
-              li(a(href := "https://playstrategy.org")("playstrategy.org")),
-              li(a(href := "https://lishogi.org")("lishogi.org"))
+            p(
+              "See the ",
+              a(href := "/source")(trans.site.sourceCode()),
+              " page for the full list of repositories."
             )
           ),
           question(
@@ -227,7 +227,7 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             p(
               trf.showYourTitle(
                 a(href := routes.TitleVerify.index)(trf.verificationForm()),
-                a(href := "#lm")("9Kings Master (LM)")
+                a(href := "#lm")("HungKings Master (LM)")
               )
             )
           ),
@@ -242,7 +242,9 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             trf.whatUsernameCanIchoose.txt(),
             p(
               trf.usernamesNotOffensive(
-                a(href := "https://lichess.org/page/username-policy")(trf.guidelines())
+                // Quy tắc đặt tên của HungKings nằm trong Điều khoản của chính mình,
+                // không phải trang chính sách của Lichess.
+                a(href := routes.Cms.tos)(trf.guidelines())
               )
             )
           ),
@@ -251,19 +253,9 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             trf.canIChangeMyUsername.txt(),
             p(trf.usernamesCannotBeChanged.txt())
           ),
-          question(
-            "trophies",
-            trf.uniqueTrophies.txt(),
-            h4("The Golden Zee"),
-            p(
-              trf.ownerUniqueTrophies(
-                a(href := "https://lichess.org/@/ZugAddict")("ZugAddict")
-              )
-            ),
-            p(
-              trf.goldenZeeExplanation()
-            )
-          ),
+          // Bỏ mục "The Golden Zee": đó là cúp riêng của Lichess, trao cho đúng một
+          // tài khoản Lichess (ZugAddict). Trên HungKings không ai giữ nó, nên để lại
+          // là mô tả một giải thưởng không tồn tại và trỏ người đọc sang site khác.
           h2(trf.lichessRatings()),
           question(
             "ratings",
@@ -372,15 +364,21 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
           ),
           question(
             "make-a-bot",
-            "Make a 9Kings bot?",
+            "Make a HungKings bot?",
+            // Hai liên kết này là tài liệu của Lichess. HungKings dùng chung bot API
+            // của lila nên hướng dẫn vẫn đúng nguyên văn — nhưng phải nói rõ đó là tài
+            // liệu của Lichess, đừng để anchor "HungKings bot" trỏ sang site người ta.
             p(
-              "To learn how to create a ",
-              a(href := "https://lichess.org/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")("9Kings bot"),
-              ", please read ",
+              "HungKings uses the same bot API as Lichess, so their documentation applies ",
+              "here unchanged: read ",
               a(href := "https://lichess.org/@/thibault/blog/how-to-create-a-lichess-bot/FuKyvDuB")(
-                "this blog post"
+                "how to create a bot"
               ),
-              "."
+              " and the ",
+              a(href := "https://lichess.org/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")(
+                "bot announcement"
+              ),
+              ". Point the bot at this server instead of lichess.org."
             )
           ),
           question(

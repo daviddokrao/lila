@@ -65,7 +65,7 @@ final class PuzzleUi(helpers: Helpers, val bits: PuzzleBits)(
                 trans.puzzle.findTheBestMoveForWhite.txt(),
                 trans.puzzle.findTheBestMoveForBlack.txt()
               )
-              s"9Kings tactic trainer: $findMove. Played by ${puzzle.plays} players."
+              s"HungKings tactic trainer: $findMove. Played by ${puzzle.plays} players."
         )
       )
       .hrefLangs(langPath)

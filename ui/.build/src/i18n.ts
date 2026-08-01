@@ -160,14 +160,30 @@ async function updated(cat: string, locale?: string): Promise<fs.Stats | false> 
 
 // Swap the upstream brand out of every translated string at build time instead of
 // editing translation/dest, so all ~100 language files stay byte-identical to upstream
-// and keep merging cleanly. Domains are left alone: a trailing .org/.dev means the
-// mention is a link target, not the product name. Mirrors project/I18n.scala, which
-// does the same for server rendered strings.
+// and keep merging cleanly. Mirrors project/I18n.scala, which does the same for server
+// rendered strings — keep the two in sync.
+//
+// URLs are skipped wholesale rather than guarded by a domain suffix: `\b` treats the
+// hyphens in a slug as word boundaries, so a bare brand regex rewrites the middle of
+// //lichess.org/blog/V0KrLSkAAMo3hsi4/study-chess-the-lichess-way and the link 404s.
+// A bare domain outside a URL (lichess.com) is a link target too, hence the `.[a-z]`
+// lookahead. Compounds keep working: Lichess-Konto -> HungKings-Konto.
+const brandRe = /\b([Ll])ichess\b(?!\.[a-z])/g;
+const urlRe = /(?:https?:)?\/\/[^\s'"<>)\]]+/g;
+const brandFor = (initial: string): string => (initial === 'L' ? 'HungKings' : 'hungkings');
+
+const rebrand = (text: string): string => {
+  let out = '';
+  let end = 0;
+  for (const url of text.matchAll(urlRe)) {
+    out += text.slice(end, url.index).replace(brandRe, (_, c) => brandFor(c)) + url[0];
+    end = url.index + url[0].length;
+  }
+  return out + text.slice(end).replace(brandRe, (_, c) => brandFor(c));
+};
+
 const unescape = (text: string): string =>
-  text
-    .replaceAll('\\"', '"')
-    .replaceAll("\\'", "'")
-    .replace(/\b([Ll])ichess\b(?!\.(?:org|dev))/g, (_, c) => (c === 'L' ? '9Kings' : '9kings'));
+  rebrand(text.replaceAll('\\"', '"').replaceAll("\\'", "'"));
 
 function parseXml(xmlData: string): Map<string, string | Plural> {
   const i18nMap = new Map<string, string | Plural>();

@@ -115,7 +115,7 @@ final class Analyse(
                   views.analyse.embed.lpv(
                     pgn,
                     getPgn = true,
-                    title = "9Kings PGN viewer",
+                    title = "HungKings PGN viewer",
                     Json.obj("orientation" -> color.name)
                   )
           case _ =>

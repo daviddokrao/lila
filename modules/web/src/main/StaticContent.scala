@@ -22,7 +22,7 @@ Allow: /game/export/gif/thumbnail/
   def manifest(net: NetConfig) =
     Json.obj(
       "name" -> net.domain,
-      "short_name" -> "9Kings",
+      "short_name" -> "HungKings",
       "start_url" -> "/",
       "display" -> "standalone",
       "background_color" -> "#161512",

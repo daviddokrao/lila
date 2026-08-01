@@ -124,8 +124,8 @@ object RelayRoundForm:
     "push" -> "Broadcaster App",
     "url" -> "Single PGN URL",
     "urls" -> "Combine several PGN URLs",
-    "ids" -> "9Kings game IDs",
-    "users" -> "9Kings usernames"
+    "ids" -> "HungKings game IDs",
+    "users" -> "HungKings usernames"
   )
 
   private val roundNumberRegex = """(.*[^\d])(\d{1,2})([^\d]*)""".r

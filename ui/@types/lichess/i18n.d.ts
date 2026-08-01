@@ -69,13 +69,13 @@ interface I18n {
     downloadOnGooglePlay: string;
     /** If the app does not open automatically, tap the "%s" button. */
     ifAppDoesNotOpenAutomatically: I18nFormat;
-    /** 9Kings Mobile App */
+    /** HungKings Mobile App */
     lichessMobileApp: string;
-    /** 9Kings mobile screen */
+    /** HungKings mobile screen */
     lichessMobileScreen: string;
-    /** Open the 9Kings app */
+    /** Open the HungKings app */
     openTheApp: string;
-    /** Returning to the 9Kings app */
+    /** Returning to the HungKings app */
     returningToApp: string;
     /** View %s on GitHub */
     viewAllReleases: I18nFormat;
@@ -329,7 +329,7 @@ interface I18n {
     girlsTournament: string;
     /** Girls U%s */
     girlsUnderXAgeTournament: I18nFormat;
-    /** How to use 9Kings Broadcasts. */
+    /** How to use HungKings Broadcasts. */
     howToUseLichessBroadcasts: string;
     /** Find more options on the %s. */
     iframeHelp: I18nFormat;
@@ -365,7 +365,7 @@ interface I18n {
     officialWebsite: string;
     /** Ongoing */
     ongoing: string;
-    /** Open in 9Kings */
+    /** Open in HungKings */
     openLichess: string;
     /** Open */
     openTournament: string;
@@ -403,11 +403,11 @@ interface I18n {
     showScores: string;
     /** Since you chose to hide the results, all the preview boards are empty to avoid spoilers. */
     sinceHideResults: string;
-    /** Up to 64 9Kings game IDs, separated by spaces. */
+    /** Up to 64 HungKings game IDs, separated by spaces. */
     sourceGameIds: string;
     /** PGN Source URL */
     sourceSingleUrl: string;
-    /** URL that 9Kings will check to get PGN updates. It must be publicly accessible from the Internet. */
+    /** URL that HungKings will check to get PGN updates. It must be publicly accessible from the Internet. */
     sourceUrlHelp: string;
     /** Standings are calculated using broadcasted games and may differ from official results. */
     standingsDisclaimer: string;
@@ -497,7 +497,7 @@ interface I18n {
     declineTooSlow: string;
     /** I'm not willing to play this variant right now. */
     declineVariant: string;
-    /** Or invite a 9Kings user: */
+    /** Or invite a HungKings user: */
     inviteLichessUser: string;
     /** Please register to send challenges to this user. */
     registerToSendChallenges: string;
@@ -511,7 +511,7 @@ interface I18n {
     yourXRatingIsTooFarFromY: I18nFormat;
   };
   class: {
-    /** Add 9Kings usernames to invite them as teachers. One per line. */
+    /** Add HungKings usernames to invite them as teachers. One per line. */
     addLichessUsernames: string;
     /** Add student */
     addStudent: string;
@@ -523,7 +523,7 @@ interface I18n {
     allowMessagingBetweenStudentsDesc: string;
     /** An invitation has been sent to %s */
     anInvitationHasBeenSentToX: I18nFormat;
-    /** Apply to be a 9Kings Teacher */
+    /** Apply to be a HungKings Teacher */
     applyToBeLichessTeacher: string;
     /** Class description */
     classDescription: string;
@@ -543,9 +543,9 @@ interface I18n {
     closeStudent: string;
     /** Close the student account permanently. */
     closeTheAccount: string;
-    /** Create a new 9Kings account */
+    /** Create a new HungKings account */
     createANewLichessAccount: string;
-    /** If the student doesn't have a 9Kings account yet, you can create one for them here. */
+    /** If the student doesn't have a HungKings account yet, you can create one for them here. */
     createDesc1: string;
     /** No email address is required. A password will be generated, and you will have to give it to the student so they can sign in. */
     createDesc2: string;
@@ -555,7 +555,7 @@ interface I18n {
     createDesc4: string;
     /** create more classes */
     createMoreClasses: string;
-    /** Create multiple 9Kings accounts at once */
+    /** Create multiple HungKings accounts at once */
     createMultipleAccounts: string;
     /** Only create accounts for real students. Do not use this to make multiple accounts for yourself. You would get banned. */
     createStudentWarning: string;
@@ -577,11 +577,11 @@ interface I18n {
     invitationToClass: I18nFormat;
     /** Invite */
     invite: string;
-    /** Invite a 9Kings account */
+    /** Invite a HungKings account */
     inviteALichessAccount: string;
-    /** If the student already has a 9Kings account, you can invite them to the class. */
+    /** If the student already has a HungKings account, you can invite them to the class. */
     inviteDesc1: string;
-    /** They will receive a message on 9Kings with a link to join the class. */
+    /** They will receive a message on HungKings with a link to join the class. */
     inviteDesc2: string;
     /** Important: only invite students you know, and who actively want to join the class. */
     inviteDesc3: string;
@@ -595,9 +595,9 @@ interface I18n {
     lastActiveDate: string;
     /** Classes */
     lichessClasses: string;
-    /** 9Kings profile %1$s created for %2$s. */
+    /** HungKings profile %1$s created for %2$s. */
     lichessProfileXCreatedForY: I18nFormat;
-    /** 9Kings username */
+    /** HungKings username */
     lichessUsername: string;
     /** Make sure you copy or write down the password now. You will never be able to see it again! */
     makeSureToCopy: string;
@@ -611,7 +611,7 @@ interface I18n {
     moveToAnotherClass: string;
     /** Move to %s */
     moveToClass: I18nFormat;
-    /** You can also %s to create multiple 9Kings accounts from a list of student names. */
+    /** You can also %s to create multiple HungKings accounts from a list of student names. */
     multipleAccsFormDescription: I18nFormat;
     /** N/A */
     na: string;
@@ -661,7 +661,7 @@ interface I18n {
     quickLoginCode: string;
     /** Quick login codes */
     quickLoginCodes: string;
-    /** Use these codes on %s to log your students into 9Kings. */
+    /** Use these codes on %s to log your students into HungKings. */
     quickLoginCodesDesc1: I18nFormat;
     /** When the codes expire, your students will remain logged in, until they manually log out. */
     quickLoginCodesDesc2: string;
@@ -697,7 +697,7 @@ interface I18n {
     students: string;
     /** Real names of students, one per line */
     studentsRealNamesOnePerLine: string;
-    /** Teach classes of chess students with the 9Kings Classes tool suite. */
+    /** Teach classes of chess students with the HungKings Classes tool suite. */
     teachClassesOfChessStudents: string;
     /** Teachers */
     teachers: string;
@@ -757,11 +757,11 @@ interface I18n {
     languages: string;
     /** Last login */
     lastLogin: string;
-    /** 9Kings coach */
+    /** HungKings coach */
     lichessCoach: string;
-    /** 9Kings coaches */
+    /** HungKings coaches */
     lichessCoaches: string;
-    /** 9Kings rating */
+    /** HungKings rating */
     lichessRating: string;
     /** Location */
     location: string;
@@ -785,7 +785,7 @@ interface I18n {
     teachingExperience: string;
     /** Teaching methodology */
     teachingMethod: string;
-    /** View %s 9Kings profile */
+    /** View %s HungKings profile */
     viewXProfile: I18nFormat;
     /** %s coaches chess students */
     xCoachesStudents: I18nFormat;
@@ -797,15 +797,15 @@ interface I18n {
     accountLost: string;
     /** I need account support */
     accountSupport: string;
-    /** Authorisation to use 9Kings */
+    /** Authorisation to use HungKings */
     authorizationToUse: string;
     /** Appeal for a ban or IP restriction */
     banAppeal: string;
     /** In certain circumstances when playing against a bot account, a rated game may not award points if we determine that the player is abusing the bot for rating points. */
     botRatingAbuse: string;
-    /** Broadcast a tournament on 9Kings */
+    /** Broadcast a tournament on HungKings */
     broadcastTournamentOnLichess: string;
-    /** Buying 9Kings */
+    /** Buying HungKings */
     buyingLichess: string;
     /** It is called "en passant" and is one of the rules of chess. */
     calledEnPassant: string;
@@ -827,7 +827,7 @@ interface I18n {
     collaboration: string;
     /** Contact */
     contact: string;
-    /** Contact 9Kings */
+    /** Contact HungKings */
     contactLichess: string;
     /** Credit is appreciated but not required. */
     creditAppreciated: string;
@@ -849,7 +849,7 @@ interface I18n {
     engineAppeal: string;
     /** Error page */
     errorPage: string;
-    /** Please explain your request clearly and thoroughly. State your 9Kings username, and any information that could help us help you. */
+    /** Please explain your request clearly and thoroughly. State your HungKings username, and any information that could help us help you. */
     explainYourRequest: string;
     /** False positives do happen sometimes, and we're sorry about that. */
     falsePositives: string;
@@ -865,7 +865,7 @@ interface I18n {
     iCantLogIn: string;
     /** If your appeal is legitimate, we will lift the ban ASAP. */
     ifLegit: string;
-    /** If you want to officially broadcast a tournament on 9Kings, or have any questions about our broadcasts: */
+    /** If you want to officially broadcast a tournament on HungKings, or have any questions about our broadcasts: */
     ifYouWantToBroadcastClause1: string;
     /** Please contact our Broadcast Team at %1$s or on %2$s. */
     ifYouWantToBroadcastClause2: I18nFormat;
@@ -877,7 +877,7 @@ interface I18n {
     insufficientMaterial: string;
     /** It is possible to checkmate with only a knight or a bishop, if the opponent has more than a king on the board. */
     knightMate: string;
-    /** Learn how to make your own broadcasts on 9Kings */
+    /** Learn how to make your own broadcasts on HungKings */
     learnHowToMakeBroadcasts: string;
     /** I lost access to my two-factor authentication codes */
     lost2FA: string;
@@ -889,9 +889,9 @@ interface I18n {
     monetiseNoAdsTrackingOrTraffic: string;
     /** Please do not email us about marketing, tracking, or advertising. */
     monetiseNoMarketingEmail: string;
-    /** We are not interested in any way of monetising 9Kings. */
+    /** We are not interested in any way of monetising HungKings. */
     monetiseNotInterested: string;
-    /** Monetising 9Kings */
+    /** Monetising HungKings */
     monetizing: string;
     /** I didn't receive my confirmation email */
     noConfirmationEmail: string;
@@ -911,15 +911,15 @@ interface I18n {
     ratedGame: string;
     /** You can reopen your account on this page. */
     reopenOnThisPage: string;
-    /** In the 9Kings Discord server */
+    /** In the HungKings Discord server */
     reportBugInDiscord: string;
-    /** In the 9Kings Feedback section of the forum */
+    /** In the HungKings Feedback section of the forum */
     reportBugInForum: string;
     /** If you faced an error page, you may report it: */
     reportErrorPage: string;
-    /** As a 9Kings mobile app issue on GitHub */
+    /** As a HungKings mobile app issue on GitHub */
     reportMobileIssue: string;
-    /** As a 9Kings website issue on GitHub */
+    /** As a HungKings website issue on GitHub */
     reportWebsiteIssue: string;
     /** You may send an appeal to %s. */
     sendAppealTo: I18nFormat;
@@ -931,11 +931,11 @@ interface I18n {
     tryCastling: string;
     /** Try this little interactive game to learn more about "en passant". */
     tryEnPassant: string;
-    /** You can show it in your videos, and you can print screenshots of 9Kings in your books. */
+    /** You can show it in your videos, and you can print screenshots of HungKings in your books. */
     videosAndBooks: string;
     /** Visit this page to solve the issue */
     visitThisPage: string;
-    /** To show your title on your 9Kings profile, and participate in Titled Arenas, visit the title confirmation page */
+    /** To show your title on your HungKings profile, and participate in Titled Arenas, visit the title confirmation page */
     visitTitleConfirmation: string;
     /** I want to change my username */
     wantChangeUsername: string;
@@ -949,9 +949,9 @@ interface I18n {
     wantReport: string;
     /** I want to report a bug */
     wantReportBug: string;
-    /** I want my title displayed on 9Kings */
+    /** I want my title displayed on HungKings */
     wantTitle: string;
-    /** You are welcome to use 9Kings for your activity, even commercial. */
+    /** You are welcome to use HungKings for your activity, even commercial. */
     welcomeToUse: string;
     /** What can we help you with? */
     whatCanWeHelpYouWith: string;
@@ -1005,7 +1005,7 @@ interface I18n {
     announceAllMoves: string;
     /** Announce Move Format */
     announceMoveFormat: string;
-    /** As a last resort: Set up the board identically to 9Kings, then %s */
+    /** As a last resort: Set up the board identically to HungKings, then %s */
     asALastResort: I18nFormat;
     /** The board will auto connect to any game that is already on course or any new game that starts. Ability to choose which game to play is coming soon. */
     boardWillAutoConnect: string;
@@ -1043,17 +1043,17 @@ interface I18n {
     ifLiveChessRunningOnThisComputer: I18nFormat;
     /** If a move is not detected */
     ifMoveNotDetected: string;
-    /** The play page needs to remain open on your browser. It does not need to be visible, you can minimize it or set it side to side with the 9Kings game page, but don't close it or the board will stop working. */
+    /** The play page needs to remain open on your browser. It does not need to be visible, you can minimize it or set it side to side with the HungKings game page, but don't close it or the board will stop working. */
     keepPlayPageOpen: string;
     /** Keywords are in JSON format. They are used to translate moves and results into your language. Default is English, but feel free to change it. */
     keywordFormatDescription: string;
     /** Keywords */
     keywords: string;
-    /** 9Kings & DGT */
+    /** HungKings & DGT */
     lichessAndDgt: string;
-    /** 9Kings connectivity */
+    /** HungKings connectivity */
     lichessConnectivity: string;
-    /** SAN is the standard on 9Kings, for example "Nf6". UCI is common for engines, for example "g8f6". */
+    /** SAN is the standard on HungKings, for example "Nf6". UCI is common for engines, for example "g8f6". */
     moveFormatDescription: string;
     /** No suitable OAuth token has been created. */
     noSuitableOauthToken: string;
@@ -1069,7 +1069,7 @@ interface I18n {
     speechSynthesisVoice: string;
     /** Text to speech */
     textToSpeech: string;
-    /** This page allows you to connect your DGT board to 9Kings and use it for playing games. */
+    /** This page allows you to connect your DGT board to HungKings and use it for playing games. */
     thisPageAllowsConnectingDgtBoard: string;
     /** Time controls for casual games: Classical, Correspondence and Rapid only. */
     timeControlsForCasualGames: string;
@@ -1105,11 +1105,11 @@ interface I18n {
     emailChange_intro: string;
     /** Confirm new email address, %s */
     emailChange_subject: I18nFormat;
-    /** Click the link to enable your 9Kings account: */
+    /** Click the link to enable your HungKings account: */
     emailConfirm_click: string;
-    /** Thanks for registering with 9Kings! */
+    /** Thanks for registering with HungKings! */
     emailConfirm_intro: string;
-    /** If you did not register with 9Kings, you can safely ignore this message. The unconfirmed account and all traces of your email address will be deleted from our system after 48 hours. */
+    /** If you did not register with HungKings, you can safely ignore this message. The unconfirmed account and all traces of your email address will be deleted from our system after 48 hours. */
     emailConfirm_justIgnore: string;
     /** Confirm your lichess.org account, %s */
     emailConfirm_subject: I18nFormat;
@@ -1135,11 +1135,11 @@ interface I18n {
     adviceOnMitigatingAddiction: I18nFormat;
     /** an hourly Bullet tournament */
     aHourlyBulletTournament: string;
-    /** Are there websites based on 9Kings? */
+    /** Are there websites based on HungKings? */
     areThereWebsitesBasedOnLichess: string;
     /** many national master titles */
     asWellAsManyNMtitles: string;
-    /** 9Kings time controls are based on estimated game duration = %1$s. */
+    /** HungKings time controls are based on estimated game duration = %1$s. */
     basedOnGameDuration: I18nFormat;
     /** being a patron */
     beingAPatron: string;
@@ -1147,7 +1147,7 @@ interface I18n {
     beInTopTen: string;
     /** breakdown of our costs */
     breakdownOfOurCosts: string;
-    /** Can I get the 9Kings Master (LM) title? */
+    /** Can I get the HungKings Master (LM) title? */
     canIbecomeLM: string;
     /** Can I change my username? */
     canIChangeMyUsername: string;
@@ -1197,7 +1197,7 @@ interface I18n {
     fideHandbook: string;
     /** FIDE handbook %s */
     fideHandbookX: I18nFormat;
-    /** You can find out more about %1$s (including a %2$s). If you want to help 9Kings by volunteering your time and skills, there are many %3$s. */
+    /** You can find out more about %1$s (including a %2$s). If you want to help HungKings by volunteering your time and skills, there are many %3$s. */
     findMoreAndSeeHowHelp: I18nFormat;
     /** Frequently Asked Questions */
     frequentlyAskedQuestions: string;
@@ -1219,7 +1219,7 @@ interface I18n {
     howBulletBlitzEtcDecided: string;
     /** How can I become a moderator? */
     howCanIBecomeModerator: string;
-    /** How can I contribute to 9Kings? */
+    /** How can I contribute to HungKings? */
     howCanIContributeToLichess: string;
     /** How do ranks and leaderboards work? */
     howDoLeaderoardsWork: string;
@@ -1237,31 +1237,31 @@ interface I18n {
     isCorrespondenceDifferent: string;
     /** What keyboard shortcuts are there? */
     keyboardShortcuts: string;
-    /** Some 9Kings pages have keyboard shortcuts you can use. Try pressing the '?' key on a study, analysis, puzzle, or game page to list available keyboard shortcuts. */
+    /** Some HungKings pages have keyboard shortcuts you can use. Try pressing the '?' key on a study, analysis, puzzle, or game page to list available keyboard shortcuts. */
     keyboardShortcutsExplanation: string;
     /** If your opponent frequently aborts/leaves games, they get "play banned", which means they're temporarily banned from playing games. This is not publicly indicated on their profile. If this behaviour continues, the length of the playban increases - and prolonged behaviour of this nature may lead to account closure. */
     leavingGameWithoutResigningExplanation: string;
     /** lee-chess */
     leechess: string;
-    /** 9Kings can optionally send popup notifications, for example when it is your turn or you received a private message. */
+    /** HungKings can optionally send popup notifications, for example when it is your turn or you received a private message. */
     lichessCanOptionnalySendPopUps: string;
-    /** 9Kings is a combination of live/light/libre and chess. It is pronounced %1$s. */
+    /** HungKings is a combination of live/light/libre and chess. It is pronounced %1$s. */
     lichessCombinationLiveLightLibrePronounced: I18nFormat;
     /** In the event of one player running out of time, that player will usually lose the game. However, the game is drawn if the position is such that the opponent cannot checkmate the player's king by any possible series of legal moves (%1$s). */
     lichessFollowFIDErules: I18nFormat;
-    /** 9Kings is powered by donations from patrons and the efforts of a team of volunteers. */
+    /** HungKings is powered by donations from patrons and the efforts of a team of volunteers. */
     lichessPoweredByDonationsAndVolunteers: string;
-    /** 9Kings ratings */
+    /** HungKings ratings */
     lichessRatings: string;
-    /** 9Kings recognises all FIDE titles gained from OTB (over the board) play, as well as %1$s. Here is a list of FIDE titles: */
+    /** HungKings recognises all FIDE titles gained from OTB (over the board) play, as well as %1$s. Here is a list of FIDE titles: */
     lichessRecognizeAllOTBtitles: I18nFormat;
-    /** 9Kings supports standard chess and %1$s. */
+    /** HungKings supports standard chess and %1$s. */
     lichessSupportChessAnd: I18nFormat;
-    /** 9Kings training */
+    /** HungKings training */
     lichessTraining: string;
-    /** 9Kings userstyles */
+    /** HungKings userstyles */
     lichessUserstyles: string;
-    /** This honorific title is unofficial and only exists on 9Kings. */
+    /** This honorific title is unofficial and only exists on HungKings. */
     lMtitleComesToYouDoNotRequestIt: string;
     /** stand-alone mental health condition */
     mentalHealthCondition: string;
@@ -1277,7 +1277,7 @@ interface I18n {
     noUpperCaseDot: string;
     /** other ways to help */
     otherWaysToHelp: string;
-    /** That trophy is unique in the history of 9Kings; nobody other than %1$s will ever have it. */
+    /** That trophy is unique in the history of HungKings; nobody other than %1$s will ever have it. */
     ownerUniqueTrophies: I18nFormat;
     /** For more information, please read our %s */
     pleaseReadFairPlayPage: I18nFormat;
@@ -1309,15 +1309,15 @@ interface I18n {
     stopMyselfFromPlaying: string;
     /** ≥ %1$ss = %2$s */
     superiorThanXsEqualYtimeControl: I18nFormat;
-    /** Repetition needs to be claimed by one of the players. You can claim a draw by pressing the button when it is shown, or by offering a draw before your final repeating move. It won't matter if your opponent rejects the draw offer; the draw by threefold repetition will be claimed anyway. You can also %1$s 9Kings to automatically claim repetitions for you. Additionally, fivefold repetition always immediately ends the game. */
+    /** Repetition needs to be claimed by one of the players. You can claim a draw by pressing the button when it is shown, or by offering a draw before your final repeating move. It won't matter if your opponent rejects the draw offer; the draw by threefold repetition will be claimed anyway. You can also %1$s HungKings to automatically claim repetitions for you. Additionally, fivefold repetition always immediately ends the game. */
     threeFoldHasToBeClaimed: I18nFormat;
     /** Threefold repetition */
     threefoldRepetition: string;
-    /** If a position occurs three times, players can claim a draw by %1$s. 9Kings implements the official FIDE rules, as described in Article 9.2 of the %2$s. */
+    /** If a position occurs three times, players can claim a draw by %1$s. HungKings implements the official FIDE rules, as described in Article 9.2 of the %2$s. */
     threefoldRepetitionExplanation: I18nFormat;
     /** threefold repetition */
     threefoldRepetitionLowerCase: string;
-    /** What titles are there on 9Kings? */
+    /** What titles are there on HungKings? */
     titlesAvailableOnLichess: string;
     /** Unique trophies */
     uniqueTrophies: string;
@@ -1331,7 +1331,7 @@ interface I18n {
     viewSiteInformationPopUp: string;
     /** Watch International Master Eric Rosen checkmate %s. */
     watchIMRosenCheckmate: I18nFormat;
-    /** Unfortunately, we cannot give back rating points for games lost due to lag or disconnection, regardless of whether the problem was at your end or our end. The latter is very rare though. Also note that when 9Kings restarts and you lose on time because of that, we abort the game to prevent an unfair loss. */
+    /** Unfortunately, we cannot give back rating points for games lost due to lag or disconnection, regardless of whether the problem was at your end or our end. The latter is very rare though. Also note that when HungKings restarts and you lose on time because of that, we abort the game to prevent an unfair loss. */
     weCannotDoThatEvenIfItIsServerSideButThatsRare: string;
     /** We repeated a position three times. Why was the game not drawn? */
     weRepeatedthreeTimesPosButNoDraw: string;
@@ -1341,27 +1341,27 @@ interface I18n {
     whatIsProvisionalRating: string;
     /** What can my username be? */
     whatUsernameCanIchoose: string;
-    /** What variants can I play on 9Kings? */
+    /** What variants can I play on HungKings? */
     whatVariantsCanIplay: string;
     /** When am I eligible for the automatic rating refund from cheaters? */
     whenAmIEligibleRatinRefund: string;
-    /** What rating system does 9Kings use? */
+    /** What rating system does HungKings use? */
     whichRatingSystemUsedByLichess: string;
     /** Why are ratings higher compared to other sites and organisations such as FIDE, USCF and the ICC? */
     whyAreRatingHigher: string;
     /** It is best not to think of ratings as absolute numbers, or compare them against other organisations. Different organisations have different levels of players, different rating systems (Elo, Glicko, Glicko-2, or a modified version of the aforementioned). These factors can drastically affect the absolute numbers (ratings). */
     whyAreRatingHigherExplanation: string;
-    /** Why is 9Kings called 9Kings? */
+    /** Why is HungKings called HungKings? */
     whyIsLichessCalledLichess: string;
-    /** Similarly, the source code for 9Kings, %1$s, stands for li[chess in sca]la, seeing as the bulk of 9Kings is written in %2$s, an intuitive programming language. */
+    /** Similarly, the source code for HungKings, %1$s, stands for li[chess in sca]la, seeing as the bulk of HungKings is written in %2$s, an intuitive programming language. */
     whyIsLilaCalledLila: I18nFormat;
-    /** Live, because games are played and watched in real-time 24/7; light and libre for the fact that 9Kings is open-source and unencumbered by proprietary junk that plagues other websites. */
+    /** Live, because games are played and watched in real-time 24/7; light and libre for the fact that HungKings is open-source and unencumbered by proprietary junk that plagues other websites. */
     whyLiveLightLibre: string;
-    /** Yes. 9Kings has indeed inspired other open-source sites that use our %1$s, %2$s, or %3$s. */
+    /** Yes. HungKings has indeed inspired other open-source sites that use our %1$s, %2$s, or %3$s. */
     yesLichessInspiredOtherOpenSourceWebsites: I18nFormat;
     /** It is not possible to apply to become a moderator. If we see someone who we think would be good as a moderator, we will contact them directly. */
     youCannotApply: string;
-    /** On 9Kings, the main difference in rules for correspondence chess is that an opening book is allowed. The use of engines is still prohibited and will result in being flagged for engine assistance. Although ICCF allows engine use in correspondence, 9Kings does not. */
+    /** On HungKings, the main difference in rules for correspondence chess is that an opening book is allowed. The use of engines is still prohibited and will result in being flagged for engine assistance. Although ICCF allows engine use in correspondence, HungKings does not. */
     youCanUseOpeningBookNoEngine: string;
   };
   features: {
@@ -1391,7 +1391,7 @@ interface I18n {
     gamesPerDay: I18nPlural;
     /** Global opening explorer (%s games!) */
     globalOpeningExplorerInNbGames: I18nFormat;
-    /** If you love 9Kings, */
+    /** If you love HungKings, */
     ifYouLoveLichess: string;
     /** iPhone & Android phones and tablets, landscape support */
     landscapeSupportOnApp: string;
@@ -1479,21 +1479,21 @@ interface I18n {
   lag: {
     /** And now, the long answer! Game lag is composed of two unrelated values (lower is better): */
     andNowTheLongAnswerLagComposedOfTwoValues: string;
-    /** Is 9Kings lagging? */
+    /** Is HungKings lagging? */
     isLichessLagging: string;
     /** Lag compensation */
     lagCompensation: string;
-    /** 9Kings compensates for network lag. This includes sustained lag and occasional lag spikes. Compensation limits and rules are based on time control and already-compensated lag, ensuring the game stays fair for both players. As a result, having a higher network lag than your opponent is not a handicap! */
+    /** HungKings compensates for network lag. This includes sustained lag and occasional lag spikes. Compensation limits and rules are based on time control and already-compensated lag, ensuring the game stays fair for both players. As a result, having a higher network lag than your opponent is not a handicap! */
     lagCompensationExplanation: string;
-    /** 9Kings server latency */
+    /** HungKings server latency */
     lichessServerLatency: string;
-    /** The time it takes to process a move on the server. It's the same for everybody, and only depends on the servers load. The more players, the higher it gets, but 9Kings developers do their best to keep it low. It rarely exceeds 10ms. */
+    /** The time it takes to process a move on the server. It's the same for everybody, and only depends on the servers load. The more players, the higher it gets, but HungKings developers do their best to keep it low. It rarely exceeds 10ms. */
     lichessServerLatencyExplanation: string;
     /** Measurements in progress... */
     measurementInProgressThreeDot: string;
-    /** Network between 9Kings and you */
+    /** Network between HungKings and you */
     networkBetweenLichessAndYou: string;
-    /** The time it takes to send a move from your computer to 9Kings's server, and get a response back. The ping depends on your distance to 9Kings (France) as well as the quality of your Internet connection. 9Kings developers cannot fix your Wi-Fi or make light go faster. */
+    /** The time it takes to send a move from your computer to HungKings's server, and get a response back. The ping depends on your distance to HungKings (France) as well as the quality of your Internet connection. HungKings developers cannot fix your Wi-Fi or make light go faster. */
     networkBetweenLichessAndYouExplanation: string;
     /** No. And your network is bad. */
     noAndYourNetworkIsBad: string;
@@ -1615,7 +1615,7 @@ interface I18n {
     firstPlaceTheRooks: string;
     /** Fundamentals */
     fundamentals: string;
-    /** Get a free 9Kings account */
+    /** Get a free HungKings account */
     getAFreeLichessAccount: string;
     /** Grab all the stars! */
     grabAllTheStars: string;
@@ -1853,9 +1853,9 @@ interface I18n {
     youWillLoseAllYourProgress: string;
   };
   msg: {
-    /** There is a new 9Kings mobile app available! */
+    /** There is a new HungKings mobile app available! */
     lichobileNewAppAvailable: string;
-    /** Please download the new official 9Kings app at %s. */
+    /** Please download the new official HungKings app at %s. */
     lichobileNewAppDownload: I18nFormat;
   };
   nvui: {
@@ -2083,13 +2083,13 @@ interface I18n {
     whatTheTokenCanDo: string;
   };
   onboarding: {
-    /** Configure 9Kings to your liking. */
+    /** Configure HungKings to your liking. */
     configureLichess: string;
     /** Will a child use this account? You might want to enable %s. */
     enabledKidModeSuggestion: I18nFormat;
     /** Explore the site and have fun :) */
     exploreTheSiteAndHaveFun: string;
-    /** Follow your friends on 9Kings. */
+    /** Follow your friends on HungKings. */
     followYourFriendsOnLichess: string;
     /** Improve with chess tactics puzzles. */
     improveWithChessTacticsPuzzles: string;
@@ -2109,7 +2109,7 @@ interface I18n {
     thisIsYourProfilePage: string;
     /** Welcome! */
     welcome: string;
-    /** Welcome to 9Kings! */
+    /** Welcome to HungKings! */
     welcomeToLichess: string;
     /** What now? Here are a few suggestions: */
     whatNowSuggestions: string;
@@ -2121,11 +2121,11 @@ interface I18n {
     amount: string;
     /** We also accept bank transfers */
     bankTransfers: string;
-    /** Become a 9Kings Patron */
+    /** Become a HungKings Patron */
     becomePatron: string;
     /** Cancel your support */
     cancelSupport: string;
-    /** The celebrated Patrons who make 9Kings possible */
+    /** The celebrated Patrons who make HungKings possible */
     celebratedPatrons: string;
     /** Change currency */
     changeCurrency: string;
@@ -2137,7 +2137,7 @@ interface I18n {
     changeSupport: I18nFormat;
     /** Check out your profile page! */
     checkOutProfile: string;
-    /** contact 9Kings support */
+    /** contact HungKings support */
     contactSupport: string;
     /** See the detailed cost breakdown */
     costBreakdown: string;
@@ -2147,13 +2147,13 @@ interface I18n {
     currentStatus: string;
     /** Date */
     date: string;
-    /** Decide what 9Kings is worth to you: */
+    /** Decide what HungKings is worth to you: */
     decideHowMuch: string;
     /** Donate */
     donate: string;
     /** Donate as %s */
     donateAsX: I18nFormat;
-    /** In one month, you will NOT be charged again, and your 9Kings account will revert to a regular account. */
+    /** In one month, you will NOT be charged again, and your HungKings account will revert to a regular account. */
     downgradeNextMonth: string;
     /** See the detailed feature comparison */
     featuresComparison: string;
@@ -2167,13 +2167,13 @@ interface I18n {
     giftPatronWingsShort: string;
     /** If not renewed, your account will then revert to a regular account. */
     ifNotRenewedThenAccountWillRevert: string;
-    /** 9Kings is registered with %s. */
+    /** HungKings is registered with %s. */
     lichessIsRegisteredWith: I18nFormat;
-    /** 9Kings Patron */
+    /** HungKings Patron */
     lichessPatron: string;
     /** Lifetime */
     lifetime: string;
-    /** Lifetime 9Kings Patron */
+    /** Lifetime HungKings Patron */
     lifetimePatron: string;
     /** Sign in to donate */
     logInToDonate: string;
@@ -2187,15 +2187,15 @@ interface I18n {
     nextPayment: string;
     /** No ads, no subscriptions; but open-source and passion. */
     noAdsNoSubs: string;
-    /** No longer support 9Kings */
+    /** No longer support HungKings */
     noLongerSupport: string;
-    /** No, because 9Kings is entirely free, forever, and for everyone. That's a promise. */
+    /** No, because HungKings is entirely free, forever, and for everyone. That's a promise. */
     noPatronFeatures: string;
-    /** You are now a lifetime 9Kings Patron! */
+    /** You are now a lifetime HungKings Patron! */
     nowLifetime: string;
-    /** You are now a 9Kings Patron for one month! */
+    /** You are now a HungKings Patron for one month! */
     nowOneMonth: string;
-    /** Is 9Kings an official non-profit? */
+    /** Is HungKings an official non-profit? */
     officialNonProfit: string;
     /** One-time */
     onetime: string;
@@ -2207,7 +2207,7 @@ interface I18n {
     otherMethods: string;
     /** Are some features reserved to Patrons? */
     patronFeatures: string;
-    /** 9Kings Patron for %s months */
+    /** HungKings Patron for %s months */
     patronForMonths: I18nPlural;
     /** the patron page */
     patronPage: string;
@@ -2215,7 +2215,7 @@ interface I18n {
     patronSince: I18nFormat;
     /** You have a Patron account until %s. */
     patronUntil: I18nFormat;
-    /** Pay %s once. Be a 9Kings Patron forever! */
+    /** Pay %s once. Be a HungKings Patron forever! */
     payLifetimeOnce: I18nFormat;
     /** Payment details */
     paymentDetails: string;
@@ -2245,21 +2245,21 @@ interface I18n {
     update: string;
     /** Update payment method */
     updatePaymentMethod: string;
-    /** View other 9Kings Patrons */
+    /** View other HungKings Patrons */
     viewOthers: string;
     /** We are a non‑profit association because we believe everyone should have access to a free, world-class chess platform. */
     weAreNonProfit: string;
     /** We are a small team, so your support makes a huge difference! */
     weAreSmallTeam: string;
-    /** We rely on support from people like you to make it possible. If you enjoy using 9Kings, please consider supporting us by donating and becoming a Patron! */
+    /** We rely on support from people like you to make it possible. If you enjoy using HungKings, please consider supporting us by donating and becoming a Patron! */
     weRelyOnSupport: string;
     /** Where does the money go? */
     whereMoneyGoes: string;
     /** Credit Card */
     withCreditCard: string;
-    /** %s became a 9Kings Patron */
+    /** %s became a HungKings Patron */
     xBecamePatron: I18nFormat;
-    /** %1$s is a 9Kings Patron for %2$s months */
+    /** %1$s is a HungKings Patron for %2$s months */
     xIsPatronForNbMonths: I18nPlural;
     /** %1$s or %2$s */
     xOrY: I18nFormat;
@@ -2379,7 +2379,7 @@ interface I18n {
     explainCanThenBeTemporarilyDisabled: string;
     /** Hold the <ctrl> key while promoting to temporarily disable auto-promotion */
     explainPromoteToQueenAutomatically: string;
-    /** Hides all ratings from 9Kings, to help you focus on the game. */
+    /** Hides all ratings from HungKings, to help you focus on the game. */
     explainShowPlayerRatings: string;
     /** Game behaviour */
     gameBehavior: string;
@@ -2417,7 +2417,7 @@ interface I18n {
     moveListWhilePlaying: string;
     /** Notifications */
     notifications: string;
-    /** Notification within 9Kings */
+    /** Notification within HungKings */
     notifyBell: string;
     /** Broadcasts */
     notifyBroadcasts: string;
@@ -2437,7 +2437,7 @@ interface I18n {
     notifyInboxMsg: string;
     /** Study invite */
     notifyInvitedStudy: string;
-    /** Device notification when you're not on 9Kings */
+    /** Device notification when you're not on HungKings */
     notifyPush: string;
     /** Streamer goes live */
     notifyStreamStart: string;
@@ -2557,7 +2557,7 @@ interface I18n {
     fromGameLink: I18nFormat;
     /** From my games */
     fromMyGames: string;
-    /** You have no puzzles in the database, but 9Kings still loves you very much. */
+    /** You have no puzzles in the database, but HungKings still loves you very much. */
     fromMyGamesNone: string;
     /** Goals */
     goals: string;
@@ -2995,7 +2995,7 @@ interface I18n {
     initTitle: string;
     /** %s of them were yours. */
     lichessGamesOfThemYours: I18nFormat;
-    /** %1$s games played on 9Kings in %2$s */
+    /** %1$s games played on HungKings in %2$s */
     lichessGamesPlayedIn: I18nFormat;
     /** We didn't use your device against you */
     malwareNoAbuse: string;
@@ -3033,7 +3033,7 @@ interface I18n {
     patronConsiderDonating: I18nFormat;
     /** costs */
     patronCosts: string;
-    /** 9Kings's %1$s this year were %2$s. */
+    /** HungKings's %1$s this year were %2$s. */
     patronCostsThisYear: I18nFormat;
     /** supporting us with a donation */
     patronMakeDonation: string;
@@ -3067,7 +3067,7 @@ interface I18n {
     sourcesTitle: string;
     /** We're glad you're here. Have a great %s! */
     thanksHaveAGreat: I18nFormat;
-    /** Thank you for playing on 9Kings! */
+    /** Thank you for playing on HungKings! */
     thanksTitle: string;
     /** That is a lot of chess. */
     timeALot: string;
@@ -3303,7 +3303,7 @@ interface I18n {
     blackWins: string;
     /** Black wins */
     blackWinsGame: string;
-    /** You have used the same password on another site, and that site has been compromised. To ensure the safety of your 9Kings account, we need you to set a new password. Thank you for your understanding. */
+    /** You have used the same password on another site, and that site has been compromised. To ensure the safety of your HungKings account, we need you to set a new password. Thank you for your understanding. */
     blankedPassword: string;
     /** Blitz */
     blitz: string;
@@ -3789,7 +3789,7 @@ interface I18n {
     incrementInSeconds: string;
     /** Infinite analysis */
     infiniteAnalysis: string;
-    /** In kid mode, the 9Kings logo gets a %s icon, so you know your kids are safe. */
+    /** In kid mode, the HungKings logo gets a %s icon, so you know your kids are safe. */
     inKidModeTheLichessLogoGetsIconX: I18nFormat;
     /** Inline notation */
     inlineNotation: string;
@@ -3877,11 +3877,11 @@ interface I18n {
     letOtherPlayersMessageYou: string;
     /** Level */
     level: string;
-    /** Rated games played on 9Kings */
+    /** Rated games played on HungKings */
     lichessDbExplanation: string;
-    /** 9Kings is a charity and entirely free/libre open source software. We depend on user donations to support our operating costs, development, and content. Without our generous community, we would not be able to keep the site running. Thank you for joining us! */
+    /** HungKings is a charity and entirely free/libre open source software. We depend on user donations to support our operating costs, development, and content. Without our generous community, we would not be able to keep the site running. Thank you for joining us! */
     lichessPatronInfo: string;
-    /** 9Kings tournaments */
+    /** HungKings tournaments */
     lichessTournaments: string;
     /** Lifetime score */
     lifetimeScore: string;
@@ -3917,7 +3917,7 @@ interface I18n {
     lossOr50MovesByPriorMistake: string;
     /** Loss prevented by 50-move rule */
     lossSavedBy50MoveRule: string;
-    /** You lost rating points to someone who violated the 9Kings TOS */
+    /** You lost rating points to someone who violated the HungKings TOS */
     lostAgainstTOSViolator: string;
     /** For safekeeping and sharing, consider making a study. */
     makeAStudy: string;
@@ -4063,11 +4063,11 @@ interface I18n {
     needNbMoreGames: I18nPlural;
     /** You need to play %1$s more %2$s rated games */
     needNbMorePerfGames: I18nPlural;
-    /** Network lag between you and 9Kings */
+    /** Network lag between you and HungKings */
     networkLagBetweenYouAndLichess: string;
     /** Never */
     never: string;
-    /** Never type your 9Kings password on another site! */
+    /** Never type your HungKings password on another site! */
     neverTypeYourPassword: string;
     /** New opponent */
     newOpponent: string;
@@ -4263,7 +4263,7 @@ interface I18n {
     practice: string;
     /** Practice with computer */
     practiceWithComputer: string;
-    /** Previously on 9Kings TV */
+    /** Previously on HungKings TV */
     previouslyOnLichessTV: string;
     /** Ctrl or shift = red; command, alt, or meta = blue; a key from each = yellow. */
     primaryColorArrowsHowTo: string;
@@ -4463,7 +4463,7 @@ interface I18n {
     showMeEverything: string;
     /** Show threat */
     showThreat: string;
-    /** You have received a private message from 9Kings. */
+    /** You have received a private message from HungKings. */
     showUnreadLichessMessage: string;
     /** Show variation arrows */
     showVariationArrows: string;
@@ -4587,7 +4587,7 @@ interface I18n {
     thematic: string;
     /** No results for "%s" */
     thereAreNoResultsForX: I18nFormat;
-    /** The 9Kings Terms of Service were violated on this account */
+    /** The HungKings Terms of Service were violated on this account */
     thisAccountViolatedTos: string;
     /** This game is rated */
     thisGameIsRated: string;
@@ -4617,7 +4617,7 @@ interface I18n {
     timeControl: string;
     /** Timeline */
     timeline: string;
-    /** Time to process a move on 9Kings's server */
+    /** Time to process a move on HungKings's server */
     timeToProcessAMoveOnLichessServer: string;
     /** Title verification */
     titleVerification: string;
@@ -4913,7 +4913,7 @@ interface I18n {
     yesterday: string;
     /** You are better than %1$s of %2$s players. */
     youAreBetterThanPercentOfPerfTypePlayers: I18nFormat;
-    /** You are leaving 9Kings */
+    /** You are leaving HungKings */
     youAreLeavingLichess: string;
     /** You are not in the team %s */
     youAreNotInTeam: I18nFormat;
@@ -5089,11 +5089,11 @@ interface I18n {
     allStreamers: string;
     /** Your stream is approved. */
     approved: string;
-    /** Become a 9Kings streamer */
+    /** Become a HungKings streamer */
     becomeStreamer: string;
     /** Change/delete your picture */
     changePicture: string;
-    /** Choose the YouTube channel you will use on 9Kings. */
+    /** Choose the YouTube channel you will use on HungKings. */
     chooseYoutubeChannel: string;
     /** Connect */
     connect: string;
@@ -5115,9 +5115,9 @@ interface I18n {
     keepItShort: I18nPlural;
     /** Last stream %s */
     lastStream: I18nFormat;
-    /** 9Kings streamer */
+    /** HungKings streamer */
     lichessStreamer: string;
-    /** 9Kings streamers */
+    /** HungKings streamers */
     lichessStreamers: string;
     /** LIVE! */
     live: string;
@@ -5129,11 +5129,11 @@ interface I18n {
     offline: string;
     /** Your stream is being reviewed by moderators. */
     pendingReview: string;
-    /** Get a flaming streamer icon on your 9Kings profile. */
+    /** Get a flaming streamer icon on your HungKings profile. */
     perk1: string;
     /** Get bumped up to the top of the streamers list. */
     perk2: string;
-    /** Notify your 9Kings followers. */
+    /** Notify your HungKings followers. */
     perk3: string;
     /** Show your stream in your games, tournaments and studies. */
     perk4: string;
@@ -5143,19 +5143,19 @@ interface I18n {
     pleaseAllow: string;
     /** Please fill in your streamer information, and upload a picture. */
     pleaseFillIn: string;
-    /** Include the keyword "lichess.org" in your stream title and use the category "Chess" when you stream on 9Kings. */
+    /** Include the keyword "lichess.org" in your stream title and use the category "Chess" when you stream on HungKings. */
     rule1: string;
-    /** Remove the keyword when you stream non-9Kings stuff. */
+    /** Remove the keyword when you stream non-HungKings stuff. */
     rule2: string;
-    /** 9Kings will detect your stream automatically and enable the following perks: */
+    /** HungKings will detect your stream automatically and enable the following perks: */
     rule3: string;
     /** Read our %s to ensure fair play for everyone during your stream. */
     rule4: I18nFormat;
     /** Streaming rules */
     rules: string;
-    /** The 9Kings streamer page targets your audience with the language provided by your streaming platform. Set the correct default language for your chess streams in the app or service you use to broadcast. */
+    /** The HungKings streamer page targets your audience with the language provided by your streaming platform. Set the correct default language for your chess streams in the app or service you use to broadcast. */
     streamerLanguageSettings: string;
-    /** Your streamer name on 9Kings */
+    /** Your streamer name on HungKings */
     streamerName: string;
     /** streaming Fairplay FAQ */
     streamingFairplayFAQ: string;
@@ -5169,7 +5169,7 @@ interface I18n {
     visibility: string;
     /** When approved by moderators */
     whenApproved: string;
-    /** When you are ready to be listed as a 9Kings streamer, %s */
+    /** When you are ready to be listed as a HungKings streamer, %s */
     whenReady: I18nFormat;
     /** %s is streaming */
     xIsStreaming: I18nFormat;
@@ -5243,7 +5243,7 @@ interface I18n {
     commentThisMove: string;
     /** Comment on this position */
     commentThisPosition: string;
-    /** You can find your <a href='/study/mine/hot'>previous studies</a> on your profile page.<br>There is also a <a href='//lichess.org/blog/V0KrLSkAAMo3hsi4/study-chess-the-9kings-way'>blog post about studies</a>.<br>Power users might want to press "?" to see keyboard shortcuts.<br>Have fun! */
+    /** You can find your <a href='/study/mine/hot'>previous studies</a> on your profile page.<br>There is also a <a href='//lichess.org/blog/V0KrLSkAAMo3hsi4/study-chess-the-lichess-way'>blog post about studies</a>.<br>Power users might want to press "?" to see keyboard shortcuts.<br>Have fun! */
     conclusionText: string;
     /** Thanks for your time */
     conclusionTitle: string;
@@ -5355,9 +5355,9 @@ interface I18n {
     loadAGameFromPgn: string;
     /** Load a position from FEN */
     loadAPositionFromFen: string;
-    /** Paste a 9kings game URL<br>(like lichess.org/7fHIU0XI)<br>to load the game moves in the chapter. */
+    /** Paste a hungkings game URL<br>(like lichess.org/7fHIU0XI)<br>to load the game moves in the chapter. */
     loadExistingLichessGameText: string;
-    /** Load an existing 9kings game */
+    /** Load an existing hungkings game */
     loadExistingLichessGameTitle: string;
     /** Make sure the chapter is complete. You can only request analysis once. */
     makeSureTheChapterIsComplete: string;
@@ -5511,7 +5511,7 @@ interface I18n {
     unlisted: string;
     /** URL of the games, one per line */
     urlOfTheGame: string;
-    /** Yes, you can study crazyhouse<br>and all 9kings variants! */
+    /** Yes, you can study crazyhouse<br>and all hungkings variants! */
     variantsAreSupportedText: string;
     /** Studies support variants */
     variantsAreSupportedTitle: string;
@@ -5519,7 +5519,7 @@ interface I18n {
     visibility: string;
     /** This is a shared analysis board.<br><br>Use it to analyse and annotate games,<br>to discuss positions with friends,<br>and of course for chess lessons!<br><br>It's a powerful tool. Let's take some time to see how it works. */
     welcomeToLichessStudyText: string;
-    /** Welcome to 9Kings Study! */
+    /** Welcome to HungKings Study! */
     welcomeToLichessStudyTitle: string;
     /** What are studies? */
     whatAreStudies: string;
@@ -5547,7 +5547,7 @@ interface I18n {
     youAreNowAContributor: string;
     /** You are now a spectator */
     youAreNowASpectator: string;
-    /** You can paste this in the forum or your 9Kings blog to embed */
+    /** You can paste this in the forum or your HungKings blog to embed */
     youCanPasteThisInTheForumToEmbed: string;
     /** Congratulations! You completed this lesson. */
     youCompletedThisLesson: string;
@@ -5629,7 +5629,7 @@ interface I18n {
     oneRoundEveryXDays: I18nPlural;
     /** Ongoing games */
     ongoingGames: I18nPlural;
-    /** We don't plan to add more tournament systems to 9Kings at the moment. */
+    /** We don't plan to add more tournament systems to HungKings at the moment. */
     otherSystemsA: string;
     /** What about other tournament systems? */
     otherSystemsQ: string;
@@ -6007,7 +6007,7 @@ interface I18n {
     blogPosts: I18nPlural;
     /** Our simple tips to write great blog posts */
     blogTips: string;
-    /** By 9Kings */
+    /** By HungKings */
     byLichess: string;
     /** By month */
     byMonth: string;
@@ -6037,7 +6037,7 @@ interface I18n {
     inappropriateContentAccountClosed: string;
     /** Latest blog posts */
     latestBlogPosts: string;
-    /** 9Kings blog posts in %s */
+    /** HungKings blog posts in %s */
     lichessBlogPostsFromXYear: I18nFormat;
     /** Liked blog posts */
     likedBlogs: string;
@@ -6089,7 +6089,7 @@ interface I18n {
     thisPostIsPublished: string;
     /** Upload an image for your post */
     uploadAnImageForYourPost: string;
-    /** You can also use images that you made yourself, pictures you took, screenshots of 9Kings... anything that is not copyrighted by someone else. */
+    /** You can also use images that you made yourself, pictures you took, screenshots of HungKings... anything that is not copyrighted by someone else. */
     useImagesYouMadeYourself: string;
     /** View all %s posts */
     viewAllNbPosts: I18nPlural;

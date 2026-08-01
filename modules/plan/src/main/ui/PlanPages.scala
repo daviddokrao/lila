@@ -19,13 +19,13 @@ final class PlanPages(helpers: Helpers)(fishnetPerDay: Int):
     val check = custom(trans.site.yes())
     def all(content: Frag) = frag(td(content), td(content))
     def tr(value: Frag)(text: Frag*) = st.tr(th(text), all(value))
-    val title = "9Kings features"
+    val title = "HungKings features"
     Page(title)
       .css("bits.feature")
       .graph(
         title = title,
         url = routeUrl(routes.Plan.features),
-        description = "All of 9Kings features are free for all and forever. We do it for the chess!"
+        description = "All of HungKings features are free for all and forever. We do it for the chess!"
       ):
         main(cls := "box box-pad features")(
           table(
@@ -182,8 +182,8 @@ final class PlanPages(helpers: Helpers)(fishnetPerDay: Int):
               p(
                 lightUserLink(receiver),
                 " ",
-                if receiver.isPatronLifetime then "is now a lifetime 9Kings Patron"
-                else "is now a 9Kings Patron for one month",
+                if receiver.isPatronLifetime then "is now a lifetime HungKings Patron"
+                else "is now a HungKings Patron for one month",
                 ", thanks to you!"
               )
             case (_, Some(pat)) =>

@@ -17,7 +17,7 @@ final class JsBotUi(helpers: Helpers):
     val data = Json
       .obj("pref" -> prefs, "bots" -> bots)
       .add("devBots" -> Option.when(Granter.opt(_.BotEditor))(lila.jsBot.devBotKeys))
-    Page("9Kings bots")
+    Page("HungKings bots")
       .css("botPlay")
       .js(PageModule("botPlay.main", data))
       .flag(_.zen)
@@ -35,7 +35,7 @@ final class JsBotUi(helpers: Helpers):
       .obj("pref" -> prefs, "bots" -> bots, "assets" -> devAssets)
       .add("canPost", Granter.opt(_.BotEditor))
     val moduleName = "botDev"
-    Page("9Kings bots")
+    Page("HungKings bots")
       .css("botDev")
       .css("round")
       .css(ctx.pref.hasKeyboardMove.option("keyboardMove"))

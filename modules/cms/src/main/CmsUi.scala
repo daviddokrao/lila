@@ -77,10 +77,10 @@ final class CmsUi(helpers: Helpers)(menu: Context ?=> Frag):
         main(cls := "page-menu")(menu, div(cls := "page-menu__content cms box")(mods)(body))
 
   def index(pages: List[CmsPage])(using Context) =
-    layout("9Kings pages")():
+    layout("HungKings pages")():
       frag(
         boxTop(
-          h1("9Kings pages"),
+          h1("HungKings pages"),
           div(cls := "box__top__actions")(
             input(cls := "cms__pages__search", placeholder := trans.search.search.txt(), autofocus),
             a(
@@ -130,18 +130,18 @@ final class CmsUi(helpers: Helpers)(menu: Context ?=> Frag):
     )
 
   def create(form: Form[CmsPageData], key: Option[CmsPageKey])(using ctx: Context) =
-    layout("9Kings pages: New")(cls := "box-pad"):
+    layout("HungKings pages: New")(cls := "box-pad"):
       frag(
-        boxTop(h1(a(href := routes.Cms.index)("9Kings pages"), " • ", "New page!")),
+        boxTop(h1(a(href := routes.Cms.index)("HungKings pages"), " • ", "New page!")),
         postForm(cls := "form3", action := routes.Cms.create):
           inForm(form, key)
       )
 
   def edit(form: Form[CmsPageData], page: CmsPage, alts: List[CmsPage])(using Context) =
-    layout(s"9Kings page ${page.key}")(cls := "box-pad"):
+    layout(s"HungKings page ${page.key}")(cls := "box-pad"):
       frag(
         boxTop(
-          h1(a(href := routes.Cms.index)("9Kings page"), " • ", page.key, " (", page.language, ")"),
+          h1(a(href := routes.Cms.index)("HungKings page"), " • ", page.key, " (", page.language, ")"),
           div(cls := "box__top__actions"):
             a(
               href := addQueryParam(

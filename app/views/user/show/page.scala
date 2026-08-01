@@ -88,7 +88,7 @@ object page:
       main(cls := "page-small box box-pad page")(
         h1(cls := "box__top")("No such player"),
         div(
-          p("This username doesn't match any 9Kings player."),
+          p("This username doesn't match any HungKings player."),
           canCreate.not.option(p("It cannot be used to create a new account."))
         )
       )

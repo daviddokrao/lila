@@ -4,7 +4,7 @@ import lila.app.UiEnv.{ *, given }
 import lila.cms.CmsPage
 
 val message = lila.web.ui.SiteMessage(helpers)
-val ui = lila.web.ui.SitePages(helpers)
+val ui = lila.web.ui.SitePages(helpers, assetHelper)
 
 object page:
 
@@ -55,7 +55,7 @@ object variant:
         )
 
   def home(using Context) =
-    page(title = "9Kings variants", klass = "variants"):
+    page(title = "HungKings variants", klass = "variants"):
       frag(
         h1(cls := "box__top")(trans.site.variants()),
         div(cls := "body box__pad")(

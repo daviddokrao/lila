@@ -120,7 +120,7 @@ final class ReportUi(helpers: Helpers)(menu: Context ?=> Frag):
       dataIcon := Icon.InfoCircle,
       cls := "text"
     ):
-      "Read more about 9Kings reports"
+      "Read more about HungKings reports"
   )
 
   private def descriptionHelp(current: String)(using ctx: Context) = frag:
@@ -179,7 +179,7 @@ final class ReportUi(helpers: Helpers)(menu: Context ?=> Frag):
           ),
           br,
           br,
-          p(a(href := routes.Lobby.home)("Return to 9Kings homepage"))
+          p(a(href := routes.Lobby.home)("Return to HungKings homepage"))
         )
 
   object list:
