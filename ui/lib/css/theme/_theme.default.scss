@@ -69,12 +69,19 @@
   --c-brag: #ffcb24;
   --c-brag-hover: hsl(from var(--c-brag) h 100 70);
   --c-contours: color-mix(in oklab, var(--c-brag) 80%, var(--c-shade));
-  --c-accent: hsl(22 100% 42%);
+  // Gold rather than the upstream orange, so accents match the logo instead of
+  // introducing a second warm hue. Bright enough to carry text and rules on the dark
+  // page, which means anything sitting ON it must be dark, not white.
+  --c-accent: #ffbf00;
   --c-accent-dim: color-mix(in oklab, var(--c-dimmer) 20%, var(--c-accent));
-  --c-accent-faint: hsl(22 100% 42% / 0.4);
+  // Derived rather than a repeated literal, so the light theme override flows through.
+  --c-accent-faint: hsl(from var(--c-accent) h s l / 0.4);
   --c-accent-clear: color-mix(in oklab, var(--c-clearer) 20%, var(--c-accent));
   --c-accent-glass: hsl(from var(--c-accent) h s l / 0.2);
   --c-accent-cloud: hsl(from var(--c-accent) h s l / 0.5);
+  // Text and icons laid over a solid accent fill. Gold is far too light to carry white,
+  // so this is the page ink instead; the light theme flips it back.
+  --c-over-accent: #0d1733;
   --c-dasher: var(--c-secondary);
   --c-bot: var(--c-fancy);
   --c-good: #4ade80;

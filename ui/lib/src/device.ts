@@ -14,6 +14,14 @@ export const currentTheme = (): 'light' | 'dark' => {
   return dataTheme === 'light' ? 'light' : 'dark';
 };
 
+// Paints a background preference onto the document. Both the dasher pane and the
+// header shortcut go through here, so the two can never drift out of sync.
+export const applyBackground = (key: string): void => {
+  document.body.dataset.theme = key === 'darkBoard' ? 'dark' : key;
+  document.documentElement.className =
+    key === 'system' ? (prefersLightThemeQuery().matches ? 'light' : 'dark') : key;
+};
+
 let colCache: number | undefined;
 window.addEventListener('resize', () => (colCache = undefined));
 

@@ -80,7 +80,16 @@ final class Pref(env: Env) extends LilaController(env):
             form => fuccess(BadRequest(form.errors.flatMap(_.messages).mkString("\n"))),
             v =>
               for _ <- ctx.me.so(api.setPref(_, change.update(v)))
-              yield Ok(()).withCookies(env.security.lilaCookie.session(name, v.toString))
+              yield
+                // XHR callers (the dasher) want the bare body. A plain form post, such as
+                // the header theme shortcut with scripts unavailable, must land back on
+                // the page it came from instead of on a lone "ok".
+                val result =
+                  if HTTPRequest.isXhr(ctx.req) then Ok(())
+                  else
+                    Redirect:
+                      env.web.referrerRedirect.fromReq.fold(routes.Lobby.home.url)(_.value)
+                result.withCookies(env.security.lilaCookie.session(name, v.toString))
           )
 
   def apiSet(name: String) = ScopedBody(_.Web.Mobile) { ctx ?=> me ?=>

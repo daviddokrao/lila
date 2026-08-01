@@ -34,5 +34,11 @@
   &.announce {
     flex-flow: row nowrap;
     background: $c-accent;
+    // The block above paints text white for the primary fill; gold needs dark ink.
+    color: $c-over-accent;
+
+    a {
+      color: $c-over-accent;
+    }
   }
 }

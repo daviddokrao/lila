@@ -148,11 +148,43 @@ export default function () {
 
   {
     // dasher
-    const load = memoize(() => loadEsm('dasher'));
+    const load = memoize(() => loadEsm<any>('dasher'));
     $('#top .dasher .toggle').one('mouseover click', function (this: HTMLElement) {
       $(this).removeAttr('href');
       loadCssPath('dasher');
       load();
+    });
+
+    // Header shortcuts that only exist to reach a dasher pane in one click. The dasher
+    // stays the single implementation; this just opens it on the right pane.
+    $('#top [data-dasher-pane]').on('click', async function (this: HTMLElement, e: Event) {
+      e.preventDefault();
+      const $dasher = $('#top .dasher');
+      if (!$dasher.length) return;
+      loadCssPath('dasher');
+      $dasher.addClass('shown').siblings('.shown').removeClass('shown');
+      (await load())?.setMode(this.dataset.dasherPane as any);
+    });
+
+    // The theme shortcut posts the same preference the dasher does, so it goes through
+    // the dasher too rather than reimplementing the apply/persist pair. Falling back to
+    // a normal submit would work, but would cost a full page load.
+    $('#top .site-buttons__bg').on('submit', async function (this: HTMLFormElement, e: Event) {
+      const next = $(this).find('input[name="bg"]').val() as string;
+      if (!next || !$('#top .dasher').length) return; // let the browser post it
+      e.preventDefault();
+      loadCssPath('dasher');
+      const other = next === 'dark' ? 'light' : 'dark',
+        $button = $(this).find('button'),
+        wasLabel = $button.attr('title'),
+        nextLabel = $button.data('label-alt');
+      $button
+        .attr({ title: nextLabel, 'aria-label': nextLabel })
+        .data('label-alt', wasLabel)
+        .removeClass(`bg-toggle--${next}`)
+        .addClass(`bg-toggle--${other}`);
+      $(this).find('input[name="bg"]').val(other);
+      await (await load())?.background.set(next);
     });
   }
 

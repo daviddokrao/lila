@@ -147,9 +147,12 @@ object LangList extends lila.core.i18n.LangList:
     popularNoRegion.flatMap: lang =>
       all.get(lang).map(toLanguage(lang) -> _)
 
-  lazy val allChoices: List[(String, String)] = all.view
-    .map: (l, name) =>
-      l.code -> name
+  // Ordered by `popular` rather than by the raw map. The dasher is now the only place
+  // to change language, so the languages this site actually serves - Vietnamese right
+  // after English - have to sit at the top instead of being buried mid-list.
+  lazy val allChoices: List[(String, String)] = popular.view
+    .flatMap: l =>
+      all.get(l).map(l.code -> _)
     .toList
 
   lazy val allLanguagesForm = new LangForm:

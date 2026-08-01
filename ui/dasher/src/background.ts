@@ -1,7 +1,7 @@
 import { h, type VNode } from 'snabbdom';
 
 import { debounce, throttlePromiseDelay } from 'lib/async';
-import { prefersLightThemeQuery } from 'lib/device';
+import { applyBackground } from 'lib/device';
 import { licon } from 'lib/licon';
 import { pubsub } from 'lib/pubsub';
 import { bind, onInsert } from 'lib/view';
@@ -100,9 +100,7 @@ export class BackgroundCtrl extends PaneCtrl {
 
   private readonly apply = () => {
     const key = this.data.current;
-    document.body.dataset.theme = key === 'darkBoard' ? 'dark' : key;
-    document.documentElement.className =
-      key === 'system' ? (prefersLightThemeQuery().matches ? 'light' : 'dark') : key;
+    applyBackground(key);
 
     if (key === 'transp') {
       const bgData = document.getElementById('bg-data');

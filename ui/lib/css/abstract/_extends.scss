@@ -128,8 +128,10 @@
   @extend %active-inset-shadow;
 
   background: $c-accent;
-  color: #fff;
-  text-shadow: 0 1px 1px black !important;
+  color: $c-over-accent;
+  // The black text shadow existed to lift white text off the old orange fill. The ink
+  // is dark on gold now, so a dark shadow would only thicken it into mush.
+  text-shadow: none !important;
 
   &:not(.disabled):hover {
     @extend %active-inset-shadow;

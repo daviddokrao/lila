@@ -76,32 +76,52 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
     )
 
   // Theme and language also live in the dasher, but they are the two settings people
-  // reach for most, so they get their own header controls next to search. Plain forms
-  // rather than JS: the header ships no bundle of its own, and both endpoints already
-  // accept a normal post.
+  // reach for most, so they get their own header controls next to search.
+  //
+  // NEVER give these the `toggle` class. topBar.ts claims every `.toggle` inside #top
+  // as a dropdown opener and returns false from the handler, which silently swallows
+  // the click before the form can submit.
   def bgToggle(using ctx: Context) =
-    val toDark = ctx.pref.currentBg != "dark"
-    postForm(cls := "site-buttons__bg", action := routes.Pref.set("bg"))(
-      input(tpe := "hidden", name := "bg", value := (if toDark then "dark" else "light")),
-      submitButton(
-        cls := s"toggle link bg-toggle bg-toggle--${if toDark then "dark" else "light"}",
-        title := (if toDark then trans.site.dark.txt() else trans.site.light.txt()),
-        aria.label := (if toDark then trans.site.dark.txt() else trans.site.light.txt())
+    val bg = ctx.pref.currentBg
+    // Only light and dark survive a round trip through a two-state button. Any other
+    // choice (system, transparent, dark board) opens the dasher rather than being
+    // silently overwritten by a toggle that cannot represent it.
+    if bg == "light" || bg == "dark" then
+      val toDark = bg == "light"
+      val label = if toDark then trans.site.dark.txt() else trans.site.light.txt()
+      // The label the button takes after it is clicked. Rendered here so the script can
+      // swap it in without a page load and without a translation table of its own.
+      val labelAlt = if toDark then trans.site.light.txt() else trans.site.dark.txt()
+      postForm(cls := "site-buttons__bg", action := routes.Pref.set("bg"))(
+        input(tpe := "hidden", name := "bg", value := (if toDark then "dark" else "light")),
+        submitButton(
+          cls := s"link site-buttons__shortcut bg-toggle bg-toggle--${if toDark then "dark" else "light"}",
+          attrData("label-alt") := labelAlt,
+          title := label,
+          aria.label := label
+        )
       )
-    )
+    else
+      val label = trans.site.background.txt()
+      button(
+        tpe := "button",
+        cls := "link site-buttons__shortcut site-buttons__bg bg-toggle bg-toggle--other",
+        attrData("dasher-pane") := "background",
+        title := label,
+        aria.label := label
+      )
 
+  // The full language list is long enough that a header dropdown would be a worse copy
+  // of the dasher pane it duplicates, so this is a shortcut into that pane instead.
   def langSelect(using ctx: Context) =
     val label = trans.site.language.txt()
-    postForm(cls := "site-buttons__lang", action := routes.I18n.select)(
-      select(name := "lang", aria.label := label, title := label)(
-        langList.popularLanguages.map: l =>
-          // st.option: bare option is ambiguous here, lila.ui exports one too.
-          st.option(
-            value := l.value,
-            (ctx.lang.language == l.value).option(selected)
-          )(langList.nameByLanguage(l))
-      ),
-      submitButton(cls := "toggle link", dataIcon := Icon.Globe, aria.label := label)
+    button(
+      tpe := "button",
+      cls := "link site-buttons__shortcut site-buttons__lang",
+      attrData("dasher-pane") := "langs",
+      dataIcon := Icon.Globe,
+      title := label,
+      aria.label := label
     )
 
   val warnNoAutoplay =

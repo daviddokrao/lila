@@ -34,6 +34,10 @@ html.light {
   --c-secondary: #1e7a54;
   --c-good: #1e7a54;
   --c-bad: #c0392b;
+  // Same reason the brag token is darkened here: the logo gold is unreadable on white,
+  // so accents borrow the dark gold. Being dark, it carries white text again.
+  --c-accent: #785900;
+  --c-over-accent: white;
   --c-dimmer: white;
   --c-clearer: black;
   --c-bg-input: hsl(from var(--c-bg-page) h s 98);
