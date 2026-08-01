@@ -917,7 +917,6 @@ POST  /cms/:id/delete                 controllers.Cms.delete(id: CmsPageId)
 GET   /developers                      controllers.Main.webmasters
 GET   /app                             controllers.Main.app
 GET   /app-store                       controllers.Main.redirectToAppStore
-GET   /swag                            controllers.Main.redirectToSwag
 GET   /$lang<\w\w\w?>/app              controllers.Main.appLang(lang: Language)
 GET   /lag                             controllers.Main.lag
 GET   /get-fishnet                     controllers.Main.getFishnet

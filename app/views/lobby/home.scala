@@ -18,14 +18,12 @@ object home:
           span(trans.patron.becomePatron())
         )
       )
-    val swagLink =
-      a(cls := "lobby__support-link", href := "/swag")(
-        iconTag(Icon.Tshirt),
-        span(cls := "lobby__support-link__text")(
-          strong("Swag Store"),
-          span(trans.site.playChessInStyle())
-        )
-      )
+    // Nút "Swag Store" của upstream trỏ /swag, mà /swag chuyển hướng sang
+    // lichess.myspreadshop.net — cửa hàng đồ lưu niệm CỦA LICHESS. Đặt trên TRANG
+    // CHỦ dưới thương hiệu HungKings thì thành ra mời khách đi mua đồ của bên khác.
+    // HungKings không bán gì cả, nên gỡ hẳn thay vì trỏ đi đâu đó.
+    // Muốn mở cửa hàng riêng thì dựng lại nút này và sửa StaticContent.swagUrl.
+    val swagLink = emptyFrag
     Page("")
       .copy(fullTitle = s"$siteName • ${trans.site.freeOnlineChess.txt()}".some)
       .i18n(_.variant)

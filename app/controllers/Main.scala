@@ -42,6 +42,10 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
     pageHit
     Redirect(StaticContent.appStoreUrl)
 
+  // Route /swag đã gỡ khỏi conf/routes: nó chuyển hướng sang cửa hàng đồ lưu niệm
+  // của Lichess (lichess.myspreadshop.net). Giữ hàm ở đây để diff với upstream còn
+  // gọn; nối lại route khi nào HungKings có cửa hàng riêng và đã sửa
+  // StaticContent.swagUrl trỏ về đó.
   def redirectToSwag = Anon:
     Redirect(StaticContent.swagUrl(env.security.geoIP(ctx.ip).so(_.countryCode)))
 
