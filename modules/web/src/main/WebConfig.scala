@@ -11,7 +11,9 @@ final class WebConfig(
     val influxEventEndpoint: String,
     val influxEventEnv: String,
     val prometheusKey: String,
-    val pagerDuty: WebConfig.PagerDuty
+    val pagerDuty: WebConfig.PagerDuty,
+    // HungKings: trang chủ v2 sau cờ (rollback bằng env LILA_HOME_V2, không cần rebuild)
+    val homeV2: Boolean
 )
 
 object WebConfig:
@@ -37,7 +39,8 @@ object WebConfig:
       new PagerDuty(
         c.get[String]("pagerDuty.serviceId"),
         c.get[Secret]("pagerDuty.apiKey")
-      )
+      ),
+      c.get[Boolean]("net.home.v2")
     )
 
   def analyseEndpoints(c: Configuration) =

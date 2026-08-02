@@ -526,6 +526,29 @@ final class GameRepo(c: Coll)(using Executor) extends lila.core.game.GameRepo(c)
       .skip(ThreadLocalRandom.nextInt(1000))
       .one[Game]
 
+  // HungKings trang chủ v2: ván ĐÃ KẾT THÚC gần nhất làm fallback "replay + AI"
+  // khi TV không có ván trực tiếp (ngày vắng).
+  //
+  // ĐẮT: sort theo `ca` KHÔNG có index phục vụ (explain trên DB seed 02/08: COLLSCAN
+  // 3000 doc + sort trong bộ nhớ). Người gọi PHẢI cache — KeyPages.homeV2Replay giữ
+  // 3 phút. Đừng gọi thẳng hàm này trong đường render.
+  //
+  // KHÔNG dùng Query.variantStandard được: nó khớp `v` VẮNG MẶT (quy ước ghi của lila
+  // upstream), trong khi dữ liệu seed của lila-docker ghi hẳn `v=1` cho cả 3000 ván —
+  // đo ngày 02/08: finished+rated = 3000 nhưng variantStandard = 0, nên hero luôn rơi
+  // xuống nhánh rỗng. Chấp nhận CẢ HAI cách ghi để đúng trên cả DB thật lẫn DB seed.
+  def lastFinishedRated: Fu[Option[Game]] =
+    coll
+      .find(
+        Query.finished ++ Query.rated ++ Query.turnsGt(10) ++
+          $or(
+            $doc(F.variant -> $exists(false)),
+            $doc(F.variant -> $int(chess.variant.Standard.id))
+          )
+      )
+      .sort(Query.sortCreated)
+      .one[Game]
+
   def getOptionPgn(id: GameId): Fu[Option[Vector[SanStr]]] = game(id).dmap2(_.sans)
 
   def lastGameBetween(u1: UserId, u2: UserId, since: Instant): Fu[Option[Game]] =

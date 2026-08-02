@@ -1,0 +1,13 @@
+@import '../../../lib/css/plugin';
+@import '../../../lib/css/form/range';
+@import '../../../lib/css/component/now-playing';
+@import '../../../lib/css/component/color-icon';
+@import '../../../lib/css/component/glowing';
+@import '../../../lib/css/component/tabs-horiz';
+@import '../defs';
+@import '../app/app';
+// Nut "Tao van / Thach ban / Choi voi may" dung selector .lobby__table cua ban cu.
+// _table.scss chi dung placeholder cua lib (khong dinh %lobby-side-more cua _lobby.scss)
+// nen import duoc ma khong keo theo ca lobby cu.
+@import '../table';
+@import '../home-v2/home-v2';

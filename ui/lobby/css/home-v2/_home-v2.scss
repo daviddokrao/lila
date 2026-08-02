@@ -1,0 +1,472 @@
+// Trang chu v2 cua HungKings. Namespace rieng, khong dung chung selector voi
+// _lobby.scss / _table.scss ban cu de giu duong rollback sach.
+// Mau: chi dung bien theme (gen/wrap), khong hardcode hex. Kich thuoc/khoang cach
+// theo spec thi giac ui/lobby/css/home-v2, khong phai bien mau nen khong can qua $c-*.
+
+main.home-v2 {
+  display: flex;
+  flex-direction: column;
+  ---cols: 2;
+
+  .lobby__about {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 14px;
+    justify-content: center;
+    border-top: $border;
+    margin-top: 56px;
+    padding: 18px 0;
+
+    a {
+      font-size: 0.85rem;
+      color: $c-font-dim;
+
+      @include transition(color);
+
+      &:hover {
+        color: $c-accent;
+      }
+    }
+  }
+
+  .lobby__table .lobby__start {
+    gap: 10px;
+  }
+}
+
+.hv2-zone {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 40px;
+
+  & + & {
+    padding-top: 56px;
+  }
+}
+
+.hv2-play {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hv2-zlabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hv2-tick {
+  flex: none;
+  width: 22px;
+  height: 3px;
+  background: $c-accent;
+}
+
+.hv2-tt {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: $c-font-dim;
+}
+
+.hv2-rule {
+  flex: 1;
+  height: 1px;
+  background: $c-border;
+}
+
+.hv2-more {
+  font-size: 0.8rem;
+  color: $c-font-dim;
+
+  @include transition(color);
+
+  &:hover {
+    color: $c-accent;
+  }
+}
+
+.hv2-zt,
+.hv2-matchup {
+  font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+  font-size: 1.6rem;
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+.hv2-hero {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 28px;
+  background: $c-bg-box;
+  border: $border;
+  border-radius: 14px;
+  padding: 24px;
+
+  // BAT BUOC: cot ban co co min 280px, cong cot chu + padding thi min-content cua hero
+  // la ~423px -> tren may 360px ca trang tran ngang 63px. Chi lo ra khi hero co ban co
+  // THAT (nhanh replay/live); do luc hero rong se dau gia.
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 16px;
+  }
+
+  &--empty {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-block: 40px;
+  }
+}
+
+// Ban co: chessground tu tinh theo be rong container (khong ep kich thuoc co dinh,
+// vi user co the doi board-theme/size — quyet dinh 02/08).
+.hv2-hero__board {
+  .mini-game {
+    display: block;
+    width: 100%;
+  }
+}
+
+.hv2-hero__cast {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.hv2-onair {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+
+  &--live {
+    color: $c-bad;
+  }
+
+  &--replay {
+    color: $c-accent;
+  }
+}
+
+.hv2-sub {
+  color: $c-font-dim;
+}
+
+.hv2-cta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.hv2-hint {
+  font-size: 0.8rem;
+  color: $c-font-dim;
+}
+
+.hv2-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+
+  @include transition;
+
+  &--gold {
+    background: $c-accent;
+    color: $c-over-accent;
+  }
+
+  &--line {
+    border: $border;
+
+    &:hover {
+      border-color: $c-accent;
+      color: $c-accent;
+    }
+  }
+
+  &--sm {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+.hv2-multi {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 550px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hv2-mv {
+  border: $border;
+  border-radius: 10px;
+  overflow: hidden;
+  background: $c-bg-box;
+
+  .mini-game {
+    width: 100%;
+  }
+
+  &--empty .hv2-mv__note {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    font-style: italic;
+    font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+    color: $c-font-dim;
+  }
+}
+
+.hv2-mv__chn {
+  padding: 8px 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $c-font-dim;
+}
+
+.hv2-tours {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hv2-train {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  // align-items mac dinh la stretch -> hop HLV bi keo cao bang cot cau do (do that:
+  // 575px) va tro thanh mot khoi rong hoac. Cho hai cot tu cao theo noi dung.
+  align-items: start;
+  gap: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Ban cau do ngay: khong import _layout.scss cua lobby cu nen .lobby__puzzle khong con
+// rang buoc kich thuoc -> cg-wrap an het be rong cot (do that: 538px). Chan lai.
+//
+// PHAI chan o the <a> boc ngoai, KHONG phai o .mini-board: ban co giu hinh vuong bang
+// meo `height: 0 + padding-bottom: 100%`, ma % cua padding tinh theo BE RONG CUA CHA.
+// Dat max-width thang len .mini-board thi rong 280 ma cao van 538 -> ban co meo (do that).
+.hv2-puzzle {
+  > a {
+    display: block;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .mini-board {
+    display: block;
+    width: 100%;
+    margin: 6px 0;
+  }
+}
+
+.hv2-coach {
+  border: 1px solid $c-accent-faint;
+  border-radius: 14px;
+  padding: 20px;
+
+  blockquote {
+    margin: 0 0 10px;
+    font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  &__who {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: $c-accent;
+  }
+
+  &__src {
+    font-size: 0.78rem;
+    color: $c-font-dim;
+  }
+}
+
+.hv2-starter {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 20px;
+  border: $border;
+  border-radius: 14px;
+  padding: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hv2-steps {
+  display: flex;
+  gap: 0;
+  counter-reset: hv2-step;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
+}
+
+.hv2-step {
+  position: relative;
+  padding-left: 40px;
+  padding-right: 24px;
+
+  &::before {
+    counter-increment: hv2-step;
+    content: counter(hv2-step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid $c-font-dim;
+    color: $c-font-dim;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  & + & {
+    border-left: $border;
+
+    @media (max-width: 900px) {
+      border-left: none;
+    }
+  }
+
+  // Hai span nay mac dinh la inline -> tieu de va mo ta dinh lien nhau tren MOT dong
+  // ("Hoc luat trong 10 phutBai hoc tuong tac tu so 0"). Do that 02/08: ca buoc chi cao 37px.
+  &__t {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  &__d {
+    display: block;
+    font-size: 0.78rem;
+    color: $c-font-dim;
+  }
+
+  &:hover .hv2-step__t {
+    color: $c-accent;
+  }
+}
+
+.hv2-comm {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hv2-ct {
+  margin-bottom: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: $c-font-dim;
+}
+
+.hv2-lbgroup {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.hv2-lb {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 2px;
+  border-bottom: $border;
+
+  &__el {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: $c-font-dim;
+  }
+}
+
+.hv2-post {
+  display: block;
+  padding: 8px 2px;
+  border-bottom: $border;
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  @include transition(color);
+
+  &:hover {
+    color: $c-accent;
+  }
+}
+
+// views.streamer.bits.liveStreams dung markup .lobby__streams > a.stream. Style tai cho
+// thay vi @import '../stream' vi file do phu thuoc %lobby-side-more dinh trong _lobby.scss.
+.lobby__streams {
+  .stream {
+    display: block;
+    padding: 8px 2px;
+    border-bottom: $border;
+    font-size: 0.9rem;
+
+    @include transition(color);
+
+    strong::before {
+      margin-inline-end: 0.3rem;
+    }
+
+    &:hover {
+      color: $c-accent;
+    }
+  }
+
+  .more {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: $c-font-dim;
+  }
+}
+
+.hv2-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: $c-font-dim;
+}
