@@ -103,7 +103,7 @@ object homeV2:
                     a(cls := "hv2-btn hv2-btn--gold", href := s"$coachUrl/${g.id}")(
                       t("Nghe AI giải cả ván", "Hear the full AI commentary")
                     ),
-                    a(cls := "hv2-btn hv2-btn--line", href := s"#hv2-play")(t("Chơi với máy", "Play the computer"))
+                    a(cls := "hv2-btn hv2-btn--line", href := "#ai")(t("Chơi với máy", "Play the computer"))
                   )
                 )
               )
@@ -117,30 +117,45 @@ object homeV2:
                   )
                 ),
                 div(cls := "hv2-cta")(
-                  a(cls := "hv2-btn hv2-btn--gold", href := "#hv2-play")(t("Chơi với máy", "Play the computer")),
+                  a(cls := "hv2-btn hv2-btn--gold", href := "#ai")(t("Chơi với máy", "Play the computer")),
                   a(cls := "hv2-btn hv2-btn--line", href := "#hv2-play")(t("Ghép trận nhanh", "Quick pairing"))
                 )
               )
 
     val multiviewFrag: Frag =
       div(cls := "hv2-multi")(
-        multiview.map: (channel, gameOpt) =>
-          gameOpt match
-            case Some(g) =>
-              div(cls := "hv2-mv")(
-                div(cls := "hv2-mv__chn")(channelName(channel)),
-                miniOf(g, tv = false)
+        // B3 (David chốt 03/08): CẢ 4 kênh rỗng thì gộp một dải mời gọi thay vì 4 hộp
+        // "chưa có ván" lặp nhau; có ván trở lại là tự về lưới 4 ô (nhánh dưới giữ nguyên).
+        if multiview.nonEmpty && multiview.forall(_._2.isEmpty) then
+          div(cls := "hv2-inviteband")(
+            span(
+              t(
+                "Các kênh đang chờ ván đầu tiên — bạn mở màn nhé?",
+                "The channels await their first game — care to open?"
               )
-            case None =>
-              div(cls := "hv2-mv hv2-mv--empty")(
-                div(cls := "hv2-mv__chn")(channelName(channel)),
-                div(cls := "hv2-mv__note")(
-                  span(t("Chưa có ván — mở màn kênh này", "No game yet — open this channel")),
-                  a(cls := "hv2-btn hv2-btn--line hv2-btn--sm", href := "#hv2-play")(
-                    t("Chơi ", "Play ") + channelNameMid(channel)
+            ),
+            a(cls := "hv2-btn hv2-btn--gold hv2-btn--sm", href := "#hv2-play")(t("Chơi ngay", "Play now"))
+          )
+        else
+          frag(
+            multiview.map: (channel, gameOpt) =>
+              gameOpt match
+                case Some(g) =>
+                  div(cls := "hv2-mv")(
+                    div(cls := "hv2-mv__chn")(channelName(channel)),
+                    miniOf(g, tv = false)
                   )
-                )
-              )
+                case None =>
+                  div(cls := "hv2-mv hv2-mv--empty")(
+                    div(cls := "hv2-mv__chn")(channelName(channel)),
+                    div(cls := "hv2-mv__note")(
+                      span(t("Chưa có ván — mở màn kênh này", "No game yet — open this channel")),
+                      a(cls := "hv2-btn hv2-btn--line hv2-btn--sm", href := "#hv2-play")(
+                        t("Chơi ", "Play ") + channelNameMid(channel)
+                      )
+                    )
+                  )
+          )
       )
 
     val appSlot: Frag =
@@ -228,7 +243,7 @@ object homeV2:
               span(cls := "hv2-step__t")(t("Giải câu đố đầu tiên", "Solve your first puzzle")),
               span(cls := "hv2-step__d")(t("Nhìn ra đòn chiến thuật", "Spot the tactic"))
             ),
-            a(cls := "hv2-step", href := "#hv2-play")(
+            a(cls := "hv2-step", href := "#ai")(
               span(cls := "hv2-step__t")(t("Đánh ván đầu với máy", "Play your first game vs computer")),
               span(cls := "hv2-step__d")(t("Cấp độ 1, không áp lực", "Level 1, no pressure"))
             )

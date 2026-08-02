@@ -247,6 +247,27 @@ main.home-v2 {
   color: $c-font-dim;
 }
 
+// B3: cả 4 kênh rỗng thì gộp một dải mời gọi, nằm trọn bề ngang lưới .hv2-multi
+.hv2-inviteband {
+  grid-column: 1 / -1;
+  border: $border;
+  border-radius: 10px;
+  background: $c-bg-box;
+  padding: 18px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  text-align: center;
+
+  span {
+    font-style: italic;
+    font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+    color: $c-font-dim;
+  }
+}
+
 .hv2-tours {
   display: flex;
   flex-direction: column;

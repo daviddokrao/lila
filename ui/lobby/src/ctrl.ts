@@ -165,6 +165,19 @@ export default class LobbyController {
     });
 
     window.addEventListener('beforeunload', () => this.leavePool());
+
+    // HungKings (trang chủ v2): nút hero đặt href="#ai"/"#friend"/"#hook" — khối phía trên
+    // chỉ đọc hash MỘT LẦN lúc dựng ctrl, nên hash đổi sau đó phải tự bắt mới mở hộp thoại.
+    window.addEventListener('hashchange', () => {
+      const gameType = location.hash.replace('#', '');
+      if (['ai', 'friend', 'hook'].includes(gameType)) {
+        history.replaceState(null, '', '/');
+        pubsub.after('polyfill.dialog').then(() => {
+          this.setupCtrl.openModal(gameType as Exclude<GameType, 'local'>);
+          redraw();
+        });
+      }
+    });
   }
 
   spreadPlayersNumber?: (nb: number) => void;
