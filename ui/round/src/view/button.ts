@@ -67,7 +67,7 @@ function coachButton(ctrl: RoundController): VNode | false {
     finished(d) &&
     hl(
       'a.fbt',
-      { attrs: { href: `https://9kings-coach.vssa.com/${d.game.id}`, target: '_blank', rel: 'noopener' } },
+      { attrs: { href: `https://hungkings-coach.vssa.com/${d.game.id}`, target: '_blank', rel: 'noopener' } },
       'Giải thích ván (AI)',
     )
   );
