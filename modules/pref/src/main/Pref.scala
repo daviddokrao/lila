@@ -58,8 +58,10 @@ case class Pref(
   def realTheme3d = Theme3d(theme3d)
   def realPieceSet3d = PieceSet3d.get(pieceSet3d)
 
-  val themeColorLight = "#dbd7d1"
-  val themeColorDark = "#2e2a24"
+  // HungKings: khớp --c-bg-page của theme (_theme.light.scss / _theme.default.scss).
+  // Đây là màu thanh địa chỉ mobile trên MỌI trang — nâu Lichess cũ lộ brand sai.
+  val themeColorLight = "#f3f6fc"
+  val themeColorDark = "#070e22"
   def themeColor = if bg == Bg.LIGHT then themeColorLight else themeColorDark
   def themeColorClass =
     if bg == Bg.LIGHT then "light".some

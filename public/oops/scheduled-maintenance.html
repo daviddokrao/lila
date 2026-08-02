@@ -1,111 +1,56 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maintenance in progress • lichess.org</title>
+    <meta content="noindex, nofollow" name="robots" />
+    <meta name="theme-color" content="#070E22" />
+    <title>Đang bảo trì • HungKings</title>
     <style>
-      body {
-        text-align: center;
-        font:
-          18px 'Noto Sans',
-          'Lucida Grande',
-          'Lucida Sans Unicode',
-          Geneva,
-          Verdana,
-          Sans-Serif;
-        background-color: #181818;
-        background-image: linear-gradient(to bottom, #2c2c2c, #181818 116px);
-        background-repeat: no-repeat;
-        color: #a0a0a0;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-      }
-      h1 {
-        font-size: 3em;
-        margin: 0.8em 0 0 0;
-        font-weight: normal;
-      }
-      h2 {
-        font-size: 1.2em;
-        font-style: italic;
-        font-weight: normal;
-        margin: 0;
-      }
-      .explain {
-        margin: 3em auto;
-        padding: 1.5em 0;
-        border: 1px solid #333;
-        border-width: 1px 0;
-        background: #252525;
-      }
-      a {
-        color: #3893e8 !important;
-      }
-      .panels {
-        display: flex;
-        justify-content: center;
-      }
-      .more {
-        margin-left: 2em;
-        text-align: left;
-      }
-      .game {
-        margin: 1em 0;
-      }
-
-      @media (max-width: 767px) {
-        .explain {
-          padding: 1.5em 10px;
-          box-sizing: border-box;
-        }
-
-        .more {
-          text-align: center;
-          margin: 0;
-        }
-
-        .panels {
-          flex-direction: column-reverse;
-        }
-
-        .game {
-          display: none;
-        }
-
-        .hide-for-mobile {
-          display: none;
-        }
+      html, body { margin: 0; padding: 0; background: #070e22; color: #b6c2e2;
+        font: 16px 'Noto Sans', system-ui, sans-serif; text-align: center; }
+      main { max-width: 600px; margin: 0 auto; padding: 12vh 20px 40px; }
+      svg { width: 72px; height: 72px; }
+      h1 { font-family: Cambria, 'Palatino Linotype', Georgia, serif; font-weight: 400;
+        font-style: italic; font-size: 28px; color: #eef2fb; margin: 24px 0 6px; }
+      h1 + p.en-title { font-family: Cambria, Georgia, serif; font-style: italic;
+        opacity: .55; margin: 0 0 24px; }
+      p { line-height: 1.6; margin: 0 0 14px; }
+      .en { opacity: .55; font-size: .92em; }
+      a, a:visited { color: #ffbf00; }
+      code { display: inline-block; background: #ffbf00; color: #241a00;
+        padding: 2px 10px; border-radius: 6px; margin: .5em 0; word-break: break-all; }
+      @media (prefers-reduced-motion: reduce) { .m-2, .m-3 { display: none; } }
+      @media (prefers-color-scheme: light) {
+        html, body { background: #f3f6fc; color: #45507a; }
+        h1 { color: #16204a; }
+        a, a:visited { color: #785900; }
       }
     </style>
-    <meta content="noindex, nofollow" name="robots" />
   </head>
   <body>
-    <h1>lichess.org</h1>
-    <p class="explain">
-      We are performing maintenance on our servers this Friday, 6:00 CET for about one hour.<br />
-    </p>
-    <div class="panels">
-      <div class="more">
-        To get updates on the maintenance,<br />
-        join
-        <a href="https://mastodon.online/@lichess">@lichess on Mastodon</a>,
-        <a href="https://bsky.app/profile/lichess.org">@lichess on Bluesky</a> or
-        <a href="https://discord.gg/lichess">the lichess Discord</a>.<br />
-        <div class="hide-for-mobile">To pass the time, try out this minigame:</div>
-        <div class="game">
-          <iframe
-            src="//lichess1.org/assets/vendor/ChessPursuit/bin-release/index.html"
-            frameborder="0"
-            width="400"
-            height="500"
-            credentialless
-          >
-          </iframe>
-        </div>
-      </div>
-    </div>
+    <main>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true">
+        <g fill="none" stroke="#FFBF00" stroke-width="4.25">
+          <path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+          <g class="m-2"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+            <animateTransform attributeName="transform" type="rotate"
+              values="0 24 24; 0 24 24; 40 24 24; 40 24 24; 0 24 24" keyTimes="0; 0.44; 0.56; 0.88; 1"
+              calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+              dur="18s" repeatCount="indefinite"/></g>
+          <g class="m-3"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+            <animateTransform attributeName="transform" type="rotate"
+              values="0 24 24; 0 24 24; 80 24 24; 80 24 24; 0 24 24" keyTimes="0; 0.44; 0.56; 0.88; 1"
+              calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+              dur="18s" repeatCount="indefinite"/></g>
+        </g>
+      </svg>
+      <h1>Đang bảo trì theo lịch</h1>
+      <p class="en-title">Scheduled maintenance</p>
+      <p>HungKings đang được nâng cấp và sẽ trở lại trong ít phút. Trang sẽ tự tải lại.</p>
+      <p class="en">HungKings is being upgraded and will be back shortly.</p>
+      
+    </main>
+    <script>setTimeout(function(){location.reload();}, 30000);</script>
   </body>
 </html>

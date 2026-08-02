@@ -22,7 +22,7 @@ final class AuthorizeUi(helpers: Helpers)(
     val otherUserRequested = prompt.userId.filterNot(me.is(_)).map(lightUserFallback)
     val cssClass = customUi.map(_.cssClass)
     val logo = customUi.map(customLogo) |
-      iconTag(Icon.Logo)(alt := "lichess logo", cls := "oauth__logo--font")
+      iconTag(Icon.Logo)(alt := "HungKings logo", cls := "oauth__logo--font")
     Page(signedClient.fold("Authorization")(c => s"Allow ${c.displayName}"))
       .css("bits.oauth")
       .js(Esm("bits.oauth"))

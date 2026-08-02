@@ -31,6 +31,18 @@
     color: $c-brag;
     line-height: 1;
     margin-bottom: 1rem;
+
+    // Glyph e07a của font lila vẫn là con mã Lichess — vẽ đè mark HungKings lên
+    // pseudo element, cùng thủ pháp với header (_title.scss). Background chứ không
+    // mask để SMIL còn chạy.
+    &::before {
+      content: '';
+      display: block;
+      width: 1em;
+      height: 1em;
+      margin: 0 auto;
+      background: url('../logo/lichess-favicon.svg') center / contain no-repeat;
+    }
   }
 
   &__access-text {

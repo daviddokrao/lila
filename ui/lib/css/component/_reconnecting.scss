@@ -19,8 +19,16 @@ $recon-height: 2.5rem;
   font-weight: bold;
   position: fixed;
   background: $c-bad;
-  color: $c-over;
+  // Theme tối: bad/good là màu PASTEL (sinh ra để làm chữ trên nền tối) — làm nền
+  // thì chữ trắng chỉ đạt 2.8:1 / 1.9:1. Cùng bài học "vàng không gánh nổi chữ
+  // trắng": pastel cũng vậy, phải dùng mực tối. Theme sáng thì bad/good là màu đậm,
+  // chữ trắng mới đúng.
+  color: $c-over-accent;
   bottom: 0;
+
+  @include if-light {
+    color: $c-over;
+  }
 
   @include inline-start(0);
 

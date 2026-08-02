@@ -1,43 +1,56 @@
 <!doctype html>
-<html>
+<html lang="vi">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Too many requests • lichess.org</title>
+    <meta content="noindex, nofollow" name="robots" />
+    <meta name="theme-color" content="#070E22" />
+    <title>Quá nhiều yêu cầu • HungKings</title>
     <style>
-      body {
-        max-width: min(100%, 600px);
-        margin: auto;
-        background: #000;
-        text-align: center;
-        padding: 2em 1em;
-      }
-      body,
-      a {
-        color: #ebd488;
-      }
-      code {
-        background: #ebd488;
-        color: black;
-        border: #ebd488;
-        font-size: 2em;
-        display: inline-block;
-        margin: 0.5em 0;
-        word-break: break-all;
+      html, body { margin: 0; padding: 0; background: #070e22; color: #b6c2e2;
+        font: 16px 'Noto Sans', system-ui, sans-serif; text-align: center; }
+      main { max-width: 600px; margin: 0 auto; padding: 12vh 20px 40px; }
+      svg { width: 72px; height: 72px; }
+      h1 { font-family: Cambria, 'Palatino Linotype', Georgia, serif; font-weight: 400;
+        font-style: italic; font-size: 28px; color: #eef2fb; margin: 24px 0 6px; }
+      h1 + p.en-title { font-family: Cambria, Georgia, serif; font-style: italic;
+        opacity: .55; margin: 0 0 24px; }
+      p { line-height: 1.6; margin: 0 0 14px; }
+      .en { opacity: .55; font-size: .92em; }
+      a, a:visited { color: #ffbf00; }
+      code { display: inline-block; background: #ffbf00; color: #241a00;
+        padding: 2px 10px; border-radius: 6px; margin: .5em 0; word-break: break-all; }
+      @media (prefers-reduced-motion: reduce) { .m-2, .m-3 { display: none; } }
+      @media (prefers-color-scheme: light) {
+        html, body { background: #f3f6fc; color: #45507a; }
+        h1 { color: #16204a; }
+        a, a:visited { color: #785900; }
       }
     </style>
   </head>
   <body>
-    <h1>Too many requests • <a href="https://lichess.org">lichess.org</a></h1>
-    <p>
-      Your network has sent too many requests. Wait a moment before
-      <a href="javascript:history.back();">trying again</a>.
-    </p>
-    <p>
-      If you are connecting from a school or chess club, you can contact us at
-      <a href="mailto:contact@lichess.org">contact@lichess.org</a> and ask us to lift the limitation for your
-      IP address.
-    </p>
-    <p>Please mention your IP address in the email: <code>IPADDR</code></p>
+    <main>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true">
+        <g fill="none" stroke="#FFBF00" stroke-width="4.25">
+          <path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+          <g class="m-2"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+            <animateTransform attributeName="transform" type="rotate"
+              values="0 24 24; 0 24 24; 40 24 24; 40 24 24; 0 24 24" keyTimes="0; 0.44; 0.56; 0.88; 1"
+              calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+              dur="18s" repeatCount="indefinite"/></g>
+          <g class="m-3"><path d="M 7.55 14.5 L 40.45 14.5 L 24 43 Z"/>
+            <animateTransform attributeName="transform" type="rotate"
+              values="0 24 24; 0 24 24; 80 24 24; 80 24 24; 0 24 24" keyTimes="0; 0.44; 0.56; 0.88; 1"
+              calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+              dur="18s" repeatCount="indefinite"/></g>
+        </g>
+      </svg>
+      <h1>Mạng của bạn gửi quá nhiều yêu cầu</h1>
+      <p class="en-title">Too many requests from your network</p>
+      <p>Hãy đợi một lát rồi <a href="javascript:history.back();">thử lại</a>. Nếu bạn kết nối từ trường học hoặc câu lạc bộ cờ, hãy viết thư tới <a href="mailto:contact@hungkings.com">contact@hungkings.com</a> kèm địa chỉ IP dưới đây để được nới giới hạn.</p>
+      <p class="en">Wait a moment before trying again. Schools and chess clubs can email us to lift the limit.</p>
+      <p><code>IPADDR</code></p>
+    </main>
+    
   </body>
 </html>

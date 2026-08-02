@@ -18,6 +18,9 @@ object embed:
           page.ui.viewport,
           page.ui.metaCsp(embedCsp.withNonce(ctx.nonce).withInlineIconFont),
           st.headTitle(title),
+          // Trang embed trước đây không mang favicon nào — tab hiển thị mark mặc định
+          // trình duyệt thay vì mark HungKings.
+          page.ui.favicons,
           (ctx.bg == "system").option(page.ui.systemThemeScript(ctx.nonce.some)),
           page.pieceSetImages.load(ctx.pieceSet.name),
           cssTag("lib.theme.embed"),
@@ -64,6 +67,7 @@ object embed:
           page.ui.viewport,
           page.ui.metaCsp(csp(basicCsp.withNonce(ctx.nonce).withInlineIconFont)),
           st.headTitle(title),
+          page.ui.favicons,
           (ctx.bg == "system").option(page.ui.systemThemeScript(ctx.nonce.some)),
           page.pieceSetImages.load(ctx.pieceSet.name),
           cssTag("lib.theme.embed"),

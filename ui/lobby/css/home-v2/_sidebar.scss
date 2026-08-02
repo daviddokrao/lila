@@ -26,6 +26,19 @@
   }
 }
 
+// Mark thuong hieu cho sidebar + mobilebar. _title.scss chi override glyph trong
+// .site-title, nen hai cho nay PHAI tu ve mark — khong thi font glyph goc (con ma
+// Lichess) lo ra dung luc header that bi noHeader an di. Background chu khong mask
+// (mask dong bang SMIL), giu 1em de an theo font-size nhu glyph.
+.hv2-side__brand .site-icon::before,
+.hv2-mobilebar__brand .site-icon::before {
+  content: '';
+  display: block;
+  width: 1em;
+  height: 1em;
+  background: url('../logo/lichess-favicon.svg') center / contain no-repeat;
+}
+
 // ---------- sidebar ----------
 aside#top.hv2-side {
   // Ghi de #top cua header/_header.scss: khong fixed, khong gioi han chieu cao 60px.

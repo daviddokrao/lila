@@ -149,6 +149,24 @@ export function view(ctrl: AnalyseCtrl): VNode {
           i18n.site.continueFromHere,
         ),
       studyButton(ctrl),
+      // Link sang bot giải thích ván tiếng Việt (service ngoài lila). Round đã có nút
+      // này ở follow-up, nhưng ván ĐÃ KẾT THÚC mở lại theo đường thường thì rơi vào
+      // analyse — thiếu nó là mất lối vào coach ở đúng chỗ người ta xem lại ván.
+      !ctrl.synthetic &&
+        !ctrl.ongoing &&
+        ctrl.data.game.status.id >= 30 &&
+        hl(
+          'a',
+          {
+            attrs: {
+              href: `https://hungkings-coach.vssa.com/${d.game.id}`,
+              target: '_blank',
+              rel: 'noopener',
+              'data-icon': licon.BubbleSpeech,
+            },
+          },
+          'Giải thích ván (AI)',
+        ),
       ctrl.idbTree.movesDirty &&
         hl(
           'a',

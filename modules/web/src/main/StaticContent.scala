@@ -25,30 +25,17 @@ Allow: /game/export/gif/thumbnail/
       "short_name" -> "HungKings",
       "start_url" -> "/",
       "display" -> "standalone",
-      "background_color" -> "#161512",
-      "theme_color" -> "#161512",
-      "description" -> "The (really) free, no-ads, open source chess server.",
+      // Màu nền HungKings (khớp --c-bg-page theme tối) — trước là nâu Lichess #161512.
+      "background_color" -> "#070e22",
+      "theme_color" -> "#070e22",
+      "description" -> "Chơi cờ vua trực tuyến miễn phí, không quảng cáo. Free online chess.",
       "icons" -> List(32, 64, 128, 192, 256, 512, 1024).map: size =>
         Json.obj(
           "src" -> s"//${net.assetDomain}/assets/logo/lichess-favicon-$size.png",
           "sizes" -> s"${size}x$size",
           "type" -> "image/png"
-        ),
-      "related_applications" -> Json.arr(
-        Json.obj(
-          "platform" -> "play",
-          "url" -> mobileAndroidUrl,
-          "id" -> mobileAndroidId
-        ),
-        Json.obj(
-          "platform" -> "itunes",
-          "url" -> mobileIosUrl
-        ),
-        Json.obj(
-          "platform" -> "ios",
-          "url" -> mobileIosUrl
         )
-      )
+      // related_applications đã gỡ: nó trỏ app store của Lichess, HungKings chưa có app.
     )
 
   val mobileAndroidId = "org.lichess.mobileV2"

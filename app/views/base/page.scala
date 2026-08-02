@@ -72,7 +72,8 @@ object page:
             content := p.openGraph.fold(trans.site.siteDescription.txt())(o => o.description),
             name := "description"
           ),
-          link(rel := "mask-icon", href := staticAssetUrl("logo/lichess.svg"), attr("color") := "black"),
+          // Safari pinned tab: ghim màu vàng logo thay vì đen mặc định
+          link(rel := "mask-icon", href := staticAssetUrl("logo/lichess.svg"), attr("color") := "#FFBF00"),
           favicons,
           (p.flags(PageFlags.noRobots) || !netConfig.crawlable).option(noRobots),
           noTranslate,
