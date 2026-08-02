@@ -59,6 +59,20 @@ function analysisButton(ctrl: RoundController): VNode | false {
   );
 }
 
+// Liên kết sang bot giải thích ván bằng tiếng Việt (service riêng, ngoài lila).
+// Chỉ hiện khi ván đã kết thúc — bot đọc PGN của ván đã xong.
+function coachButton(ctrl: RoundController): VNode | false {
+  const d = ctrl.data;
+  return (
+    finished(d) &&
+    hl(
+      'a.fbt',
+      { attrs: { href: `https://9kings-coach.vssa.com/${d.game.id}`, target: '_blank', rel: 'noopener' } },
+      'Giải thích ván (AI)',
+    )
+  );
+}
+
 function rematchButtons(ctrl: RoundController): LooseVNodes {
   const d = ctrl.data,
     me = !!d.player.offeringRematch,
@@ -286,6 +300,7 @@ export function followUp(ctrl: RoundController): VNode {
         i18n.site.newOpponent,
       ),
     analysisButton(ctrl),
+    coachButton(ctrl),
   ]);
 }
 
@@ -303,6 +318,7 @@ export function watcherFollowUp(ctrl: RoundController): LooseVNode {
 
       d.swiss && hl('a.fbt', { attrs: { href: '/swiss/' + d.swiss.id } }, i18n.site.viewTournament),
       analysisButton(ctrl),
+      coachButton(ctrl),
     ];
   return content.find(x => !!x) && hl('div.follow-up', content);
 }
