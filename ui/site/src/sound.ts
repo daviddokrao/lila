@@ -34,7 +34,10 @@ export default new (class implements SoundI {
 
   primer = async () => {
     const ctx = await this.ctxPromise;
-    await ctx.resume();
+    // iOS đóng hẳn AudioContext khi bị ngắt (khoá màn hình, cuộc gọi) — resume() trên
+    // context 'closed' reject InvalidStateError thành unhandled rejection. Nuốt lỗi ở
+    // đây là đủ: play() -> resumeWithTest() sẽ tự dựng context mới khi cần.
+    await ctx.resume().catch(() => {});
     setTimeout(() => $('#warn-no-autoplay').removeClass('shown'), 500);
     for (const e of this.primerEvents) window.removeEventListener(e, this.primer, { capture: true });
   };
@@ -210,7 +213,9 @@ export default new (class implements SoundI {
   sayOrPlay = (name: string, text: string) => this.say(text) || this.play(name);
 
   changeSet = (s: string) => {
-    if (isIos()) this.ctx?.resume();
+    // Chỉ resume khi 'suspended' — context 'closed'/'interrupted' (iOS) sẽ reject, và
+    // promise thả trôi ở đây từng thành popup lỗi trên demo (site.debug).
+    if (isIos() && this.ctx?.state === 'suspended') this.ctx.resume().catch(() => {});
     this.theme = s;
   };
 
