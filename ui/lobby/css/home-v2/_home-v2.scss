@@ -7,6 +7,9 @@ main.home-v2 {
   display: flex;
   flex-direction: column;
   ---cols: 2;
+  // Container cho cac @container query ben duoi: khi co sidebar (vong 3) noi dung hep
+  // di 238px o cung viewport, media query theo viewport se lech dung bay nhieu.
+  container-type: inline-size;
 
   .lobby__about {
     display: flex;
@@ -50,7 +53,7 @@ main.home-v2 {
   grid-template-columns: 1fr 240px;
   gap: 24px;
 
-  @media (max-width: 900px) {
+  @container (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }
@@ -113,7 +116,7 @@ main.home-v2 {
   // BAT BUOC: cot ban co co min 280px, cong cot chu + padding thi min-content cua hero
   // la ~423px -> tren may 360px ca trang tran ngang 63px. Chi lo ra khi hero co ban co
   // THAT (nhanh replay/live); do luc hero rong se dau gia.
-  @media (max-width: 700px) {
+  @container (max-width: 700px) {
     grid-template-columns: 1fr;
     gap: 18px;
     padding: 16px;
@@ -207,11 +210,11 @@ main.home-v2 {
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
 
-  @media (max-width: 1000px) {
+  @container (max-width: 1000px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 550px) {
+  @container (max-width: 550px) {
     grid-template-columns: 1fr;
   }
 }
@@ -282,7 +285,7 @@ main.home-v2 {
   align-items: start;
   gap: 24px;
 
-  @media (max-width: 900px) {
+  @container (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }
@@ -341,7 +344,7 @@ main.home-v2 {
   border-radius: 14px;
   padding: 24px;
 
-  @media (max-width: 900px) {
+  @container (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }
@@ -351,7 +354,7 @@ main.home-v2 {
   gap: 0;
   counter-reset: hv2-step;
 
-  @media (max-width: 900px) {
+  @container (max-width: 900px) {
     flex-direction: column;
   }
 }
@@ -382,7 +385,7 @@ main.home-v2 {
   & + & {
     border-left: $border;
 
-    @media (max-width: 900px) {
+    @container (max-width: 900px) {
       border-left: none;
     }
   }
@@ -411,7 +414,7 @@ main.home-v2 {
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
 
-  @media (max-width: 900px) {
+  @container (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }

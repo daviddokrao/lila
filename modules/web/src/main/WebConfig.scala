@@ -13,7 +13,9 @@ final class WebConfig(
     val prometheusKey: String,
     val pagerDuty: WebConfig.PagerDuty,
     // HungKings: trang chủ v2 sau cờ (rollback bằng env LILA_HOME_V2, không cần rebuild)
-    val homeV2: Boolean
+    val homeV2: Boolean,
+    // HungKings: sidebar trang chủ v2 (vòng 3) — chỉ có nghĩa khi homeV2 bật
+    val homeSidebar: Boolean
 )
 
 object WebConfig:
@@ -40,7 +42,8 @@ object WebConfig:
         c.get[String]("pagerDuty.serviceId"),
         c.get[Secret]("pagerDuty.apiKey")
       ),
-      c.get[Boolean]("net.home.v2")
+      c.get[Boolean]("net.home.v2"),
+      c.get[Boolean]("net.home.sidebar")
     )
 
   def analyseEndpoints(c: Configuration) =

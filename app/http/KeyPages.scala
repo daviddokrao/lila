@@ -60,7 +60,7 @@ final class KeyPages(val env: Env)(using Executor)
               else homeV2Replay.get {}
             page <- renderPage:
               lila.mon.chronoSync(lila.mon.lobby.segment("renderSync")):
-                views.lobby.homeV2(h, multiview, leaderboards, replay)
+                views.lobby.homeV2(h, multiview, leaderboards, replay, env.web.config.homeSidebar)
           yield page
         else
           renderPage:

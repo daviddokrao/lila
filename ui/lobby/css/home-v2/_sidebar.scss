@@ -1,0 +1,275 @@
+// Sidebar trang chu v2 (vong 3, co LILA_HOME_SIDEBAR, chi khach vang lai).
+//
+// Sidebar mang id="top" DE topBar.ts (dasher/theme/ngon ngu/tim kiem, selector `#top ...`)
+// chay mien phi — nhung ui/lib/css/header/_header.scss cung style #top (fixed khi
+// mq-sticky-header, .hide{translateY(-100%)} khi cuon xuong, .scrolled doi nen).
+// MOI override o day dung selector `aside#top.hv2-side` (id+class+type) de thang `#top`
+// (id) o MOI media query ma khong can lap lai mixin cua lib.
+
+// ---------- shell: 2 cot khi >=1020px (khop $topnav-visible) ----------
+#main-wrap:has(> aside.hv2-side) {
+  // Khong con header nen bo khoang cho header cu (ke ca ban mq-sticky-header).
+  margin-top: 0;
+
+  @media (min-width: 1020px) {
+    grid-template-areas: 'side gapl main gapr';
+    grid-template-columns: 238px 3vw minmax(0, 1fr) 3vw;
+  }
+
+  // Bay body.clinput: tren thiet bi cham (hover:none), focus o tim kiem lam
+  // layout/_base.scss AN CA #main-wrap — ma o input lan sidebar deu nam TRONG do,
+  // tuc bam tim kiem la ca trang bien mat. Vo hieu cho rieng layout sidebar.
+  @media (hover: none) {
+    body.clinput & {
+      display: grid;
+    }
+  }
+}
+
+// ---------- sidebar ----------
+aside#top.hv2-side {
+  // Ghi de #top cua header/_header.scss: khong fixed, khong gioi han chieu cao 60px.
+  position: sticky;
+  top: 0;
+  grid-area: side;
+  height: auto;
+  max-height: 100dvh;
+  max-width: unset;
+  margin: 0;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 16px;
+  overflow-y: auto;
+  background: $c-bg-box;
+  border-right: $border;
+  border-bottom: none;
+  z-index: 106;
+
+  // topBar.ts gan .hide/.scrolled vao #top khi cuon — sidebar khong duoc tu bien mat,
+  // khong duoc doi nen, va dropdown ben trong van phai bam duoc.
+  &.hide {
+    transform: none;
+
+    #topnav,
+    .dropdown {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+  }
+
+  &.scrolled {
+    background-image: none;
+    border-color: $c-border;
+  }
+
+  .hv2-side__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $c-font-clear;
+
+    .site-icon::before {
+      font-size: 30px;
+    }
+
+    .site-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+  }
+
+  .hv2-side__auth {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .signin-or-signup {
+      display: flex;
+      flex: 1;
+      gap: 8px;
+
+      a {
+        flex: 1;
+        text-align: center;
+      }
+    }
+
+    .dasher {
+      position: relative;
+    }
+  }
+
+  .hv2-side__note {
+    margin: 0;
+    font-size: 0.78rem;
+    color: $c-font-dim;
+  }
+
+  .hv2-side__search {
+    #clinput {
+      display: flex;
+
+      input {
+        width: 100%;
+      }
+    }
+  }
+
+  .hv2-side__nav {
+    display: flex;
+    flex-direction: column;
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      color: $c-font;
+
+      @include transition(color background-color);
+
+      &:hover {
+        color: $c-accent;
+        background: rgb(from $c-accent r g b / calc(alpha * 0.08));
+      }
+    }
+  }
+
+  .hv2-side__new {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 20px;
+    background: $c-accent;
+    color: $c-over-accent;
+  }
+
+  .hv2-side__btns {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: auto; // day cum nut + stats xuong day sidebar
+  }
+
+  .hv2-side__stats {
+    margin: 0;
+    font-size: 0.75rem;
+    color: $c-font-dim;
+  }
+}
+
+// ---------- mobilebar + drawer (<1020px) ----------
+.hv2-mobilebar {
+  display: none;
+}
+
+.hv2-scrim {
+  display: none;
+}
+
+@media (max-width: 1019.98px) {
+  .hv2-mobilebar {
+    position: sticky;
+    top: 0;
+    z-index: 105;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+    height: 52px;
+    background: $c-bg-box;
+    border-bottom: $border;
+
+    &__menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      span {
+        display: block;
+        height: 2px;
+        width: 100%;
+        background: $c-font;
+      }
+    }
+
+    &__brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      color: $c-font-clear;
+
+      .site-icon::before {
+        font-size: 24px;
+      }
+    }
+
+    &__login {
+      margin-left: auto;
+      font-weight: 700;
+      color: $c-accent;
+    }
+  }
+
+  // Drawer: sidebar truot tu trai; mo/dong bang class tren body (bits.homeV2Sidebar)
+  aside#top.hv2-side {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(80vw, 300px);
+    height: 100dvh;
+    max-height: none;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 120;
+
+    body.hv2-drawer-open & {
+      transform: translateX(0);
+    }
+
+    // .hide cua topBar van phai thua transform cua drawer
+    &.hide {
+      transform: translateX(-100%);
+    }
+
+    body.hv2-drawer-open &.hide {
+      transform: translateX(0);
+    }
+
+    // Bay body.clinput (o tren) da giu #main-wrap hien; nhung tren man cham nho van
+    // KHONG bay o tim kiem trong drawer de khoi vuong ban phim ao che het — an di,
+    // tim kiem con o menu Cong dong / trang tim kiem.
+    .hv2-side__search {
+      display: none;
+    }
+  }
+
+  .hv2-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 0.55);
+    z-index: 119;
+
+    body.hv2-drawer-open & {
+      display: block;
+    }
+  }
+
+  body.hv2-drawer-open {
+    overflow: hidden;
+  }
+}
