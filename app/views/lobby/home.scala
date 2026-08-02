@@ -10,14 +10,10 @@ object home:
 
   def apply(homepage: Homepage)(using ctx: Context) =
     import homepage.*
-    val donateLink =
-      a(cls := "lobby__support-link", href := routes.Plan.index())(
-        iconTag(patronIconChar),
-        span(cls := "lobby__support-link__text")(
-          strong(trans.patron.donate()),
-          span(trans.patron.becomePatron())
-        )
-      )
+    // HungKings không nhận quyên góp, nên gỡ luôn hai nút "Donate" trên TRANG CHỦ
+    // (hộp lobby__support và cạnh lobby__tv). Backend Plan giữ nguyên; chỉ ẩn lối vào.
+    // Muốn mở lại thì trả về link `a(cls := "lobby__support-link", href := routes.Plan.index())(...)`.
+    val donateLink = emptyFrag
     // Nút "Swag Store" của upstream trỏ /swag, mà /swag chuyển hướng sang
     // lichess.myspreadshop.net — cửa hàng đồ lưu niệm CỦA LICHESS. Đặt trên TRANG
     // CHỦ dưới thương hiệu HungKings thì thành ra mời khách đi mua đồ của bên khác.
