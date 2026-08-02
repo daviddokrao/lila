@@ -44,6 +44,12 @@ object homeV2:
       case "classical" => t("Cờ chậm", "Classical")
       case _           => c.name
 
+    // Tên kênh đứng GIỮA câu phải viết thường, không thì ra "Chơi Cờ chớp". Tiếng Anh giữ
+    // nguyên vì "Chess960" là danh từ riêng.
+    def channelNameMid(c: lila.tv.Tv.Channel): String =
+      val n = channelName(c)
+      if ctx.lang.language == "vi" && n.nonEmpty then s"${n.head.toLower}${n.tail}" else n
+
     def zlabel(title: String, more: Option[(String, String)] = None) =
       div(cls := "hv2-zlabel")(
         span(cls := "hv2-tick"),
@@ -131,7 +137,7 @@ object homeV2:
                 div(cls := "hv2-mv__note")(
                   span(t("Chưa có ván — mở màn kênh này", "No game yet — open this channel")),
                   a(cls := "hv2-btn hv2-btn--line hv2-btn--sm", href := "#hv2-play")(
-                    t("Chơi ", "Play ") + channelName(channel)
+                    t("Chơi ", "Play ") + channelNameMid(channel)
                   )
                 )
               )
@@ -190,15 +196,23 @@ object homeV2:
     // Chế độ trẻ em: upstream giấu hẳn khối streamer ở home.scala — giữ đúng luật đó.
     val communityStreams: Frag = ctx.kid.no.option(streamsFrag)
 
+    // Giữ khung kể cả khi chưa có bài — cùng lối với khối streamer. Bỏ hẳn khối thì lưới
+    // 3 cột của zone Cộng đồng thủng mất một cột.
     val blogFrag: Frag =
-      ublogPosts.nonEmpty.option(
-        frag(
-          h3(cls := "hv2-ct")(t("Blog cộng đồng", "Community blog")),
+      frag(
+        h3(cls := "hv2-ct")(t("Blog cộng đồng", "Community blog")),
+        if ublogPosts.isEmpty then
+          div(cls := "hv2-empty")(
+            span(t("Chưa có bài viết nào — bạn kể ván cờ của mình nhé?", "No posts yet — tell us about your game?")),
+            a(cls := "hv2-btn hv2-btn--line hv2-btn--sm", href := routes.Ublog.communityAll())(
+              t("Xem blog cộng đồng", "Browse the blog")
+            )
+          )
+        else
           div(cls := "hv2-posts")(
             ublogPosts.take(4).map: post =>
               a(cls := "hv2-post", href := views.ublog.ui.urlOfPost(post))(post.title)
           )
-        )
       )
 
     val starterFrag: Frag =
