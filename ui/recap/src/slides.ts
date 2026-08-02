@@ -118,9 +118,9 @@ const noFlair = (o: LightUser): VNode => {
         o.id,
         (() =>
           shuffle([
-            'activity.lichess-horsey',
-            'activity.lichess-hogger',
-            'activity.lichess-horsey-yin-yang',
+            'activity.chess',
+            'activity.chess-pawn',
+            'activity.fireworks',
           ])[0])(),
       )
       .get(o.id)!;

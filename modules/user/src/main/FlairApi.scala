@@ -22,7 +22,9 @@ object FlairApi:
   def formPair(asMod: Boolean) =
     "flair" -> formField(anyFlair = false, asMod = asMod)
 
-  val adminFlairs: Set[Flair] = Set(Flair("activity.lichess"))
+  // Trước là Set(Flair("activity.lichess")) — flair staff riêng của Lichess, đã gỡ khỏi
+  // public/flair/list.txt. HungKings không có flair admin đặc biệt nên để rỗng.
+  val adminFlairs: Set[Flair] = Set.empty
 
   private[user] object badFlairs:
     private type Pair = (UserId, Flair)
