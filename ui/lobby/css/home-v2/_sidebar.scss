@@ -78,6 +78,15 @@ aside#top.hv2-side {
     border-color: $c-border;
   }
 
+  // Panel con xổ RA NGOÀI cột, mà `overflow-y:auto` ở trên CẮT CỤT nó (một trục khác
+  // `visible` thì trục kia cũng thành `auto` — luật của CSS, không lách được). Nên phải
+  // trả về `visible`, nhưng CHỈ khi màn đủ cao để cột không cần cuộn: nội dung cột đo
+  // được ~600px, dưới 640px thì giữ `auto` và panel bị cắt (chấp nhận — link cha vẫn
+  // bấm được), đổi lại không bao giờ có cảnh cột tràn đè lên nội dung chính.
+  @media (min-width: 1020px) and (min-height: 640px) {
+    overflow: visible;
+  }
+
   .hv2-side__brand {
     display: flex;
     align-items: center;
@@ -193,6 +202,65 @@ aside#top.hv2-side {
     color: $c-font-dim;
 
     @include transition(color);
+  }
+
+  // ---------- panel con xổ ngang (kiểu Chess.com) ----------
+  .hv2-side__item {
+    position: relative;
+  }
+
+  .hv2-side__sub {
+    position: absolute;
+    top: -10px;
+    inset-inline-start: calc(100% + 18px); // +18 = padding phải của sidebar → panel sát mép ngoài cột
+    z-index: 10;
+    min-width: 208px;
+    padding: 8px;
+    border: $border;
+    border-radius: 14px;
+    background: $c-bg-box;
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.35);
+    opacity: 0;
+    visibility: hidden;
+
+    @include transition(opacity);
+
+    // Cầu nối vô hình lấp đúng 18px trống giữa mục và panel. Không có nó thì rê chuột
+    // ngang qua khe là panel tắt giữa chừng — lỗi kinh điển của menu xổ ngang.
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      inset-inline-start: -18px;
+      width: 18px;
+    }
+
+    a {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      color: $c-font;
+
+      @include transition(color background-color);
+
+      &:hover {
+        color: $c-accent;
+        background: rgb(from $c-accent r g b / calc(alpha * 0.08));
+      }
+    }
+  }
+
+  // Mở khi rê chuột, VÀ khi mục cha nhận focus bàn phím. Cặp `a:focus + .hv2-side__sub`
+  // là BẮT BUỘC chứ không thừa: phần tử `visibility:hidden` KHÔNG nhận được focus, nên
+  // chỉ dựa vào `:focus-within` thì Tab không bao giờ vào nổi panel — nó phải hiện ra
+  // TRƯỚC. Hiện rồi thì `:focus-within` giữ mở suốt lúc Tab qua các mục con.
+  .hv2-side__item:hover .hv2-side__sub,
+  .hv2-side__item > a:focus + .hv2-side__sub,
+  .hv2-side__item:focus-within .hv2-side__sub {
+    opacity: 1;
+    visibility: visible;
   }
 
   .hv2-side__lb {
@@ -397,6 +465,13 @@ aside#top.hv2-side {
     // KHONG bay o tim kiem trong drawer de khoi vuong ban phim ao che het — an di,
     // tim kiem con o menu Cong dong / trang tim kiem.
     .hv2-side__search {
+      display: none;
+    }
+
+    // Panel con TẮT trong drawer: drawer vẫn `overflow-y:auto` (nội dung có thể dài hơn
+    // màn điện thoại) nên panel xổ ngang sẽ bị cắt, mà xổ ngang trên màn hẹp cũng không
+    // còn chỗ. Chạm vào mục cha đi thẳng tới trang — đúng kỳ vọng trên điện thoại.
+    .hv2-side__sub {
       display: none;
     }
   }

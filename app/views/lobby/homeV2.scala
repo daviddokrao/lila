@@ -302,12 +302,19 @@ object homeV2:
     // Biểu tượng đứng trước nhãn, mỗi mục một dòng — mượn cách của Chess.com nhưng dùng
     // bộ biểu tượng SẴN CÓ của lila (font `lichess`, đã đổi thương hiệu) chứ không kéo
     // thêm bộ icon mới. `extra` là chỗ cho huy hiệu MỚI.
-    def navItem(url: String, icon: Icon, label: Frag, extra: Modifier*) =
-      a(href := url)(
-        span(cls := "hv2-side__ico", dataIcon := icon),
-        span(cls := "hv2-side__lb")(label),
-        extra
+    def navItem(url: String, icon: Icon, label: Frag, extra: Modifier*)(subs: Frag*) =
+      // Mỗi mục là một khối riêng để panel con neo được theo nó (position:relative).
+      // Panel xổ ngang sang phải khi rê chuột HOẶC khi nhận focus bàn phím — xem
+      // _sidebar.scss, đặc biệt phần vì sao sidebar phải bỏ `overflow-y:auto`.
+      div(cls := "hv2-side__item")(
+        a(href := url)(
+          span(cls := "hv2-side__ico", dataIcon := icon),
+          span(cls := "hv2-side__lb")(label),
+          extra
+        ),
+        subs.nonEmpty.option(div(cls := "hv2-side__sub")(subs))
       )
+    def subItem(url: String, label: Frag) = a(href := url)(label)
     val sidebarFrag: Option[Frag] = useSidebar.option:
       frag(
         st.aside(id := "top", cls := "hv2-side", aria.label := "HungKings")(
@@ -321,18 +328,51 @@ object homeV2:
           st.nav(cls := "hv2-side__nav", aria.label := t("Điều hướng chính", "Main navigation"))(
             // P0.7 (David chốt 03/08): /tv 404 khi chưa có ván rated người thật — tạm trỏ
             // /games (Current games, luôn 200). Khi broadcast relay (P1.6) chạy → /broadcast.
-            navItem(routes.Tv.games.url, Icon.AnalogTv, t("Trực tiếp", "Live")),
-            navItem("#hv2-play", Icon.PlayTriangle, t("Chơi", "Play")),
-            navItem(routes.Puzzle.home.url, Icon.ArcheryTarget, t("Câu đố", "Puzzles")),
-            navItem(routes.Learn.index.url, Icon.GraduateCap, t("Học cờ", "Learn")),
+            // MỌI liên kết con dưới đây đã curl kiểm mã trạng thái trên bản live 03/08.
+            // `/tv` CỐ Ý vắng mặt: nó 404 vĩnh viễn tới khi có ván tiêu chuẩn tính hệ số
+            // của người thật (xem HANDOFF, mục "/tv trả 404 là ĐÚNG").
+            navItem(routes.Tv.games.url, Icon.AnalogTv, t("Trực tiếp", "Live"))(
+              subItem(routes.Tv.games.url, t("Ván đang diễn ra", "Current games")),
+              subItem(routes.RelayTour.index().url, t("Tiếp sóng giải đấu", "Broadcasts")),
+              subItem(routes.Streamer.index().url, t("Người phát trực tiếp", "Streamers"))
+            ),
+            // #ai/#friend/#hook mở thẳng hộp thoại tạo ván — ctrl.ts nghe hashchange
+            // (Mốc B). #hv2-play chỉ cuộn tới khối xếp cặp.
+            navItem("#hv2-play", Icon.PlayTriangle, t("Chơi", "Play"))(
+              subItem("#hv2-play", t("Xếp cặp nhanh", "Quick pairing")),
+              subItem("#hook", t("Tạo ván tại sảnh", "Create a game")),
+              subItem("#friend", t("Thách đấu bạn bè", "Play a friend")),
+              subItem("#ai", t("Chơi với máy", "Play the computer"))
+            ),
+            navItem(routes.Puzzle.home.url, Icon.ArcheryTarget, t("Câu đố", "Puzzles"))(
+              subItem(routes.Puzzle.home.url, t("Câu đố hằng ngày", "Daily puzzle")),
+              subItem(routes.Puzzle.themes.url, t("Theo chủ đề", "Puzzle themes")),
+              subItem(routes.Storm.home.url, t("Bão câu đố", "Puzzle storm")),
+              subItem(routes.Racer.home.url, t("Đua câu đố", "Puzzle racer")),
+              // /streak thuộc controller Puzzle chứ không có controller riêng
+              subItem(routes.Puzzle.streak.url, t("Chuỗi thắng", "Puzzle streak"))
+            ),
+            navItem(routes.Learn.index.url, Icon.GraduateCap, t("Học cờ", "Learn"))(
+              subItem(routes.Learn.index.url, t("Học cơ bản", "Chess basics")),
+              subItem(routes.Practice.index.url, t("Luyện thế cờ", "Practice")),
+              subItem(routes.UserAnalysis.index.url, t("Bàn phân tích", "Analysis board")),
+              subItem(routes.Study.allDefault().url, t("Nghiên cứu", "Studies"))
+            ),
             navItem(
               coachUrl,
               Icon.Cpu,
               t("Huấn luyện AI", "AI coach"),
               span(cls := "hv2-side__new")(t("MỚI", "NEW"))
+            )(),
+            navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments"))(
+              subItem(routes.Tournament.home.url, t("Đấu trường", "Arenas")),
+              subItem(routes.Tournament.calendar.url, t("Lịch giải", "Calendar"))
             ),
-            navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments")),
-            navItem("#hv2-comm", Icon.Group, t("Cộng đồng", "Community"))
+            navItem("#hv2-comm", Icon.Group, t("Cộng đồng", "Community"))(
+              subItem(routes.User.list.url, t("Kỳ thủ", "Players")),
+              subItem(routes.Team.home().url, t("Đội", "Teams")),
+              subItem(routes.ForumCateg.index.url, t("Diễn đàn", "Forum"))
+            )
           ),
           // Cụm đáy: tìm kiếm → mời đăng ký → đăng nhập → cài đặt. Cài đặt xuống DÒNG
           // CUỐI vì (a) là việc làm một lần, (b) bảng dasher bung ra từ đây phải mở
