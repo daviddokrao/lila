@@ -179,8 +179,18 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
       div(id := "dasher_app", cls := "dropdown")
     )
 
-  def anonDasher(using ctx: Context) =
+  // Tách riêng vì sidebar trang chủ v2 đặt nút đăng nhập/đăng ký và bánh răng ở HAI chỗ
+  // khác nhau (auth ở giữa cụm đáy, cài đặt xuống dòng cuối). Cấu trúc
+  // `.dasher > .toggle` + `#dasher_app.dropdown` là HỢP ĐỒNG với topBar.ts — nó bắt
+  // `#top .dasher .toggle` để nạp dasher, và gắn `.shown` vào THẺ CHA. Đừng đổi.
+  def anonDasherGear(using ctx: Context) =
     val prefs = trans.preferences.preferences.txt()
+    div(cls := "dasher")(
+      button(cls := "toggle anon link", title := prefs, aria.label := prefs, dataIcon := Icon.Gear),
+      div(id := "dasher_app", cls := "dropdown")
+    )
+
+  def anonDasher(using ctx: Context) =
     frag(
       div(cls := "signin-or-signup")(
         a(
@@ -192,10 +202,7 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
         ),
         a(href := routes.Auth.signup, cls := "button signup")(trans.site.signUp())
       ),
-      div(cls := "dasher")(
-        button(cls := "toggle anon link", title := prefs, aria.label := prefs, dataIcon := Icon.Gear),
-        div(id := "dasher_app", cls := "dropdown")
-      )
+      anonDasherGear
     )
 
   def sitePreload(i18nMods: List[I18nModule.Selector], modules: EsmList)(using ctx: Context) =

@@ -95,71 +95,22 @@ aside#top.hv2-side {
     }
   }
 
-  // Các mảnh tái dùng từ header (auth/search/theme/lang) THỪA HƯỞNG kích thước 60px
-  // của thanh ngang (vì cùng nằm trong #top) — trong sidebar phải ép lại thành ô 38px,
-  // không thì bánh răng dính sát mép, ô tìm kiếm cao 60px trong suốt trông như vỡ dòng
-  // (đúng các lỗi David chụp 03/08).
-  .hv2-side__auth {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    // XEP DOC, khong phai ngang. Sidebar rong 238 - 36 padding = 202px; tru nut banh
-    // rang 38 + 2 khoang 8 thi hai nut nam ngang chi con 74px MOI CAI, trong khi
-    // "Dang nhap" viet hoa can 108px va "Dang ky" can 87px -> ca hai bi cat thanh
-    // "DANG..." (loi David chup 03/08). Do o TIENG VIET, CHUA dang nhap — tieng Anh
-    // ("Sign in" 77px) chi thieu 1px nen gan nhu khong lo ra.
-    .signin-or-signup {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      min-width: 0;
-      gap: 8px;
-
-      a {
-        flex: none;
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-
-    .dasher {
-      position: relative;
-      flex: none;
-
-      .toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        border: $border;
-        border-radius: 8px;
-        color: $c-font-dim;
-
-        @include transition(color border-color);
-
-        &:hover {
-          color: $c-accent;
-          border-color: $c-accent;
-        }
-      }
-    }
-  }
-
-  // Dropdown dasher: CSS gốc neo theo header ngang — trong sidebar phải bung ngay
-  // dưới nút (id để thắng selector #dasher_app của dasher css).
+  // Bảng dasher bung NGƯỢC LÊN, vì bánh răng nay nằm ở dòng cuối cột. Neo theo `bottom`
+  // chứ không `top` — để `top` thì bảng đổ xuống ngoài khung, sidebar `overflow-y:auto`
+  // cắt cụt nó. `top: auto` là BẮT BUỘC: CSS gốc của dasher neo theo header ngang nên
+  // có sẵn `top`, không huỷ thì hai neo đánh nhau và bảng kéo giãn hết cột (đúng cái
+  // David chụp 03/08 — bảng đè lên chữ bên dưới). id để thắng selector #dasher_app.
   #dasher_app.dropdown {
-    top: calc(100% + 4px);
+    top: auto;
+    bottom: calc(100% + 8px);
     left: 0;
     right: auto;
   }
 
   .hv2-side__note {
     margin: 0;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
     color: $c-font-dim;
   }
 
@@ -202,14 +153,19 @@ aside#top.hv2-side {
     }
   }
 
+  // Điều hướng: biểu tượng + nhãn, mỗi mục một dòng (cách xếp của Chess.com). Huy hiệu
+  // MỚI đẩy về cuối dòng bằng margin-inline-start:auto chứ KHÔNG phải
+  // justify-content:space-between như bản cũ — space-between sẽ tách luôn biểu tượng
+  // khỏi nhãn, thành ba cụm rời rạc.
   .hv2-side__nav {
     display: flex;
     flex-direction: column;
+    gap: 2px;
 
     a {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
       padding: 9px 10px;
       border-radius: 8px;
       font-weight: 700;
@@ -220,11 +176,30 @@ aside#top.hv2-side {
       &:hover {
         color: $c-accent;
         background: rgb(from $c-accent r g b / calc(alpha * 0.08));
+
+        .hv2-side__ico {
+          color: $c-accent;
+        }
       }
     }
   }
 
+  .hv2-side__ico {
+    flex: none;
+    width: 22px;
+    font-size: 17px;
+    line-height: 1;
+    color: $c-font-dim;
+
+    @include transition(color);
+  }
+
+  .hv2-side__lb {
+    min-width: 0;
+  }
+
   .hv2-side__new {
+    margin-inline-start: auto;
     font-size: 0.62rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -234,17 +209,44 @@ aside#top.hv2-side {
     color: $c-over-accent;
   }
 
-  .hv2-side__btns {
+  // ---------- cụm đáy: tìm kiếm · mời đăng ký · đăng nhập · cài đặt ----------
+  // margin-top:auto đẩy cả cụm xuống đáy, để lại "khoảng thở" giữa điều hướng và nó —
+  // đúng nhịp của Chess.com. Trước đây chỉ có hàng nút cài đặt được đẩy xuống.
+  .hv2-side__foot {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  // .hv2-btn là inline-flex nên tự co theo chữ; trong cột hẹp phải kéo full bề ngang
+  // và căn giữa, không thì hai nút so le nhau trông như lỗi.
+  .hv2-side__cta,
+  .hv2-side__signin {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hv2-side__tools {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: auto; // day cum nut + stats xuong day sidebar
 
     // form bọc nút theme phải "tan" vào flex, không thì nó thành khối riêng
     form.site-buttons__bg {
       display: contents;
     }
 
+    .dasher {
+      position: relative;
+      flex: none;
+    }
+
+    // Các mảnh tái dùng từ header (bánh răng/theme/ngôn ngữ) THỪA HƯỞNG cỡ 60px của
+    // thanh ngang (vì cùng nằm trong #top) — trong sidebar phải ép lại thành ô 38px,
+    // không thì chúng cao 60px trong suốt, trông như vỡ dòng (lỗi David chụp 03/08).
+    .dasher .toggle,
     .site-buttons__shortcut {
       display: flex;
       align-items: center;
