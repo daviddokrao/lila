@@ -73,6 +73,21 @@ function coachButton(ctrl: RoundController): VNode | false {
   );
 }
 
+// P1.1: mời đăng ký đúng "khoảnh khắc vàng" — khách ẩn danh vừa chơi xong ván.
+// Một dòng link trong follow-up, KHÔNG popup (danh giới đã chốt trong DECISIONS).
+function signupNudge(ctrl: RoundController): VNode | false {
+  const vi = document.documentElement.lang.startsWith('vi');
+  return (
+    finished(ctrl.data) &&
+    !document.body.dataset.user &&
+    hl(
+      'a.fbt',
+      { attrs: { href: '/signup' } },
+      vi ? 'Tạo tài khoản miễn phí — lưu ván, có rating' : 'Free account — save games, get a rating',
+    )
+  );
+}
+
 function rematchButtons(ctrl: RoundController): LooseVNodes {
   const d = ctrl.data,
     me = !!d.player.offeringRematch,
@@ -301,6 +316,7 @@ export function followUp(ctrl: RoundController): VNode {
       ),
     analysisButton(ctrl),
     coachButton(ctrl),
+    signupNudge(ctrl),
   ]);
 }
 

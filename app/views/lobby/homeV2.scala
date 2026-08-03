@@ -312,7 +312,9 @@ object homeV2:
           ),
           div(cls := "hv2-side__search")(pageUi.clinput),
           st.nav(cls := "hv2-side__nav", aria.label := t("Điều hướng chính", "Main navigation"))(
-            a(href := routes.Tv.index)(t("Trực tiếp", "Live")),
+            // P0.7 (David chốt 03/08): /tv 404 khi chưa có ván rated người thật — tạm trỏ
+            // /games (Current games, luôn 200). Khi broadcast relay (P1.6) chạy → /broadcast.
+            a(href := routes.Tv.games)(t("Trực tiếp", "Live")),
             a(href := "#hv2-play")(t("Chơi", "Play")),
             a(href := routes.Puzzle.home)(t("Câu đố", "Puzzles")),
             a(href := routes.Learn.index)(t("Học cờ", "Learn")),
@@ -403,7 +405,7 @@ object homeV2:
           )(
           // ---------- Zone 1: TRỰC TIẾP ----------
           st.section(cls := "hv2-zone hv2-zone--live")(
-            zlabel(t("Trực tiếp", "Live"), Some((t("Tất cả kênh →", "All channels →"), routes.Tv.index.url))),
+            zlabel(t("Trực tiếp", "Live"), Some((t("Tất cả ván →", "All games →"), routes.Tv.games.url))),
             heroFrag,
             multiviewFrag
           ),

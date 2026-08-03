@@ -51,11 +51,11 @@ interface I18n {
     rankedInSwissTournament: I18nFormat;
     /** Ranked #%1$s (top %2$s%%) with %3$s games in %4$s */
     rankedInTournament: I18nPlural;
-    /** Signed up to lichess.org */
+    /** Signed up to HungKings */
     signedUp: string;
     /** Solved %s training puzzles */
     solvedNbPuzzles: I18nPlural;
-    /** Supported lichess.org for %1$s months as a %2$s */
+    /** Supported HungKings for %1$s months as a %2$s */
     supportedNbMonths: I18nPlural;
   };
   app: {
@@ -1111,17 +1111,17 @@ interface I18n {
     emailConfirm_intro: string;
     /** If you did not register with HungKings, you can safely ignore this message. The unconfirmed account and all traces of your email address will be deleted from our system after 48 hours. */
     emailConfirm_justIgnore: string;
-    /** Confirm your lichess.org account, %s */
+    /** Confirm your HungKings account, %s */
     emailConfirm_subject: I18nFormat;
-    /** Log in to lichess.org, %s */
+    /** Log in to HungKings, %s */
     logInToLichess: I18nFormat;
     /** If you made this request, click the link below. If not, you can ignore this email. */
     passwordReset_clickOrIgnore: string;
     /** We received a request to reset the password for your account. */
     passwordReset_intro: string;
-    /** Reset your lichess.org password, %s */
+    /** Reset your HungKings password, %s */
     passwordReset_subject: I18nFormat;
-    /** Welcome to lichess.org, %s */
+    /** Welcome to HungKings, %s */
     welcome_subject: I18nFormat;
     /** You have successfully created your account on https://lichess.org. */
     welcome_text: I18nFormat;
@@ -1167,17 +1167,17 @@ interface I18n {
     eightVariants: string;
     /** Most browsers can prevent sound from playing on a freshly loaded page to protect users. Imagine if every website could immediately bombard you with audio ads. */
     enableAutoplayForSoundsA: string;
-    /** 1. Go to lichess.org */
+    /** 1. Go to HungKings */
     enableAutoplayForSoundsChrome: string;
-    /** 1. Go to lichess.org */
+    /** 1. Go to HungKings */
     enableAutoplayForSoundsChromeSiteInformation: string;
-    /** 1. Go to lichess.org */
+    /** 1. Go to HungKings */
     enableAutoplayForSoundsFirefox: string;
     /** 1. Click the three dots in the top right corner */
     enableAutoplayForSoundsMicrosoftEdge: string;
     /** Enable autoplay for sounds? */
     enableAutoplayForSoundsQ: string;
-    /** 1. Go to lichess.org */
+    /** 1. Go to HungKings */
     enableAutoplayForSoundsSafari: string;
     /** Enable or disable notification popups? */
     enableDisableNotificationPopUps: string;
@@ -2265,7 +2265,7 @@ interface I18n {
     xOrY: I18nFormat;
     /** You have a Lifetime Patron account. That's pretty awesome! */
     youHaveLifetime: string;
-    /** You support lichess.org with %s per month. */
+    /** You support HungKings with %s per month. */
     youSupportWith: I18nFormat;
     /** You will be charged %1$s on %2$s. */
     youWillBeChargedXOnY: I18nFormat;
@@ -3389,7 +3389,7 @@ interface I18n {
     checkmate: string;
     /** Also check your spam folder, it might end up there. If so, mark it as not spam. */
     checkSpamFolder: string;
-    /** If you do not receive a confirmation email, check your Spam or Junk folder. Be sure to indicate messages from lichess.org as safe and "not spam", so you can stay informed of important communications. */
+    /** If you do not receive a confirmation email, check your Spam or Junk folder. Be sure to indicate messages from HungKings as safe and "not spam", so you can stay informed of important communications. */
     checkSpamOrJunkFolder: string;
     /** Check your Email */
     checkYourEmail: string;
@@ -4865,7 +4865,7 @@ interface I18n {
     winRate: string;
     /** Wins */
     wins: string;
-    /** and wish you great games on lichess.org. */
+    /** and wish you great games on HungKings. */
     wishYouGreatGames: string;
     /** Withdraw */
     withdraw: string;
@@ -5143,7 +5143,7 @@ interface I18n {
     pleaseAllow: string;
     /** Please fill in your streamer information, and upload a picture. */
     pleaseFillIn: string;
-    /** Include the keyword "lichess.org" in your stream title and use the category "Chess" when you stream on HungKings. */
+    /** Include the keyword "HungKings" in your stream title and use the category "Chess" when you stream on HungKings. */
     rule1: string;
     /** Remove the keyword when you stream non-HungKings stuff. */
     rule2: string;
@@ -5355,7 +5355,7 @@ interface I18n {
     loadAGameFromPgn: string;
     /** Load a position from FEN */
     loadAPositionFromFen: string;
-    /** Paste a hungkings game URL<br>(like lichess.org/7fHIU0XI)<br>to load the game moves in the chapter. */
+    /** Paste a hungkings game URL<br>(like HungKings/7fHIU0XI)<br>to load the game moves in the chapter. */
     loadExistingLichessGameText: string;
     /** Load an existing hungkings game */
     loadExistingLichessGameTitle: string;

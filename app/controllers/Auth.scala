@@ -25,6 +25,10 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
   private def referrerOr(default: => Call)(using referrer: Option[ValidReferrer]): String =
     referrer.fold(default.url)(_.value)
 
+  // HungKings P1.2: bản nhận URL thô (Call không mang được fragment #hv2-play)
+  private def referrerOrUrl(default: String)(using referrer: Option[ValidReferrer]): String =
+    referrer.fold(default)(_.value)
+
   def authenticateUser(
       u: UserModel,
       pwned: IsPwned,
@@ -434,7 +438,9 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
       .saveAuthentication(user.id, ctx.mobileApiVersion, pwned = IsPwned.No)
       .flatMap: sessionId =>
         authenticateCookie(sessionId, remember = true):
-          Redirect(referrerOr(routes.User.show(user.username)))
+          // HungKings P1.2: tài khoản mới hạ cánh vào khu thi đấu trang chủ thay vì
+          // trang hồ sơ RỖNG của chính mình (điểm đứt phễu — audit 03/08).
+          Redirect(referrerOrUrl("/#hv2-play"))
             .flashSuccess("Welcome! Your account is now active.")
       .recoverWith(authRecovery)
 

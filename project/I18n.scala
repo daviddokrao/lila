@@ -67,16 +67,23 @@ object I18n:
   // A bare domain outside a URL (lichess.com) is a link target too, hence the .[a-z]
   // lookahead. Compounds keep working: Lichess-Konto -> HungKings-Konto.
   private val brandRe = """\b([Ll])ichess\b(?!\.[a-z])""".r
+  // "lichess.org" trong CÂU VĂN (ngoài URL) là tên thương hiệu — vd subject
+  // "Confirm your lichess.org account" — thay bằng TÊN brand (không phải domain,
+  // nên không sinh domain giả). lichess.com/ovh vẫn giữ nguyên. Sync với i18n.ts.
+  private val domainRe = """\b[Ll]ichess\.org\b""".r
   private val urlRe = """(?:https?:)?//[^\s'"<>)\]]+""".r
+
+  private def swap(seg: String) =
+    brandRe.replaceAllIn(domainRe.replaceAllIn(seg, "HungKings"), brandFor)
 
   private def rebrand(s: String) =
     val out = new StringBuilder
     var end = 0
     for url <- urlRe.findAllMatchIn(s) do
-      out ++= brandRe.replaceAllIn(s.substring(end, url.start), brandFor)
+      out ++= swap(s.substring(end, url.start))
       out ++= url.matched
       end = url.end
-    out ++= brandRe.replaceAllIn(s.substring(end), brandFor)
+    out ++= swap(s.substring(end))
     out.toString
 
   private def brandFor(m: scala.util.matching.Regex.Match) =

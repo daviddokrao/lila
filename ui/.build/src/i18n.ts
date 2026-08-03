@@ -169,17 +169,24 @@ async function updated(cat: string, locale?: string): Promise<fs.Stats | false> 
 // A bare domain outside a URL (lichess.com) is a link target too, hence the `.[a-z]`
 // lookahead. Compounds keep working: Lichess-Konto -> HungKings-Konto.
 const brandRe = /\b([Ll])ichess\b(?!\.[a-z])/g;
+// "lichess.org" đứng TRONG CÂU (ngoài URL) là tên thương hiệu, không phải link —
+// vd subject email "Confirm your lichess.org account" (lọt lưới tới 03/08). Thay bằng
+// TÊN brand chứ không phải domain, nên không tạo ra domain giả. lichess.com/ovh giữ
+// nguyên như cũ (domain mình không sở hữu, không nên nhắc thành link).
+const domainRe = /\b[Ll]ichess\.org\b/g;
 const urlRe = /(?:https?:)?\/\/[^\s'"<>)\]]+/g;
 const brandFor = (initial: string): string => (initial === 'L' ? 'HungKings' : 'hungkings');
+const swap = (s: string): string =>
+  s.replace(domainRe, 'HungKings').replace(brandRe, (_, c) => brandFor(c));
 
 const rebrand = (text: string): string => {
   let out = '';
   let end = 0;
   for (const url of text.matchAll(urlRe)) {
-    out += text.slice(end, url.index).replace(brandRe, (_, c) => brandFor(c)) + url[0];
+    out += swap(text.slice(end, url.index)) + url[0];
     end = url.index + url[0].length;
   }
-  return out + text.slice(end).replace(brandRe, (_, c) => brandFor(c));
+  return out + swap(text.slice(end));
 };
 
 const unescape = (text: string): string =>

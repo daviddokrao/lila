@@ -21,7 +21,7 @@ final class AutomaticEmail(
 
   val regards = """Regards,
 
-The Lichess team"""
+The HungKings team"""
 
   def welcomeEmail(user: User, email: EmailAddress)(using Lang): Funit =
     mailer.canSend.so:
@@ -42,7 +42,9 @@ The Lichess team"""
     alsoSendAsPrivateMessage(user): lang =>
       given Lang = lang
       import lila.core.i18n.I18nKey as trans
-      s"""${trans.onboarding.welcome.txt()}\n${trans.site.lichessPatronInfo.txt()}"""
+      // HungKings: bỏ lichessPatronInfo — thư chào mừng từng tuyên bố site sống bằng
+      // donate trong khi mọi nút Donate đã gỡ (P1.1, audit 03/08).
+      trans.onboarding.welcome.txt()
 
   def emailAlreadyInUse(email: EmailAddress): Funit =
     given Lang = lila.core.i18n.defaultLang
@@ -143,7 +145,7 @@ $regards
     val body =
       s"""Hello,
 
-Following your request, the Lichess account "${user.username}" will be deleted in 7 days from now.
+Following your request, the HungKings account "${user.username}" will be deleted in 7 days from now.
 
 $regards
 """
