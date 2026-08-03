@@ -35,6 +35,56 @@ main.home-v2 {
     background-image: none;
   }
 
+  // ---- Cân lại kích thước 2 cột zone THI ĐẤU (David yêu cầu 03/08) ----
+  // Đo thật ở 2560px TRƯỚC khi sửa: ô cờ 373×93 (tỉ lệ 4:1, dẹt như thanh ngang) và
+  // cột phải 240px chỉ dùng 161/440px → 279px trống (63% cột rỗng). Khoảng trống đó
+  // KHÔNG phải lỗi bố cục của mình: upstream lấp đáy cột bằng `.lobby__counters`, mà
+  // mình đã ẩn nó (luật "ẩn stats khi <20 người") nên phải tự tìm cách lấp.
+  //
+  // Nhãn nút vốn đã KHÔNG đủ chỗ ở tiếng Việt (có sẵn từ trước, không phải do sửa này):
+  // "Thách đấu một người bạn" cần 275px trong nút 240px → tràn 35px. Bỏ padding
+  // 2em/3em của upstream và cho xuống dòng; nút cao 126px nên thừa chỗ cho 2 dòng.
+  .lobby__start__button {
+    // Grid item mặc định `min-width:auto` = min-content → nút phình 301px và LÒI RA
+    // ngoài mép zone (đo được lúc thử). Bắt buộc có khi đổi .lobby__start sang grid.
+    min-width: 0;
+    padding-inline: 1.2em 1.4em;
+    white-space: normal;
+  }
+
+  // Hai ngưỡng KHÁC NHAU, cố ý:
+  //   ≥901px  — lúc .hv2-play còn là 2 cột → lấp đáy cột phải (chỗ trống có ở CẢ dải này)
+  //   ≥1100px — chỉ khi đủ rộng mới đổi lưới ô cờ sang 4 cột
+  @container (min-width: 901px) {
+    // Đẩy cột phải xuống ngang hàng Ô CỜ ĐẦU TIÊN: dải tab cao 33px + padding-top 9px
+    // của .lpools = 42px. Không có nó thì nút đầu nằm ngang dải tab, lệch cả cột.
+    .lobby__table {
+      padding-top: 42px;
+    }
+
+    // Dùng GRID chứ KHÔNG phải flex-grow: `flex-grow:1` trên nút này không ăn — thử cả
+    // inline style vẫn bị ghi đè (chưa lần ra rule nào), còn grid-template-rows thì ăn
+    // ngay. 3 nút chia đều chiều cao → khớp đúng 3 hàng ô cờ bên trái (đo: lệch 0/1/1px,
+    // đáy hai cột bằng nhau tuyệt đối).
+    .lobby__table .lobby__start {
+      display: grid;
+      grid-template-rows: repeat(3, 1fr);
+    }
+
+    .lobby__start__button {
+      height: auto; // bỏ height:3.2em của upstream, không thì nút không giãn theo hàng
+    }
+  }
+
+  @container (min-width: 1100px) {
+    // 4 cột × 3 hàng thay vì 3×4 → ô cờ 277×127 (~2.2:1) thay cho 373×93 (4:1).
+    // Kèm lợi ích phụ: 3 hàng ô cờ khớp đúng 3 nút của cột phải.
+    .lpools {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+    }
+  }
+
   // Cung ho loi voi spotlight, chua lo ra vi can trang thai hiem: khi nguoi dung DANG
   // co van do (hoac bi playban / co thu chua doc), appSlot khong tra ve bits.lobbyApp
   // ma tra ve frag(div.lobby__app RONG, div.lobby__nope). Ma .lobby__nope chi co style
