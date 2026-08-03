@@ -145,9 +145,9 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
     val path = s"$assetBaseUrl/assets/logo"
     s"""<link rel="alternate icon" type="image/png" href="$path/lichess-favicon-64.png">""" +
       s"""<link id="favicon" rel="icon" type="image/svg+xml" href="$path/lichess-favicon.svg">""" +
-      // iOS Add to Home Screen: không có link tường minh thì Safari mò /apple-touch-icon.png
-      // ở gốc — nêu rõ để chắc ăn qua CDN/asset domain
-      s"""<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">"""
+      // iOS Add to Home Screen. LƯU Ý: lila KHÔNG có route cho file ở gốc domain —
+      // /apple-touch-icon.png trả 404 (đã đo), phải trỏ qua /assets/.
+      s"""<link rel="apple-touch-icon" sizes="180x180" href="$assetBaseUrl/assets/apple-touch-icon.png">"""
 
   def blindModeForm(using ctx: Context) = raw:
     val btnText =
