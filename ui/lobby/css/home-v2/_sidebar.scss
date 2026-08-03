@@ -104,7 +104,8 @@ aside#top.hv2-side {
     top: auto;
     bottom: calc(100% + 8px);
     left: 0;
-    right: auto;
+    right: 0;
+    width: auto; // huỷ bề ngang cố định 225px của dasher.css — xem ghi chú ở .hv2-side__tools
   }
 
   .hv2-side__note {
@@ -233,14 +234,42 @@ aside#top.hv2-side {
     align-items: center;
     gap: 8px;
 
+    // Neo bảng dasher theo CẢ HÀNG chứ không theo riêng nút bánh răng: nút chỉ rộng
+    // 38px nên bảng (225px) neo vào nó sẽ lòi 5px ra ngoài mép sidebar — mà sidebar
+    // `overflow-y:auto` nên trục ngang cũng bị cắt. Neo theo hàng rồi kéo `left/right:0`
+    // cho bảng vừa đúng bề ngang cột.
+    position: relative;
+
     // form bọc nút theme phải "tan" vào flex, không thì nó thành khối riêng
     form.site-buttons__bg {
       display: contents;
     }
 
     .dasher {
-      position: relative;
+      position: static;
       flex: none;
+    }
+
+    // BẮT BUỘC `!important`, đã đo chứ không phải đề phòng: dưới 1020px, site.css có
+    // `@media(max-width:1019.29px){.site-buttons__bg,.site-buttons__lang{display:none}}`
+    // (dành cho thanh ngang) và một luật tương tự ẩn `.dasher`. Sidebar mượn đúng các
+    // class đó để lấy icon mặt trời/mặt trăng nên bị ẩn lây — trên điện thoại CẢ BA nút
+    // biến mất khỏi drawer (lỗi CÓ SẴN, không phải do đổi thứ tự 03/08).
+    // Đã thử luật cụ thể hơn hẳn — `aside#top.hv2-side .hv2-side__tools .site-buttons__lang`
+    // (1 id + 3 class + 1 thẻ) nạp SAU — vẫn THUA luật (0,1,0) kia; không lý giải được
+    // bằng độ cụ thể, và `document.styleSheets` của trình duyệt đo được lại không đọc
+    // được để truy tiếp. Chỉ `!important` mới ăn. Đừng gỡ nếu chưa mở drawer trên máy
+    // ≤1019px và thấy đủ ba nút.
+    .dasher {
+      display: block !important;
+    }
+
+    form.site-buttons__bg {
+      display: contents !important;
+    }
+
+    .site-buttons__shortcut {
+      display: flex !important;
     }
 
     // Các mảnh tái dùng từ header (bánh răng/theme/ngôn ngữ) THỪA HƯỞNG cỡ 60px của
@@ -252,6 +281,10 @@ aside#top.hv2-side {
       align-items: center;
       justify-content: center;
       width: 38px;
+      // min-width là BẮT BUỘC: dưới 1020px site.css ép `min-width:44px` cho nút ngôn ngữ
+      // và bánh răng (chỗ hẹp của thanh ngang), min-width thắng width nên hàng thành
+      // 44/38/44 — so le thấy rõ. Không phải thừa.
+      min-width: 38px;
       height: 38px;
       padding: 0;
       border: $border;
