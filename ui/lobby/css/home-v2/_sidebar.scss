@@ -95,6 +95,10 @@ aside#top.hv2-side {
     }
   }
 
+  // Các mảnh tái dùng từ header (auth/search/theme/lang) THỪA HƯỞNG kích thước 60px
+  // của thanh ngang (vì cùng nằm trong #top) — trong sidebar phải ép lại thành ô 38px,
+  // không thì bánh răng dính sát mép, ô tìm kiếm cao 60px trong suốt trông như vỡ dòng
+  // (đúng các lỗi David chụp 03/08).
   .hv2-side__auth {
     display: flex;
     align-items: center;
@@ -103,17 +107,48 @@ aside#top.hv2-side {
     .signin-or-signup {
       display: flex;
       flex: 1;
+      min-width: 0;
       gap: 8px;
 
       a {
         flex: 1;
         text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
 
     .dasher {
       position: relative;
+      flex: none;
+
+      .toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border: $border;
+        border-radius: 8px;
+        color: $c-font-dim;
+
+        @include transition(color border-color);
+
+        &:hover {
+          color: $c-accent;
+          border-color: $c-accent;
+        }
+      }
     }
+  }
+
+  // Dropdown dasher: CSS gốc neo theo header ngang — trong sidebar phải bung ngay
+  // dưới nút (id để thắng selector #dasher_app của dasher css).
+  #dasher_app.dropdown {
+    top: calc(100% + 4px);
+    left: 0;
+    right: auto;
   }
 
   .hv2-side__note {
@@ -125,9 +160,38 @@ aside#top.hv2-side {
   .hv2-side__search {
     #clinput {
       display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 38px;
+      padding: 0 6px;
+      border: $border;
+      border-radius: 8px;
+
+      @include transition(border-color);
+
+      &:focus-within {
+        border-color: $c-accent;
+      }
+
+      a.link {
+        flex: none;
+        display: flex;
+        align-items: center;
+        height: auto;
+        width: auto;
+        padding: 0 4px;
+        color: $c-font-dim;
+      }
 
       input {
+        flex: 1;
+        min-width: 0;
         width: 100%;
+        height: 100%;
+        border: none;
+        background: none;
+        color: $c-font;
+        font-size: 0.9rem;
       }
     }
   }
@@ -167,8 +231,33 @@ aside#top.hv2-side {
   .hv2-side__btns {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
     margin-top: auto; // day cum nut + stats xuong day sidebar
+
+    // form bọc nút theme phải "tan" vào flex, không thì nó thành khối riêng
+    form.site-buttons__bg {
+      display: contents;
+    }
+
+    .site-buttons__shortcut {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: $border;
+      border-radius: 8px;
+      color: $c-font-dim;
+      background: none;
+
+      @include transition(color border-color);
+
+      &:hover {
+        color: $c-accent;
+        border-color: $c-accent;
+      }
+    }
   }
 
   .hv2-side__stats {

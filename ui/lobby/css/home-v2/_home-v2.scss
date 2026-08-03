@@ -7,6 +7,20 @@ main.home-v2 {
   display: flex;
   flex-direction: column;
   ---cols: 2;
+
+  // Hộp lobby app: mixin lobby-app-size của trang cũ ép cao 600px — ngày vắng thì
+  // 600px toàn khoảng trống, và watermark sao (background contain của
+  // .lobby__app__content) phình theo thành ngôi sao 567px chiếm cả zone (lỗi David
+  // chụp 03/08). Hạ chiều cao + ghim watermark về cỡ huy hiệu.
+  .lobby__app {
+    height: 440px;
+    min-height: 0;
+    max-height: calc(100vh - 120px);
+  }
+
+  .lobby__app__content {
+    background-size: 190px;
+  }
   // Container cho cac @container query ben duoi: khi co sidebar (vong 3) noi dung hep
   // di 238px o cung viewport, media query theo viewport se lech dung bay nhieu.
   container-type: inline-size;
