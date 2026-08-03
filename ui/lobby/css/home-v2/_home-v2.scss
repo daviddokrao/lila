@@ -3,6 +3,10 @@
 // Mau: chi dung bien theme (gen/wrap), khong hardcode hex. Kich thuoc/khoang cach
 // theo spec thi giac ui/lobby/css/home-v2, khong phai bien mau nen khong can qua $c-*.
 
+// Serif nhan dung chung — 'Noto Serif' truoc Georgia: iOS khong co Cambria/Palatino,
+// roi thang vao Georgia thi dau tieng Viet render xau (P0.2, audit 03/08).
+$hv2-serif: Cambria, 'Palatino Linotype', 'Noto Serif', Georgia, serif;
+
 main.home-v2 {
   display: flex;
   flex-direction: column;
@@ -76,6 +80,9 @@ main.home-v2 {
   display: flex;
   align-items: center;
   gap: 12px;
+  // Nhip doc P0.2: reset *{margin:0} cua lila nuot het margin mac dinh — moi khoi
+  // lon phai tu cap khoang cach, khong thi ca zone dinh chum 0px (audit 03/08).
+  margin-bottom: 14px;
 }
 
 .hv2-tick {
@@ -112,10 +119,22 @@ main.home-v2 {
 
 .hv2-zt,
 .hv2-matchup {
-  font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+  font-family: $hv2-serif;
   font-size: 1.6rem;
   line-height: 1.35;
   font-weight: 400;
+}
+
+.hv2-zt {
+  margin-bottom: 20px;
+}
+
+// Hero la vai chinh — phai lon hon tieu de zone ro rang (truoc day dong co 1.6rem).
+// Nho: rem cua lila ~12-14px, khong phai 15.5px cua mockup.
+.hv2-matchup {
+  font-size: clamp(1.9rem, 2.5vw, 2.5rem);
+  line-height: 1.25;
+  margin-bottom: 4px;
 }
 
 .hv2-hero {
@@ -197,11 +216,17 @@ main.home-v2 {
   border-radius: 10px;
   font-weight: 700;
 
-  @include transition;
+  // Liet ke thuoc tinh cu the thay vi transition:all (P0.2)
+  @include transition(color border-color filter box-shadow);
 
   &--gold {
     background: $c-accent;
     color: $c-over-accent;
+
+    &:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 4px 14px rgb(from $c-accent r g b / calc(alpha * 0.3));
+    }
   }
 
   &--line {
@@ -223,6 +248,7 @@ main.home-v2 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
+  margin-top: 18px;
 
   @container (max-width: 1000px) {
     grid-template-columns: repeat(2, 1fr);
@@ -250,7 +276,7 @@ main.home-v2 {
     gap: 10px;
     text-align: center;
     font-style: italic;
-    font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+    font-family: $hv2-serif;
     color: $c-font-dim;
   }
 }
@@ -280,7 +306,7 @@ main.home-v2 {
 
   span {
     font-style: italic;
-    font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+    font-family: $hv2-serif;
     color: $c-font-dim;
   }
 }
@@ -289,6 +315,7 @@ main.home-v2 {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 24px;
 }
 
 .hv2-train {
@@ -331,7 +358,7 @@ main.home-v2 {
 
   blockquote {
     margin: 0 0 10px;
-    font-family: Cambria, 'Palatino Linotype', Georgia, serif;
+    font-family: $hv2-serif;
     font-style: italic;
     line-height: 1.6;
   }
@@ -444,6 +471,31 @@ main.home-v2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+}
+
+// Tieu de cot bang xep hang theo he nhan .hv2-ct (truoc day h4 tho, lech he)
+.hv2-lbcol h4 {
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: $c-font-dim;
+}
+
+// Skip-link (P0.3): an toi khi focus bang ban phim
+.hv2-skip {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: $c-accent;
+  color: $c-over-accent;
+  font-weight: 700;
+
+  &:focus {
+    left: 8px;
+  }
 }
 
 .hv2-lb {

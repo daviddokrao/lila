@@ -21,20 +21,52 @@ Allow: /game/export/gif/thumbnail/
 
   def manifest(net: NetConfig) =
     Json.obj(
-      "name" -> net.domain,
+      // Tên hiện trong hộp thoại "Cài đặt ứng dụng" — net.domain sẽ ra tên miền trần
+      "name" -> "HungKings – Cờ vua trực tuyến",
       "short_name" -> "HungKings",
+      "id" -> "/",
+      "scope" -> "/",
+      "lang" -> "vi",
+      "categories" -> Json.arr("games", "education"),
       "start_url" -> "/",
       "display" -> "standalone",
+      "shortcuts" -> Json.arr(
+        Json.obj(
+          "name" -> "Chơi với máy",
+          "url" -> "/#ai",
+          "icons" -> Json.arr(
+            Json.obj("src" -> s"//${net.assetDomain}/assets/logo/lichess-favicon-192.png", "sizes" -> "192x192")
+          )
+        ),
+        Json.obj(
+          "name" -> "Câu đố",
+          "url" -> "/training",
+          "icons" -> Json.arr(
+            Json.obj("src" -> s"//${net.assetDomain}/assets/logo/lichess-favicon-192.png", "sizes" -> "192x192")
+          )
+        )
+      ),
       // Màu nền HungKings (khớp --c-bg-page theme tối) — trước là nâu Lichess #161512.
       "background_color" -> "#070e22",
       "theme_color" -> "#070e22",
       "description" -> "Chơi cờ vua trực tuyến miễn phí, không quảng cáo. Free online chess.",
-      "icons" -> List(32, 64, 128, 192, 256, 512, 1024).map: size =>
+      "icons" -> (List(32, 64, 128, 192, 256, 512, 1024).map: size =>
         Json.obj(
           "src" -> s"//${net.assetDomain}/assets/logo/lichess-favicon-$size.png",
           "sizes" -> s"${size}x$size",
           "type" -> "image/png"
         )
+      ).appendedAll(
+        // maskable: mark đặt trong safe-zone 20% trên nền đặc — icon thường sẽ bị
+        // Android cắt cụt góc nếu chỉ gắn nhãn maskable
+        List(192, 512).map: size =>
+          Json.obj(
+            "src" -> s"//${net.assetDomain}/assets/logo/lichess-maskable-$size.png",
+            "sizes" -> s"${size}x$size",
+            "type" -> "image/png",
+            "purpose" -> "maskable"
+          )
+      )
       // related_applications đã gỡ: nó trỏ app store của Lichess, HungKings chưa có app.
     )
 

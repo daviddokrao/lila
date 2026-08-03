@@ -72,7 +72,7 @@ object homeV2:
             div(cls := "lobby__tv hv2-hero__board")(miniOf(g, tv = true)),
             div(cls := "hv2-hero__cast")(
               div(cls := "hv2-onair hv2-onair--live")(t("Đang phát trực tiếp", "Live now")),
-              h2(cls := "hv2-matchup")(t("Bàn cờ đang được theo dõi", "The board being watched")),
+              h1(cls := "hv2-matchup")(t("Bàn cờ đang được theo dõi", "The board being watched")),
               p(cls := "hv2-sub")(
                 t(
                   "Ván hay nhất đang diễn ra — bấm để vào phòng xem, bình luận cùng mọi người.",
@@ -96,7 +96,7 @@ object homeV2:
                   div(cls := "hv2-onair hv2-onair--replay")(
                     t("Ván hay gần đây · AI bình giải", "Recent game · AI commentary")
                   ),
-                  h2(cls := "hv2-matchup")(t("Xem lại và học từ ván này", "Replay and learn from this game")),
+                  h1(cls := "hv2-matchup")(t("Xem lại và học từ ván này", "Replay and learn from this game")),
                   p(cls := "hv2-sub")(
                     t(
                       "Chưa có ván trực tiếp lúc này. Trong lúc chờ, để AI giải thích ván gần nhất bằng tiếng Việt.",
@@ -113,7 +113,7 @@ object homeV2:
               )
             case None =>
               div(cls := "hv2-hero hv2-hero--empty")(
-                h2(cls := "hv2-matchup")(t("Sân khấu đang chờ ván đầu tiên", "The stage awaits its first game")),
+                h1(cls := "hv2-matchup")(t("Sân khấu đang chờ ván đầu tiên", "The stage awaits its first game")),
                 p(cls := "hv2-sub")(
                   t(
                     "Chưa có ván nào đang diễn ra. Hãy mở màn — ván tiếp theo của bạn có thể là bàn cờ cả cộng đồng dõi theo.",
@@ -174,11 +174,21 @@ object homeV2:
 
     val toursFrag: Frag =
       val selected = lila.tournament.Spotlight.select(tours, 4)
-      selected.nonEmpty.option(
+      // P0.3d: Spotlight rỗng thì đừng để khối biến mất — /tournament luôn có lịch giải
+      // tự động của lila, mời sang đó thay vì bỏ trống cột.
+      if selected.nonEmpty then
         div(cls := "hv2-tours")(
           selected.map(views.tournament.list.homepageSpotlight(_))
         )
-      )
+      else
+        div(cls := "hv2-tours")(
+          div(cls := "hv2-empty")(
+            span(t("Chưa có giải nổi bật lúc này.", "No featured tournament right now.")),
+            a(cls := "hv2-btn hv2-btn--line hv2-btn--sm", href := routes.Tournament.home)(
+              t("Xem lịch giải hôm nay", "See today's schedule")
+            )
+          )
+        )
 
     val leadersFrag: Frag =
       def row(l: LightPerf) =
@@ -188,16 +198,28 @@ object homeV2:
         )
       frag(
         h3(cls := "hv2-ct")(t("Bảng xếp hạng", "Leaderboard")),
-        div(cls := "hv2-lbgroup")(
-          div(cls := "hv2-lbcol")(
-            h4(t("Cờ chớp", "Blitz")),
-            leaderboards.blitz.take(5).map(row)
-          ),
-          div(cls := "hv2-lbcol")(
-            h4(t("Cờ nhanh", "Rapid")),
-            leaderboards.rapid.take(5).map(row)
+        // P0.3e: cùng lối "giữ khung" với streamer/blog — bảng trống là lời mời
+        if leaderboards.blitz.isEmpty && leaderboards.rapid.isEmpty then
+          div(cls := "hv2-empty")(
+            span(
+              t(
+                "Bảng xếp hạng đang chờ những ván đầu tiên — chỗ này có thể là tên bạn.",
+                "The leaderboard awaits its first games — your name could be here."
+              )
+            ),
+            a(cls := "hv2-btn hv2-btn--line hv2-btn--sm", href := "#hv2-play")(t("Chơi ngay", "Play now"))
           )
-        )
+        else
+          div(cls := "hv2-lbgroup")(
+            div(cls := "hv2-lbcol")(
+              h4(t("Cờ chớp", "Blitz")),
+              leaderboards.blitz.take(5).map(row)
+            ),
+            div(cls := "hv2-lbcol")(
+              h4(t("Cờ nhanh", "Rapid")),
+              leaderboards.rapid.take(5).map(row)
+            )
+          )
       )
 
     val streamsFrag: Frag =
@@ -279,8 +301,8 @@ object homeV2:
     val pageUi = views.base.page.ui
     val sidebarFrag: Option[Frag] = useSidebar.option:
       frag(
-        st.aside(id := "top", cls := "hv2-side")(
-          a(cls := "hv2-side__brand", href := "/")(
+        st.aside(id := "top", cls := "hv2-side", aria.label := "HungKings")(
+          a(cls := "hv2-side__brand", href := "/", attr("aria-current") := "page")(
             div(cls := "site-icon", dataIcon := Icon.Logo),
             div(cls := "site-name")(siteName)
           ),
@@ -289,7 +311,7 @@ object homeV2:
             t("Miễn phí · không quảng cáo · lưu mọi ván của bạn", "Free · no ads · every game saved")
           ),
           div(cls := "hv2-side__search")(pageUi.clinput),
-          st.nav(cls := "hv2-side__nav")(
+          st.nav(cls := "hv2-side__nav", aria.label := t("Điều hướng chính", "Main navigation"))(
             a(href := routes.Tv.index)(t("Trực tiếp", "Live")),
             a(href := "#hv2-play")(t("Chơi", "Play")),
             a(href := routes.Puzzle.home)(t("Câu đố", "Puzzles")),
@@ -304,12 +326,14 @@ object homeV2:
           div(cls := "hv2-side__btns site-buttons")(pageUi.bgToggle, pageUi.langSelect),
           {
             // Số tĩnh lúc render (LobbyApi luôn phát counters); live-update là phase 2.
+            // P0.3f: số nhỏ TỆ HƠN không có số — dưới 20 người thì ẩn (luật không-nói-dối,
+            // khớp mockup). Chuỗi en bỏ "games in play" để khỏi lỗi số ít/nhiều.
             val members = (data \ "counters" \ "members").asOpt[Int]
             val rounds = (data \ "counters" \ "rounds").asOpt[Int]
             (members, rounds) match
-              case (Some(m), Some(r)) =>
+              case (Some(m), Some(r)) if m >= 20 =>
                 p(cls := "hv2-side__stats")(
-                  t(s"$m người trực tuyến · $r ván đang đấu", s"$m online · $r games in play")
+                  t(s"$m người trực tuyến · $r ván đang đấu", s"$m online · $r playing")
                 )
               case _ => emptyFrag
           }
@@ -320,6 +344,7 @@ object homeV2:
             tpe := "button",
             cls := "hv2-mobilebar__menu",
             attr("aria-expanded") := "false",
+            attr("aria-controls") := "top",
             aria.label := t("Mở menu", "Open menu")
           )(span, span, span),
           a(cls := "hv2-mobilebar__brand", href := "/")(
@@ -331,7 +356,7 @@ object homeV2:
             href := s"${routes.Auth.login.url}?referrer=/"
           )(t("Đăng nhập", "Sign in"))
         ),
-        div(cls := "hv2-scrim")
+        div(cls := "hv2-scrim", attr("aria-hidden") := "true")
       )
 
     Page("")
@@ -356,13 +381,17 @@ object homeV2:
       .graph(
         OpenGraph(
           image = staticAssetUrl("logo/lichess-tile-wide.png").some,
-          title = "The best free, adless Chess server",
+          // P0.3g: og:title theo ngôn ngữ — câu cũ là nguyên văn của Lichess, share
+          // link lên Zalo/Facebook hiện chữ Anh trên trang tiếng Việt.
+          title = t("HungKings — Chơi cờ vua trực tuyến miễn phí", "HungKings — Free online chess"),
           url = netBaseUrl.into(Url),
           description = trans.site.siteDescription.txt()
         )
       )
       .hrefLangs(lila.ui.LangPath("/")):
         frag(
+          // P0.3b: skip-link cho bàn phím — phần tử focus đầu tiên của trang
+          a(cls := "hv2-skip", href := "#hv2-play")(t("Bỏ qua, tới khu thi đấu", "Skip to play area")),
           sidebarFrag,
           main(
             cls := List(

@@ -374,4 +374,11 @@ aside#top.hv2-side {
   body.hv2-drawer-open {
     overflow: hidden;
   }
+
+  // P0.2: ton trong reduced-motion — drawer hien/an tuc thi thay vi truot 0.25s
+  @media (prefers-reduced-motion: reduce) {
+    aside#top.hv2-side {
+      transition: none;
+    }
+  }
 }
