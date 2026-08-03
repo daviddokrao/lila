@@ -104,14 +104,20 @@ aside#top.hv2-side {
     align-items: center;
     gap: 8px;
 
+    // XEP DOC, khong phai ngang. Sidebar rong 238 - 36 padding = 202px; tru nut banh
+    // rang 38 + 2 khoang 8 thi hai nut nam ngang chi con 74px MOI CAI, trong khi
+    // "Dang nhap" viet hoa can 108px va "Dang ky" can 87px -> ca hai bi cat thanh
+    // "DANG..." (loi David chup 03/08). Do o TIENG VIET, CHUA dang nhap — tieng Anh
+    // ("Sign in" 77px) chi thieu 1px nen gan nhu khong lo ra.
     .signin-or-signup {
       display: flex;
       flex: 1;
+      flex-direction: column;
       min-width: 0;
       gap: 8px;
 
       a {
-        flex: 1;
+        flex: none;
         text-align: center;
         white-space: nowrap;
         overflow: hidden;

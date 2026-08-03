@@ -25,6 +25,15 @@ main.home-v2 {
   .lobby__app__content {
     background-size: 190px;
   }
+
+  // ... nhung o tab "Xep cap nhanh" thi TAT HAN. Cung mot the vua la
+  // .lobby__app__content vua la .lpools, ma cac o gio (.lpool) co nen chi dam 66%
+  // -> ngoi sao 190px lo ra XUYEN QUA cac o giua luoi, thanh mot vet mo ban (loi
+  // David chup 03/08 — lan truoc chi thu nho sao chu chua tat). Watermark chi hop
+  // voi bang van RONG (tab Phong cho / Co qua thu), noi that su khong co gi de ve.
+  .lobby__app__content.lpools {
+    background-image: none;
+  }
   // Container cho cac @container query ben duoi: khi co sidebar (vong 3) noi dung hep
   // di 238px o cung viewport, media query theo viewport se lech dung bay nhieu.
   container-type: inline-size;
@@ -60,6 +69,14 @@ main.home-v2 {
   width: 100%;
   margin: 0 auto;
   padding-top: 40px;
+
+  // Man rong: 1100px ghim cung de lai 531px trong MOI BEN o 2560px (do that), trong
+  // khi sidebar dinh sat mep trai -> trang nhin nhu bi day lech. Noi len 1400px.
+  // Dung @container chu KHONG @media: container la main.home-v2, tu no da tru 238px
+  // sidebar roi, nen nguong nay dung cho ca hai nhanh co/khong sidebar.
+  @container (min-width: 1500px) {
+    max-width: 1400px;
+  }
 
   & + & {
     padding-top: 56px;
@@ -316,6 +333,67 @@ main.home-v2 {
   flex-direction: column;
   gap: 8px;
   margin-top: 24px;
+}
+
+// views.tournament.list.homepageSpotlight dung markup .tour-spotlight cua ban cu, ma
+// bundle home-v2 KHONG import '../spotlight' -> ba the span (.name/.headline/.more)
+// giu display:inline mac dinh va dinh lien thanh mot dong:
+// "Dau truong Khien Co danBattle for the Bullet Shield0 ky thu" (loi David chup 03/08).
+// Style tai cho thay vi @import '../spotlight': file do keo theo %metal/%page-text-shadow
+// (nen gradient kim loai cua ban cu) khong hop he thi giac home-v2 — cung cach da lam
+// voi .lobby__streams ben duoi.
+.hv2-tours .tour-spotlight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: $border;
+  border-radius: 10px;
+  background: $c-bg-box;
+  color: $c-font;
+
+  @include transition(color border-color);
+
+  &:hover {
+    color: $c-accent;
+    border-color: $c-accent;
+  }
+
+  .img {
+    flex: none;
+    width: 34px;
+    height: 34px;
+  }
+
+  icon.img::before {
+    font-size: 30px;
+    color: $c-accent;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .name,
+  .headline,
+  .more {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .name {
+    font-weight: 700;
+  }
+
+  .headline,
+  .more {
+    font-size: 0.82rem;
+    color: $c-font-dim;
+  }
 }
 
 .hv2-train {
