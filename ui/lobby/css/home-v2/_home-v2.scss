@@ -34,6 +34,33 @@ main.home-v2 {
   .lobby__app__content.lpools {
     background-image: none;
   }
+
+  // Cung ho loi voi spotlight, chua lo ra vi can trang thai hiem: khi nguoi dung DANG
+  // co van do (hoac bi playban / co thu chua doc), appSlot khong tra ve bits.lobbyApp
+  // ma tra ve frag(div.lobby__app RONG, div.lobby__nope). Ma .lobby__nope chi co style
+  // trong _lobby.scss + _layout.scss — CA HAI deu khong nam trong bundle home-v2.
+  // Khong style thi: mot hop RONG cao 440px (do luat .lobby__app o tren) roi den khoi
+  // chu can trai khong khung. Style tai cho theo the card cua home-v2.
+  .lobby__app:empty {
+    display: none;
+  }
+
+  .lobby__nope {
+    height: 440px;
+    background: $c-bg-box;
+    border: $border;
+    border-radius: 14px;
+    text-align: center;
+
+    .lobby__app__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 24px;
+    }
+  }
   // Container cho cac @container query ben duoi: khi co sidebar (vong 3) noi dung hep
   // di 238px o cung viewport, media query theo viewport se lech dung bay nhieu.
   container-type: inline-size;
