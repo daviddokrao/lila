@@ -1,6 +1,5 @@
 import { h, type VNode } from 'snabbdom';
 
-import { licon } from 'lib/licon';
 import { onInsert } from 'lib/view';
 
 import { PaneCtrl } from './interfaces';
@@ -37,19 +36,19 @@ export class LangsCtrl extends PaneCtrl {
           ),
         ),
       ),
-      h(
-        'a.help.text',
-        { attrs: { href: 'https://crowdin.com/project/lichess', 'data-icon': licon.Heart } },
-        'Help translate Lichess',
-      ),
     ]);
 
   private get data() {
     return this.root.data.lang;
   }
 
-  private readonly list = () => [
-    ...this.data.list.filter(lang => this.data.accepted.includes(lang[0])),
-    ...this.data.list,
-  ];
+  // Accepted languages float to the top, but they must not be listed twice. Upstream
+  // concatenates the accepted subset onto the full list; the duplicates went unnoticed
+  // there because the full list is ordered by language code, which scatters the copies
+  // mid-list. We order it by popularity instead, so both copies land side by side at the
+  // very top of the pane.
+  private readonly list = (): Lang[] => {
+    const isAccepted = (lang: Lang) => this.data.accepted.includes(lang[0]);
+    return [...this.data.list.filter(isAccepted), ...this.data.list.filter(l => !isAccepted(l))];
+  };
 }
