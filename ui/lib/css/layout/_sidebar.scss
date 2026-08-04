@@ -1,4 +1,11 @@
-// Sidebar trang chu v2 (vong 3, co LILA_HOME_SIDEBAR, chi khach vang lai).
+// Sidebar TOAN SITE (co LILA_HOME_SIDEBAR). Truoc 04/08 file nay nam trong bundle
+// rieng cua lobby va chi phuc vu trang chu; nay page.scala dung sidebar cho MOI trang
+// nen no phai o bundle site-wide (lib/css/page/_lichess.scss import).
+//
+// .hv2-btn va .hv2-skip o CUOI file cung vi ly do do: chung von dinh nghia trong
+// _home-v2.scss (bundle chi trang chu), ma sidebar dung .hv2-btn cho nut Dang ky/Dang
+// nhap. De chung o lai la moi trang KHAC co markup ma khong co CSS — dung lop loi
+// "markup mo coi CSS" da tra gia ngay 03/08.
 //
 // Sidebar mang id="top" DE topBar.ts (dasher/theme/ngon ngu/tim kiem, selector `#top ...`)
 // chay mien phi — nhung ui/lib/css/header/_header.scss cung style #top (fixed khi
@@ -13,7 +20,19 @@
 
   @media (min-width: 1020px) {
     grid-template-areas: 'side gapl main gapr';
-    grid-template-columns: 238px 3vw minmax(0, 1fr) 3vw;
+    // PHAI giu `---main-max-width` cho cot noi dung. Ban chi-trang-chu dung `1fr` vi
+    // 4 zone cua home-v2 tu quan be ngang, nhung sidebar nay ap cho MOI trang: de `1fr`
+    // la moi trang khac mat tran be ngang va chu keo dai het man 2560px.
+    // `.full-screen`/`.full-screen-force` van an vi chung doi chinh bien nay.
+    grid-template-columns: 238px 3vw minmax(0, var(---main-max-width)) 3vw;
+  }
+
+  // Trang chu v2 giu nguyen hanh vi cu: zone tu quan be ngang, khong bo theo
+  // ---main-max-width. Day la ban David da duyet 03/08, dung thay doi.
+  &:has(> main.home-v2) {
+    @media (min-width: 1020px) {
+      grid-template-columns: 238px 3vw minmax(0, 1fr) 3vw;
+    }
   }
 
   // Bay body.clinput: tren thiet bi cham (hover:none), focus o tim kiem lam
@@ -495,6 +514,216 @@ aside#top.hv2-side {
   @media (prefers-reduced-motion: reduce) {
     aside#top.hv2-side {
       transition: none;
+    }
+  }
+}
+
+// ---------- nut + skip-link: be tu _home-v2.scss (bundle chi trang chu) ----------
+// Sidebar dung .hv2-btn--gold/--line cho cap nut Dang ky/Dang nhap, va .hv2-skip la
+// phan tu focus dau tien cua MOI trang. Ca hai phai song o day, khong the o lai bundle
+// trang chu.
+.hv2-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+
+  // Liet ke thuoc tinh cu the thay vi transition:all (P0.2)
+  @include transition(color border-color filter box-shadow);
+
+  &--gold {
+    background: $c-accent;
+    color: $c-over-accent;
+
+    &:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 4px 14px rgb(from $c-accent r g b / calc(alpha * 0.3));
+    }
+  }
+
+  &--line {
+    border: $border;
+
+    &:hover {
+      border-color: $c-accent;
+      color: $c-accent;
+    }
+  }
+
+  &--sm {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+.hv2-skip {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: $c-accent;
+  color: $c-over-accent;
+  font-weight: 700;
+
+  &:focus {
+    left: 8px;
+  }
+}
+
+// ---------- nhanh NGUOI DA DANG NHAP (04/08) ----------
+// Truoc day sidebar chi phuc vu khach vang lai nen cum cong cu chi co 3 o vuong.
+// Nguoi dang nhap them: chuong thong bao, loi moi dau, quyen kiem duyet, yeu cau vao
+// doi, va menu tai khoan. Menu tai khoan mang TEN NGUOI DUNG — ep vao o 38px la cat cut,
+// nen no chiem han mot dong.
+aside#top.hv2-side .hv2-side__tools {
+  flex-wrap: wrap;
+
+  // Chuong / kiem / quyen / doi: cung co o vuong voi nut cua khach.
+  > div > .toggle,
+  > a.link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0;
+    border: $border;
+    border-radius: 8px;
+    color: $c-font-dim;
+    background: none;
+
+    @include transition(color border-color);
+
+    &:hover {
+      color: $c-accent;
+      border-color: $c-accent;
+    }
+  }
+
+  // Bang challenge/notify bung NGUOC LEN y het dasher — cung ly do: cum cong cu nam o
+  // DAY cot, do xuong la ra ngoai khung va bi cat.
+  #challenge-app.dropdown,
+  #notify-app.dropdown {
+    top: auto;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+
+  // Menu tai khoan chiem ca dong, chu can trai. Selector mang id nen thang luat
+  // `.dasher .toggle { width: 38px }` o tren.
+  .dasher:has(#user_tag) {
+    flex: 1 1 100%;
+
+    #user_tag {
+      width: 100%;
+      min-width: 0;
+      justify-content: flex-start;
+      padding: 0 10px;
+      font-weight: 700;
+      color: $c-font;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+// ---------- che do tap trung (zen) ----------
+// Header ngang chi cao 60px nen zen chi can bo dinh (topnav-unsticky) la du. Sidebar
+// thi an 238px BE NGANG cua ban co — giu no lai la pha dung cai ma zen sinh ra de lam.
+// An ca drawer/scrim keo theo, khong thi nut menu noi tren man hinh trong.
+body.zen #main-wrap:has(> aside.hv2-side) {
+  @media (min-width: 1020px) {
+    grid-template-areas: 'gapl main gapr';
+    grid-template-columns: 3vw minmax(0, var(---main-max-width)) 3vw;
+  }
+
+  > aside.hv2-side,
+  > .hv2-mobilebar,
+  > .hv2-scrim {
+    display: none;
+  }
+}
+
+// ---------- trang co BAN CO: thu thanh cot bieu tuong ----------
+// Do that ngay 04/08 tren /training @1280x800:
+//   sidebar 238px -> trang tran 109px; 200px -> 71; 180px -> 51; 165px -> 36; 150px -> 21.
+// Quan he 1:1, tuc phai xuong ~129px moi het tran. Nhung do be rong chu TIENG VIET:
+// muc "Huan luyen AI" + huy hieu MOI can 223px moi khong bi cat (nhan 98 + huy hieu 35
+// + icon22 + gap12 + padding link 20 + padding cot 36). Can 223, duoc phep 129 =>
+// KHONG the vua bang cach thu nho. Do la ly do co cot bieu tuong nay.
+//
+// Goc re cua van de: MOI media query cua lila tinh theo be ngang CUA SO, ma sidebar an
+// mat 314px. O 1400px lila tuong no co 1400 nen bat bo cuc nhieu cot hon -> tran 105px,
+// NANG HON o 1280. Sua tan goc la chuyen toan bo breakpoint cua lila sang container
+// query; day la cach chua trieu chung nhung khong pha gi.
+body:has(main.analyse),
+body:has(main.puzzle),
+body:has(main.round),
+body:has(main.storm),
+body:has(main.racer) {
+  @media (min-width: 1020px) {
+    #main-wrap:has(> aside.hv2-side) {
+      grid-template-columns: 64px 2vw minmax(0, var(---main-max-width)) 2vw;
+    }
+
+    aside#top.hv2-side {
+      padding: 14px 12px;
+      // Cot thu chi con: mark + 7 bieu tuong dieu huong. Moi thu con lai an han thay vi
+      // ep cho vua — ep la cat chu, dung loi da tra gia.
+      .hv2-side__lb,
+      .hv2-side__new,
+      .hv2-side__search,
+      .hv2-side__note,
+      .hv2-side__cta,
+      .hv2-side__signin,
+      .hv2-side__stats,
+      .hv2-side__tools,
+      .hv2-side__brand .site-name {
+        display: none;
+      }
+
+      .hv2-side__nav a {
+        justify-content: center;
+        padding: 9px 0;
+      }
+
+      // Re chuot / focus ban phim thi bung ra day du, DE LEN noi dung (o grid van 64px
+      // nen khong day bo cuc). Day la cho duy nhat lay lai duoc tim kiem + dang nhap +
+      // cai dat tren nhom trang nay.
+      &:hover,
+      &:focus-within {
+        width: 238px;
+        padding: 22px 18px;
+        box-shadow: 6px 0 24px rgb(0 0 0 / 0.35);
+
+        .hv2-side__lb,
+        .hv2-side__new,
+        .hv2-side__search,
+        .hv2-side__note,
+        .hv2-side__cta,
+        .hv2-side__signin,
+        .hv2-side__stats,
+        .hv2-side__tools,
+        .hv2-side__brand .site-name {
+          display: revert;
+        }
+
+        .hv2-side__tools {
+          display: flex;
+        }
+
+        .hv2-side__nav a {
+          justify-content: flex-start;
+          padding: 9px 10px;
+        }
+      }
     }
   }
 }
