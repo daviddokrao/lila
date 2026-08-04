@@ -16,10 +16,10 @@ object contact:
   def contactEmailLink(email: String)(using Translate) =
     bits.contactEmailLinkEmpty(email)(trans.site.clickToRevealEmailAddress())
 
-  def apply(contactEmail: EmailAddress)(using Translate): Frag =
+  def apply(contactEmail: EmailAddress, forumEnabled: Boolean)(using Translate): Frag =
     frag(
       h1(cls := "box__top")(contactLichess()),
-      div(cls := "nav-tree")(renderNode(menu(contactEmail), none))
+      div(cls := "nav-tree")(renderNode(menu(contactEmail, forumEnabled), none))
     )
 
   private def reopenLeaf(prefix: String)(using Translate) =
@@ -32,11 +32,14 @@ object contact:
       )
     )
 
-  private def howToReportBugs(using Translate): Frag =
+  private def howToReportBugs(forumEnabled: Boolean)(using Translate): Frag =
     frag(
       ul(
-        li(
-          a(href := routes.ForumCateg.show(ForumCategId("hungkings-feedback")))(reportBugInForum())
+        // Diễn đàn tạm tắt => /forum/hungkings-feedback trả 404, đừng mời người dùng bấm.
+        forumEnabled.option(
+          li(
+            a(href := routes.ForumCateg.show(ForumCategId("hungkings-feedback")))(reportBugInForum())
+          )
         ),
         li(
           a(href := "https://github.com/lichess-org/lila/issues")(reportWebsiteIssue())
@@ -51,7 +54,7 @@ object contact:
       p(howToReportBug())
     )
 
-  def menu(contactEmail: EmailAddress)(using Translate): Branch =
+  def menu(contactEmail: EmailAddress, forumEnabled: Boolean)(using Translate): Branch =
     Branch(
       "root",
       whatCanWeHelpYouWith(),
@@ -199,7 +202,7 @@ object contact:
               errorPage(),
               frag(
                 p(reportErrorPage()),
-                howToReportBugs
+                howToReportBugs(forumEnabled)
               )
             ),
             Leaf(
@@ -216,7 +219,7 @@ object contact:
               "Other bug",
               frag(
                 p("If you found a new bug, you may report it:"),
-                howToReportBugs
+                howToReportBugs(forumEnabled)
               )
             )
           )

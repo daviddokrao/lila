@@ -386,6 +386,20 @@ aside#top.hv2-side {
         border-color: $c-accent;
       }
     }
+
+    // Nút ngôn ngữ nay là lá cờ (ảnh) chứ không phải glyph, nên nó KHÔNG đổi màu theo
+    // `color` lúc rê chuột như hai nút cạnh bên. Bù lại bằng độ sáng, để ba nút cùng
+    // phản hồi — không thì hàng công cụ có một nút trông như chết.
+    .site-buttons__flag {
+      display: block;
+      opacity: 0.85;
+
+      @include transition(opacity);
+    }
+
+    .site-buttons__lang:hover .site-buttons__flag {
+      opacity: 1;
+    }
   }
 
   .hv2-side__stats {

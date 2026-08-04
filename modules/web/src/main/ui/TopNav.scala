@@ -5,7 +5,9 @@ import scalalib.model.Days
 import lila.ui.*
 import ScalatagsTemplate.{ *, given }
 
-final class TopNav(helpers: Helpers):
+// forumEnabled: diễn đàn tạm tắt bằng env LILA_FORUM (David chốt 04/08). Route đã bị
+// chặn ở HttpRequestHandler; ở đây chỉ ẩn lối vào để không mời người dùng bấm vào 404.
+final class TopNav(helpers: Helpers)(forumEnabled: Boolean):
   import helpers.{ *, given }
 
   private def linkTitle(url: String, name: Frag)(using ctx: Context) =
@@ -81,7 +83,7 @@ final class TopNav(helpers: Helpers):
           a(href := routes.User.list)(trans.site.players()),
           ctx.me.map(me => a(href := routes.Relation.following(me.username))(trans.site.friends())),
           a(href := routes.Team.home())(trans.team.teams()),
-          ctx.kid.no.option(a(href := routes.ForumCateg.index)(trans.site.forum())),
+          (forumEnabled && ctx.kid.no).option(a(href := routes.ForumCateg.index)(trans.site.forum())),
           ctx.kid.no.option(a(href := langHref(routes.Ublog.communityAll()))(trans.site.blog()))
         )
       ),

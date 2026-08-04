@@ -13,7 +13,10 @@ import ScalatagsTemplate.{ *, given }
 final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
     popularAlternateLanguages: List[Language],
     reportScoreThreshold: () => ScoreThresholds,
-    reportScore: () => Int
+    reportScore: () => Int,
+    // HungKings: diễn đàn tạm tắt (env LILA_FORUM) — ẩn lối vào trong sidebar. Route đã
+    // bị chặn ở HttpRequestHandler, cái này chỉ để không mời người dùng bấm vào 404.
+    forumEnabled: Boolean
 ):
   import helpers.{ *, given }
   import assetHelper.{ defaultCsp, netConfig, cashTag, siteName }
@@ -114,17 +117,35 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
         aria.label := label
       )
 
+  // Cờ của ngôn ngữ ĐANG dùng, thay cho biểu tượng quả địa cầu (David chốt 04/08): quả
+  // địa cầu nói "có nút ngôn ngữ", lá cờ nói "bạn đang ở tiếng Việt" — cùng một ô 38px.
+  //
+  // `Lang.country` của LangList trùng đúng tên file trong public/flags cho 67/69 ngôn
+  // ngữ. Hai ngoại lệ dưới đây là ĐO chứ không đoán (đối chiếu 69 mã của LangList với
+  // 277 file flags), đừng "dọn" chúng đi:
+  //   AA = ngôn ngữ nhân tạo (Esperanto, Interlingua, Lojban, Toki pona) — không có nước
+  //   SP = mã Serbia lila tự đặt; ISO thật là RS, và file tên RS.webp
+  private def langFlagFile(lang: Lang): String = lang.country match
+    case "" | "AA" => "_earth"
+    case "SP" => "RS"
+    case c => c
+
   // The full language list is long enough that a header dropdown would be a worse copy
   // of the dasher pane it duplicates, so this is a shortcut into that pane instead.
+  // Kể từ 04/08 đây là lối vào DUY NHẤT tới pane ngôn ngữ — mục "Ngôn ngữ" trong dasher
+  // đã gỡ (trùng lặp; xem ui/dasher/src/links.ts).
   def langSelect(using ctx: Context) =
     val label = trans.site.language.txt()
     button(
       tpe := "button",
       cls := "link site-buttons__shortcut site-buttons__lang",
       attrData("dasher-pane") := "langs",
-      dataIcon := Icon.Globe,
       title := label,
       aria.label := label
+    )(
+      // alt rỗng CÓ CHỦ Ý: nút đã có aria-label "Ngôn ngữ", lá cờ chỉ là trang trí.
+      // Đặt alt là tên nước sẽ đọc thành "Ngôn ngữ Việt Nam" trên trình đọc màn hình.
+      img(cls := "site-buttons__flag", src := assetUrl(s"flags/${langFlagFile(ctx.lang)}.webp"), emptyAlt)
     )
 
   val warnNoAutoplay =
@@ -488,7 +509,10 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
             navItem(routes.User.list.url, Icon.Group, t("Cộng đồng", "Community"))(
               subItem(routes.User.list.url, t("Kỳ thủ", "Players")),
               subItem(routes.Team.home().url, t("Đội", "Teams")),
-              subItem(routes.ForumCateg.index.url, t("Diễn đàn", "Forum"))
+              // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số ở đây là `Frag*`,
+              // mà Option chỉ tự chuyển thành Modifier chứ không thành Frag.
+              if forumEnabled then subItem(routes.ForumCateg.index.url, t("Diễn đàn", "Forum"))
+              else emptyFrag
             )
           ),
           // Cụm đáy: tìm kiếm → (khách: mời đăng ký) → công cụ. Dasher xuống DÒNG CUỐI vì

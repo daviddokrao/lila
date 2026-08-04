@@ -128,7 +128,9 @@ object show:
                     )
                   )
                 ),
-                info.forum.map: forumPosts =>
+                // Diễn đàn tạm tắt (env LILA_FORUM): mọi liên kết trong khối này trỏ
+                // /forum/team-<id>, nay 404. Ẩn cả khối chứ không chỉ khối tiêu đề.
+                info.forum.filter(_ => env.web.config.forumEnabled).map: forumPosts =>
                   st.section(cls := "team-show__forum")(
                     h2(a(href := teamForumUrl(t.id))(trans.site.forum())),
                     div(cls := "team-show__list-wrapper")(

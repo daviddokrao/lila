@@ -39,10 +39,10 @@ export default function () {
     document.body.classList.toggle('masked', menuOpen);
   });
 
-  $(top).on('click', '.toggle', function (this: HTMLElement, e: Event) {
-    blurIfPrimaryClick(e);
-    const $p = $(this).parent().toggleClass('shown');
-    $p.siblings('.shown').removeClass('shown');
+  // Đóng bảng khi bấm ra ngoài. Tách ra khỏi handler `.toggle` vì các nút tắt vào
+  // pane dasher (data-dasher-pane) cũng cần đúng cơ chế này — trước 04/08 chúng chỉ
+  // biết MỞ, nên bảng ngôn ngữ mở ra rồi không có cách nào đóng lại (David báo).
+  const dismissOnOutsideClick = ($p: Cash) =>
     setTimeout(() => {
       const handler = (e: Event) => {
         const target = e.target as HTMLElement;
@@ -52,6 +52,12 @@ export default function () {
       };
       $('html').on('click', handler);
     }, 10);
+
+  $(top).on('click', '.toggle', function (this: HTMLElement, e: Event) {
+    blurIfPrimaryClick(e);
+    const $p = $(this).parent().toggleClass('shown');
+    $p.siblings('.shown').removeClass('shown');
+    dismissOnOutsideClick($p);
     return false;
   });
 
@@ -148,22 +154,53 @@ export default function () {
 
   {
     // dasher
-    const load = memoize(() => loadEsm<any>('dasher'));
+    // `ctrl` giữ instance đã nạp để đọc ĐƯỢC pane đang mở một cách ĐỒNG BỘ. Không thể
+    // nhớ pane cuối bằng biến riêng: nút "quay lại" trong pane tự gọi setMode('links'),
+    // nên biến tự quản sẽ lệch và nút ngôn ngữ đóng bảng thay vì mở lại đúng pane.
+    let ctrl: any;
+    const load = memoize(async () => (ctrl = await loadEsm<any>('dasher')));
     $('#top .dasher .toggle').one('mouseover click', function (this: HTMLElement) {
       $(this).removeAttr('href');
       loadCssPath('dasher');
       load();
     });
 
+    // Bánh răng LUÔN mở ở pane gốc. Dasher nhớ pane dùng lần trước, nên không có dòng
+    // này thì hễ vừa dùng nút cờ xong là bấm bánh răng lại ra danh sách ngôn ngữ — tức
+    // ngôn ngữ VẪN nằm trong nút cài đặt, đúng thứ David bảo bỏ vì trùng lặp.
+    // setTimeout(0): handler gắn thẳng trên nút chạy TRƯỚC handler uỷ quyền `.toggle`
+    // của #top, nên lúc này class `shown` còn là trạng thái CŨ. Phải đợi hết vòng sự
+    // kiện mới đọc được nó vừa mở hay vừa đóng.
+    $('#top .dasher .toggle').on('click', () =>
+      setTimeout(() => {
+        if ($('#top .dasher').hasClass('shown')) ctrl?.close();
+      }, 0),
+    );
+
     // Header shortcuts that only exist to reach a dasher pane in one click. The dasher
     // stays the single implementation; this just opens it on the right pane.
     $('#top [data-dasher-pane]').on('click', async function (this: HTMLElement, e: Event) {
       e.preventDefault();
+      // stopPropagation là BẮT BUỘC, đã đo chứ không phải đề phòng: nút tắt nằm NGOÀI
+      // `.dasher`, nên nếu để sự kiện bay tiếp lên `html` thì handler "bấm ra ngoài"
+      // đăng ký từ lần mở TRƯỚC sẽ chạy sau ta và đóng ngay bảng ta vừa mở. Triệu chứng
+      // đúng bằng lỗi cũ (bấm không ăn) nhưng chỉ lộ ở một đường: mở pane ngôn ngữ →
+      // bấm "quay lại" → bấm nút cờ. Handler `.toggle` của upstream thoát được vì nó
+      // `return false`, thứ mà cash dịch thành preventDefault + stopPropagation.
+      e.stopPropagation();
       const $dasher = $('#top .dasher');
       if (!$dasher.length) return;
+      const pane = this.dataset.dasherPane as any;
+      // Bấm lần hai vào ĐÚNG nút đang mở thì đóng lại. Trước 04/08 nhánh này chỉ có
+      // addClass('shown') nên nút trông như chết ở chiều về (David báo).
+      if ($dasher.hasClass('shown') && ctrl?.mode() === pane) {
+        $dasher.removeClass('shown');
+        return;
+      }
       loadCssPath('dasher');
       $dasher.addClass('shown').siblings('.shown').removeClass('shown');
-      (await load())?.setMode(this.dataset.dasherPane as any);
+      dismissOnOutsideClick($dasher);
+      (await load())?.setMode(pane);
     });
 
     // The theme shortcut posts the same preference the dasher does, so it goes through

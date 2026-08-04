@@ -5,7 +5,10 @@ import lila.ui.*
 
 import ScalatagsTemplate.{ *, given }
 
-final class UblogPostUi(helpers: Helpers, ui: UblogUi)(connectLinks: Frag):
+// forumEnabled: diễn đàn tạm tắt bằng env LILA_FORUM. Nút "thảo luận bài này ở diễn đàn"
+// đi qua /ublog/discuss/<id>, và route đó CHỈ chuyển hướng sang /forum/... — đường ấy nay
+// 404, nên ẩn nút thay vì để người đọc bấm vào ngõ cụt.
+final class UblogPostUi(helpers: Helpers, ui: UblogUi)(connectLinks: Frag, forumEnabled: Boolean):
   import helpers.{ *, given }
 
   def page(
@@ -119,7 +122,7 @@ final class UblogPostUi(helpers: Helpers, ui: UblogUi)(connectLinks: Frag):
               )
             ),
             div(cls := "ublog-post__footer")(
-              (post.live && ~post.discuss && ctx.kid.no).option(
+              (forumEnabled && post.live && ~post.discuss && ctx.kid.no).option(
                 a(
                   href := routes.Ublog.discuss(post.id),
                   cls := "button text ublog-post__discuss",

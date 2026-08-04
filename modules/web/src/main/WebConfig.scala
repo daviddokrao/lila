@@ -15,7 +15,9 @@ final class WebConfig(
     // HungKings: trang chủ v2 sau cờ (rollback bằng env LILA_HOME_V2, không cần rebuild)
     val homeV2: Boolean,
     // HungKings: sidebar trang chủ v2 (vòng 3) — chỉ có nghĩa khi homeV2 bật
-    val homeSidebar: Boolean
+    val homeSidebar: Boolean,
+    // HungKings: diễn đàn tạm tắt (env LILA_FORUM). Tắt = ẩn mọi lối vào + /forum 404.
+    val forumEnabled: Boolean
 )
 
 object WebConfig:
@@ -43,7 +45,8 @@ object WebConfig:
         c.get[Secret]("pagerDuty.apiKey")
       ),
       c.get[Boolean]("net.home.v2"),
-      c.get[Boolean]("net.home.sidebar")
+      c.get[Boolean]("net.home.sidebar"),
+      c.get[Boolean]("net.forum.enabled")
     )
 
   def analyseEndpoints(c: Configuration) =

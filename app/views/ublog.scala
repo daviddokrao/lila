@@ -11,7 +11,10 @@ import lila.core.ublog.QualityFilter
 
 lazy val ui = lila.ublog.ui.UblogUi(helpers, views.atomUi, views.mod.ui.menu("carousel"))(picfitUrl)
 
-lazy val post = lila.ublog.ui.UblogPostUi(helpers, ui)(connectLinks = views.bits.connectLinks)
+lazy val post = lila.ublog.ui.UblogPostUi(helpers, ui)(
+  connectLinks = views.bits.connectLinks,
+  forumEnabled = env.web.config.forumEnabled
+)
 
 lazy val form = lila.ublog.ui.UblogFormUi(helpers, ui)(
   renderCaptcha = (form, captcha) =>

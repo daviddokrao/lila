@@ -11,7 +11,9 @@ export class LinksCtrl extends PaneCtrl {
     return hl('div', [
       this.userLinks(),
       hl('div.subs', [
-        hl('button.sub', modeCfg('langs'), i18n.site.language),
+        // Mục "Ngôn ngữ" đã gỡ khỏi đây (David chốt 04/08): nút lá cờ ngay cạnh bánh
+        // răng mở thẳng pane này rồi, để cả hai là trùng lặp. Pane langs vẫn còn nguyên
+        // và vẫn tới được qua nút cờ (data-dasher-pane="langs") — chỉ mất lối vào thừa.
         hl('button.sub', modeCfg('sound'), i18n.site.sound),
         hl('button.sub', modeCfg('background'), i18n.site.background),
         hl('button.sub', modeCfg('board'), i18n.site.board),

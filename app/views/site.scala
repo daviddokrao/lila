@@ -30,7 +30,7 @@ object page:
       active = "contact",
       contentCls = "page box box-pad"
     ).css("bits.contact")
-      .js(esmInitBit("contact"))(lila.web.ui.contact(netConfig.email))
+      .js(esmInitBit("contact"))(lila.web.ui.contact(netConfig.email, env.web.config.forumEnabled))
 
   def webmasters(using Context) =
     ui.webmasters(lila.pref.PieceSet.all.map(_.name))

@@ -102,7 +102,8 @@ final class LilaComponents(
       httpErrorHandler,
       httpConfiguration,
       httpFilters,
-      controllerComponents
+      controllerComponents,
+      env.web.config.forumEnabled
     )
 
   lazy val devAssetsController =

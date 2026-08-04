@@ -23,6 +23,19 @@
     @extend %top-icon;
   }
 
+  // Lá cờ của ngôn ngữ ĐANG dùng, thay biểu tượng quả địa cầu (David chốt 04/08).
+  // File nguồn là webp VUÔNG 24x24 (đã đo cả thư mục public/flags) — không phải tỉ lệ
+  // 4:3 như cờ thường, nên ép cả hai chiều mới không bị nhoè khi trình duyệt tự suy.
+  // `vertical-align` là BẮT BUỘC ở thanh ngang: nút thừa hưởng `line-height: 60px` của
+  // %top-icon nên ảnh inline sẽ ngồi trên đường baseline và lệch xuống ~6px.
+  &__flag {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    border-radius: 3px;
+  }
+
   // No sun or moon exists in the icon font, so the glyph is a mask here. It follows
   // the same colour transitions as its neighbours because it paints with currentColor.
   .bg-toggle::before {

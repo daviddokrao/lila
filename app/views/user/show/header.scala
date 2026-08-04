@@ -104,7 +104,8 @@ object header:
           a(href := routes.Study.byOwnerDefault(u.username), cls := "nm-item")(
             splitNumber(trans.site.`nbStudies`.pluralSame(info.nbStudies))
           ),
-          ctx.kid.no.option(
+          // Diễn đàn tạm tắt (env LILA_FORUM) => /forum/search 404, gỡ luôn ô đếm bài.
+          (env.web.config.forumEnabled && ctx.kid.no).option(
             a(
               cls := "nm-item",
               href := routes.ForumPost.search("user:" + u.username, 1).url
