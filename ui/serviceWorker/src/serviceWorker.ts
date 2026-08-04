@@ -20,8 +20,13 @@ function assetUrl(path: string): string {
 // ---------------------------------------------------------------------------
 const CACHE = 'hungkings-shell-v1';
 const OFFLINE_URL = assetUrl('offline.html');
-// Hash của esbuild: 8 ký tự HOA/số nằm giữa tên và đuôi.
-const IMMUTABLE = /\.[A-Z0-9]{8}\.(js|css)$/;
+// Tên tệp đã băm hash. HAI dạng cùng tồn tại trong `public/` và phải bắt CẢ HAI (đã đối
+// chiếu tên tệp thật): esbuild dùng base32 HOA (`analyse.gifDialog.JBK4YD3J.js`), còn
+// bundle CSS dùng hex THƯỜNG (`analyse.free.000caada.css`). Bắt mỗi chữ hoa thì gần như
+// toàn bộ CSS rớt khỏi cache mà không có lỗi nào báo.
+// KHÔNG dùng `[A-Za-z0-9]{8}` cho gọn: nó khớp cả từ thường 8 ký tự (`embedded`) và sẽ
+// ghim vĩnh viễn một tệp KHÔNG băm hash.
+const IMMUTABLE = /\.([A-Z2-7]{8}|[0-9a-f]{8})\.(js|css)$/;
 
 sw.addEventListener('install', (e: ExtendableEvent) => {
   e.waitUntil(

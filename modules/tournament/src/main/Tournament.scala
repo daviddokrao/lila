@@ -50,9 +50,16 @@ case class Tournament(
   def isTeamRelated = isTeamBattle || conditions.teamMember.isDefined
   def singleTeamId: Option[TeamId] = conditions.teamMember.map(_.teamId)
 
+  // HungKings: upstream short-circuit `if isMarathon || isUnique then name` để giữ tên
+  // ĐẶT TAY của các giải marathon theo mùa mà Lichess tự tạo. Fork này không có giải nào
+  // đặt tên tay: mọi Marathon/Unique đều do scheduler sinh, và tên sinh ra bị ĐÓNG BĂNG
+  // vào DB bằng ngôn ngữ mặc định của máy chủ (tiếng Anh) ngay lúc tạo — nên short-circuit
+  // đó là lý do "Marathon Hyperbullet" đứng nguyên tiếng Anh dù đã có khoá dịch.
+  // Gỡ nó thì tên được dựng lại theo ngôn ngữ NGƯỜI ĐỌC ở mỗi lần render.
+  // Giải TỰ TẠO (không có schedule) KHÔNG bị ảnh hưởng: `TournamentName.apply` đã trả
+  // thẳng `tour.name` cho nhánh `scheduleData.isEmpty`.
   def name(full: Boolean = true)(using Translate): String =
-    if isMarathon || isUnique then name
-    else if isTeamBattle && full then lila.core.i18n.I18nKey.tourname.xTeamBattle.txt(name)
+    if isTeamBattle && full then lila.core.i18n.I18nKey.tourname.xTeamBattle.txt(name)
     else if isTeamBattle then name
     else TournamentName(this, full)
 
