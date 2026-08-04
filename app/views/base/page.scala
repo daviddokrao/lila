@@ -39,9 +39,17 @@ object page:
   def apply(p: Page)(using ctx: PageContext): RenderedPage =
     import ctx.pref
     val anonOnboarding = ctx.isAnon.so(lila.security.EmailConfirm.cookie.get(ctx.req))
+    // Sidebar thay header ngang trên MỌI trang khi cờ bật (David chốt 04/08). Hai ngoại lệ:
+    // `noHeader` (trang oauth/takex3 cố ý không có chrome nào) và người dùng đang kháng
+    // nghị — luồng đó chỉ có nút đăng xuất, sidebar đầy đủ sẽ mở lại lối đi đã bị khoá.
+    val useSidebar = env.web.config.homeSidebar &&
+      !p.flags(PageFlags.noHeader) && !ctx.isAppealUser
     val allModules = p.modules ++
       p.pageModule.so(module => esmPage(module.name)) ++
       ctx.needsFp.so(fingerprintTag) ++
+      // esmInit chứ KHÔNG phải esmInitBit: esmInitBit nạp module GỘP "bits" rồi dispatch
+      // theo tên hàm, còn bits.homeV2Sidebar.ts là module RIÊNG export initModule().
+      useSidebar.so(List(esmInit("bits.homeV2Sidebar").some)) ++
       anonOnboarding.isDefined.so(esmInitBit("emailErrorCheck"))
     val zenable = p.flags(PageFlags.zen)
     val playing = p.flags(PageFlags.playing)
@@ -145,7 +153,7 @@ object page:
           anonOnboarding.map: u =>
             frag(cssTag("bits.email-confirm"), views.auth.checkYourEmailBanner(u.username, u.email)),
           zenable.option(zenZone),
-          Option.unless(p.flags(PageFlags.noHeader)):
+          Option.unless(p.flags(PageFlags.noHeader) || useSidebar):
             ui.siteHeader(
               zenable = zenable,
               isAppealUser = ctx.isAppealUser,
@@ -165,7 +173,20 @@ object page:
               "is2d" -> pref.is2d,
               "is3d" -> pref.is3d
             )
-          )(p.transform(p.body)),
+          )(
+            // Sidebar nằm TRONG #main-wrap chứ không phải trước nó: bố cục 2 cột dựa vào
+            // `#main-wrap:has(> aside.hv2-side)` + `grid-area: side` (_sidebar.scss).
+            // Đặt ra ngoài là selector không khớp và cột trái biến mất không báo lỗi.
+            useSidebar.option(
+              ui.siteSidebar(
+                challenges = ctx.nbChallenges,
+                notifications = ctx.nbNotifications.value,
+                error = ctx.data.error,
+                foot = p.sidebarFoot
+              )
+            ),
+            p.transform(p.body)
+          ),
           bottomHtml,
           ctx.nonce.map(inlineJs(_, allModules)),
           modulesInit(allModules, ctx.nonce),

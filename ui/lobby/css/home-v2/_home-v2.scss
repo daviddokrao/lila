@@ -309,40 +309,8 @@ main.home-v2 {
   color: $c-font-dim;
 }
 
-.hv2-btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 16px;
-  border-radius: 10px;
-  font-weight: 700;
-
-  // Liet ke thuoc tinh cu the thay vi transition:all (P0.2)
-  @include transition(color border-color filter box-shadow);
-
-  &--gold {
-    background: $c-accent;
-    color: $c-over-accent;
-
-    &:hover {
-      filter: brightness(1.05);
-      box-shadow: 0 4px 14px rgb(from $c-accent r g b / calc(alpha * 0.3));
-    }
-  }
-
-  &--line {
-    border: $border;
-
-    &:hover {
-      border-color: $c-accent;
-      color: $c-accent;
-    }
-  }
-
-  &--sm {
-    padding: 7px 12px;
-    font-size: 0.85rem;
-  }
-}
+// .hv2-btn da chuyen sang lib/css/layout/_sidebar.scss (site.css) vi sidebar toan site
+// dung no cho nut Dang ky/Dang nhap. Trang chu van dung duoc — site.css nap moi trang.
 
 .hv2-multi {
   display: grid;
@@ -643,21 +611,8 @@ main.home-v2 {
 }
 
 // Skip-link (P0.3): an toi khi focus bang ban phim
-.hv2-skip {
-  position: absolute;
-  left: -9999px;
-  top: 8px;
-  z-index: 200;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: $c-accent;
-  color: $c-over-accent;
-  font-weight: 700;
-
-  &:focus {
-    left: 8px;
-  }
-}
+// .hv2-skip cung da chuyen sang lib/css/layout/_sidebar.scss — no la phan tu focus dau
+// tien cua MOI trang, khong the chi song trong bundle trang chu.
 
 .hv2-lb {
   display: flex;

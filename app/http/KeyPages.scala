@@ -60,7 +60,9 @@ final class KeyPages(val env: Env)(using Executor)
               else homeV2Replay.get {}
             page <- renderPage:
               lila.mon.chronoSync(lila.mon.lobby.segment("renderSync")):
-                views.lobby.homeV2(h, multiview, leaderboards, replay, env.web.config.homeSidebar)
+                // Cờ homeSidebar KHÔNG còn truyền xuống đây: sidebar là chrome toàn site,
+                // page.scala tự đọc cờ và dựng cho mọi trang (04/08).
+                views.lobby.homeV2(h, multiview, leaderboards, replay)
           yield page
         else
           renderPage:

@@ -33,8 +33,13 @@ case class Page(
     withHrefLangs: Option[LangPath] = None,
     flags: Set[PageFlags] = Set.empty,
     transform: Update[Frag] = identity,
-    transformHead: Update[Frag] = identity
+    transformHead: Update[Frag] = identity,
+    // Phần đuôi riêng của trang nhét vào cụm đáy sidebar. Sidebar do page.scala dựng cho
+    // MỌI trang nên nó không thấy dữ liệu của trang; trang chủ cần chỗ này cho dải
+    // "N người trực tuyến" vốn lấy từ dữ liệu sảnh.
+    sidebarFoot: Option[Frag] = None
 ):
+  def sidebarFoot(f: Frag): Page = copy(sidebarFoot = f.some)
   def js(esm: Esm): Page = copy(modules = modules :+ esm.some)
   def js(esm: EsmList): Page = copy(modules = modules ::: esm)
   def js(pm: PageModule): Page = copy(pageModule = pm.some)

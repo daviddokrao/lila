@@ -28,13 +28,12 @@ object homeV2:
       homepage: Homepage,
       multiview: List[(lila.tv.Tv.Channel, Option[lila.core.game.Game])],
       leaderboards: lila.rating.UserPerfs.Leaderboards,
-      replay: Option[lila.core.game.Game],
-      sidebar: Boolean
+      replay: Option[lila.core.game.Game]
   )(using ctx: Context) =
     import homepage.*
-    // Sidebar vòng 3: chỉ khách vãng lai — người đăng nhập giữ header cũ (notify/challenge
-    // cần PageContext mà homeV2 không có; logged-in chuyên biệt là phase 2).
-    val useSidebar = sidebar && ctx.isAnon
+    // Sidebar KHÔNG còn dựng ở đây (04/08): nó là chrome toàn site, page.scala dựng cho
+    // mọi trang từ lila.web.ui.layout.siteSidebar. Trang chủ chỉ còn góp dải thống kê
+    // xuống cụm đáy qua Page.sidebarFoot, vì chỉ nó mới có dữ liệu sảnh.
     // Phải đặt TRƯỚC các val bên dưới: Spotlight.select và các helper user cần given này.
     // (home.scala đặt nó trong khối hrefLangs vì mọi thứ đều dựng tại chỗ trong đó.)
     given Option[UserWithPerfs] = homepage.me
@@ -294,146 +293,25 @@ object homeV2:
         )
       )
 
-    // ---------- Sidebar (vòng 3, cờ LILA_HOME_SIDEBAR, chỉ anon) ----------
-    // Mang id="top" ĐỂ topBar.ts chạy miễn phí: dasher/theme/ngôn ngữ/tìm kiếm đều wiring
-    // theo selector `#top ...`, và thiếu #top thì scroll handler của nó ném TypeError.
-    // CSS phải vô hiệu `.hide`/`.scrolled` mà topBar gắn vào #top khi cuộn (_sidebar.scss).
-    val pageUi = views.base.page.ui
-    // Biểu tượng đứng trước nhãn, mỗi mục một dòng — mượn cách của Chess.com nhưng dùng
-    // bộ biểu tượng SẴN CÓ của lila (font `lichess`, đã đổi thương hiệu) chứ không kéo
-    // thêm bộ icon mới. `extra` là chỗ cho huy hiệu MỚI.
-    def navItem(url: String, icon: Icon, label: Frag, extra: Modifier*)(subs: Frag*) =
-      // Mỗi mục là một khối riêng để panel con neo được theo nó (position:relative).
-      // Panel xổ ngang sang phải khi rê chuột HOẶC khi nhận focus bàn phím — xem
-      // _sidebar.scss, đặc biệt phần vì sao sidebar phải bỏ `overflow-y:auto`.
-      div(cls := "hv2-side__item")(
-        a(href := url)(
-          span(cls := "hv2-side__ico", dataIcon := icon),
-          span(cls := "hv2-side__lb")(label),
-          extra
-        ),
-        subs.nonEmpty.option(div(cls := "hv2-side__sub")(subs))
-      )
-    def subItem(url: String, label: Frag) = a(href := url)(label)
-    val sidebarFrag: Option[Frag] = useSidebar.option:
-      frag(
-        st.aside(id := "top", cls := "hv2-side", aria.label := "HungKings")(
-          a(cls := "hv2-side__brand", href := "/", attr("aria-current") := "page")(
-            div(cls := "site-icon", dataIcon := Icon.Logo),
-            div(cls := "site-name")(siteName)
-          ),
-          // Điều hướng lên NGAY dưới thương hiệu, kèm biểu tượng — học cách xếp của
-          // Chess.com (David chốt 03/08). Trước đó auth + tìm kiếm chen vào giữa thương
-          // hiệu và điều hướng, đẩy thứ dùng hàng ngày xuống dưới thứ dùng một lần.
-          st.nav(cls := "hv2-side__nav", aria.label := t("Điều hướng chính", "Main navigation"))(
-            // P0.7 (David chốt 03/08): /tv 404 khi chưa có ván rated người thật — tạm trỏ
-            // /games (Current games, luôn 200). Khi broadcast relay (P1.6) chạy → /broadcast.
-            // MỌI liên kết con dưới đây đã curl kiểm mã trạng thái trên bản live 03/08.
-            // `/tv` CỐ Ý vắng mặt: nó 404 vĩnh viễn tới khi có ván tiêu chuẩn tính hệ số
-            // của người thật (xem HANDOFF, mục "/tv trả 404 là ĐÚNG").
-            navItem(routes.Tv.games.url, Icon.AnalogTv, t("Trực tiếp", "Live"))(
-              subItem(routes.Tv.games.url, t("Ván đang diễn ra", "Current games")),
-              subItem(routes.RelayTour.index().url, t("Tiếp sóng giải đấu", "Broadcasts")),
-              subItem(routes.Streamer.index().url, t("Người phát trực tiếp", "Streamers"))
-            ),
-            // #ai/#friend/#hook mở thẳng hộp thoại tạo ván — ctrl.ts nghe hashchange
-            // (Mốc B). #hv2-play chỉ cuộn tới khối xếp cặp.
-            navItem("#hv2-play", Icon.PlayTriangle, t("Chơi", "Play"))(
-              subItem("#hv2-play", t("Xếp cặp nhanh", "Quick pairing")),
-              subItem("#hook", t("Tạo ván tại sảnh", "Create a game")),
-              subItem("#friend", t("Thách đấu bạn bè", "Play a friend")),
-              subItem("#ai", t("Chơi với máy", "Play the computer"))
-            ),
-            navItem(routes.Puzzle.home.url, Icon.ArcheryTarget, t("Câu đố", "Puzzles"))(
-              subItem(routes.Puzzle.home.url, t("Câu đố hằng ngày", "Daily puzzle")),
-              subItem(routes.Puzzle.themes.url, t("Theo chủ đề", "Puzzle themes")),
-              subItem(routes.Storm.home.url, t("Bão câu đố", "Puzzle storm")),
-              subItem(routes.Racer.home.url, t("Đua câu đố", "Puzzle racer")),
-              // /streak thuộc controller Puzzle chứ không có controller riêng
-              subItem(routes.Puzzle.streak.url, t("Chuỗi thắng", "Puzzle streak"))
-            ),
-            navItem(routes.Learn.index.url, Icon.GraduateCap, t("Học cờ", "Learn"))(
-              subItem(routes.Learn.index.url, t("Học cơ bản", "Chess basics")),
-              subItem(routes.Practice.index.url, t("Luyện thế cờ", "Practice")),
-              subItem(routes.UserAnalysis.index.url, t("Bàn phân tích", "Analysis board")),
-              subItem(routes.Study.allDefault().url, t("Nghiên cứu", "Studies"))
-            ),
-            navItem(
-              coachUrl,
-              Icon.Cpu,
-              t("Huấn luyện AI", "AI coach"),
-              span(cls := "hv2-side__new")(t("MỚI", "NEW"))
-            )(),
-            navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments"))(
-              subItem(routes.Tournament.home.url, t("Đấu trường", "Arenas")),
-              subItem(routes.Tournament.calendar.url, t("Lịch giải", "Calendar"))
-            ),
-            navItem("#hv2-comm", Icon.Group, t("Cộng đồng", "Community"))(
-              subItem(routes.User.list.url, t("Kỳ thủ", "Players")),
-              subItem(routes.Team.home().url, t("Đội", "Teams")),
-              subItem(routes.ForumCateg.index.url, t("Diễn đàn", "Forum"))
-            )
-          ),
-          // Cụm đáy: tìm kiếm → mời đăng ký → đăng nhập → cài đặt. Cài đặt xuống DÒNG
-          // CUỐI vì (a) là việc làm một lần, (b) bảng dasher bung ra từ đây phải mở
-          // NGƯỢC LÊN, không thì nó đè lên cả cột (lỗi David chụp 03/08).
-          div(cls := "hv2-side__foot")(
-            div(cls := "hv2-side__search")(pageUi.clinput),
-            p(cls := "hv2-side__note")(
-              t("Miễn phí · không quảng cáo · lưu mọi ván của bạn", "Free · no ads · every game saved")
-            ),
-            a(cls := "hv2-btn hv2-btn--gold hv2-side__cta", href := routes.Auth.signup)(
-              t("Đăng ký miễn phí", "Sign up free")
-            ),
-            a(
-              cls := "hv2-btn hv2-btn--line hv2-side__signin",
-              href := s"${routes.Auth.login.url}?referrer=/",
-              testId("login")
-            )(t("Đăng nhập", "Sign in")),
-            div(cls := "hv2-side__tools site-buttons")(
-              pageUi.anonDasherGear,
-              pageUi.bgToggle,
-              pageUi.langSelect
-            ),
-            {
-              // Số tĩnh lúc render (LobbyApi luôn phát counters); live-update là phase 2.
-              // P0.3f: số nhỏ TỆ HƠN không có số — dưới 20 người thì ẩn (luật không-nói-dối,
-              // khớp mockup). Chuỗi en bỏ "games in play" để khỏi lỗi số ít/nhiều.
-              val members = (data \ "counters" \ "members").asOpt[Int]
-              val rounds = (data \ "counters" \ "rounds").asOpt[Int]
-              (members, rounds) match
-                case (Some(m), Some(r)) if m >= 20 =>
-                  p(cls := "hv2-side__stats")(
-                    t(s"$m người trực tuyến · $r ván đang đấu", s"$m online · $r playing")
-                  )
-                case _ => emptyFrag
-            }
-          )
-        ),
-        // Thanh mobile + scrim cho drawer (<1020px); JS: bits.homeV2Sidebar
-        div(cls := "hv2-mobilebar")(
-          button(
-            tpe := "button",
-            cls := "hv2-mobilebar__menu",
-            attr("aria-expanded") := "false",
-            attr("aria-controls") := "top",
-            aria.label := t("Mở menu", "Open menu")
-          )(span, span, span),
-          a(cls := "hv2-mobilebar__brand", href := "/")(
-            div(cls := "site-icon", dataIcon := Icon.Logo),
-            siteName
-          ),
-          a(
-            cls := "hv2-mobilebar__login",
-            href := s"${routes.Auth.login.url}?referrer=/"
-          )(t("Đăng nhập", "Sign in"))
-        ),
-        div(cls := "hv2-scrim", attr("aria-hidden") := "true")
-      )
+    // Dải thống kê nay xuống cụm đáy của sidebar TOÀN SITE (page.scala dựng sidebar cho
+    // mọi trang, nên nó không thấy dữ liệu sảnh — chỉ trang chủ có). Xem Page.sidebarFoot.
+    // Số tĩnh lúc render (LobbyApi luôn phát counters); live-update là phase 2.
+    // P0.3f: số nhỏ TỆ HƠN không có số — dưới 20 người thì ẩn (luật không-nói-dối).
+    val sidebarStats: Option[Frag] =
+      val members = (data \ "counters" \ "members").asOpt[Int]
+      val rounds = (data \ "counters" \ "rounds").asOpt[Int]
+      (members, rounds) match
+        case (Some(m), Some(r)) if m >= 20 =>
+          p(cls := "hv2-side__stats")(
+            t(s"$m người trực tuyến · $r ván đang đấu", s"$m online · $r playing")
+          ).some
+        case _ => None
 
     Page("")
-      .copy(fullTitle = s"$siteName • ${trans.site.freeOnlineChess.txt()}".some)
-      .flag(_.noHeader, useSidebar)
+      .copy(
+        fullTitle = s"$siteName • ${trans.site.freeOnlineChess.txt()}".some,
+        sidebarFoot = sidebarStats
+      )
       .i18n(_.variant)
       .js(
         PageModule(
@@ -449,7 +327,6 @@ object homeV2:
         )
       )
       .css("home-v2")
-      .js(useSidebar.so(List(esmInit("bits.homeV2Sidebar").some)))
       .graph(
         OpenGraph(
           image = staticAssetUrl("logo/lichess-tile-wide.png").some,
@@ -464,12 +341,10 @@ object homeV2:
         frag(
           // P0.3b: skip-link cho bàn phím — phần tử focus đầu tiên của trang
           a(cls := "hv2-skip", href := "#hv2-play")(t("Bỏ qua, tới khu thi đấu", "Skip to play area")),
-          sidebarFrag,
           main(
             cls := List(
-              "lobby"          -> true,
-              "home-v2"        -> true,
-              "home-v2--side"  -> useSidebar,
+              "lobby" -> true,
+              "home-v2" -> true,
               "lobby-nope" -> (playban.isDefined || currentGame.isDefined || homepage.hasUnreadLichessMessage)
             )
           )(

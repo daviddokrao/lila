@@ -11,6 +11,9 @@
 @import '../layout/page-menu';
 @import '../theme/board/chessground';
 @import '../header/header';
+// PHAI dung SAU header: sidebar ghi de #top cua _header.scss. Selector cua no
+// (aside#top.hv2-side) da cu the hon roi, nhung thu tu nay giu them mot lop bao hiem.
+@import '../layout/sidebar';
 @import '../../../cli/css/clinput';
 @import 'components';
 @include theme-style;

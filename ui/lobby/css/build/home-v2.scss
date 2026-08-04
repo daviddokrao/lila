@@ -11,4 +11,5 @@
 // nen import duoc ma khong keo theo ca lobby cu.
 @import '../table';
 @import '../home-v2/home-v2';
-@import '../home-v2/sidebar';
+// sidebar KHONG con import o day: no da la chrome toan site, nam trong site.css
+// (lib/css/page/_lichess.scss). Import lai o day chi lam trung CSS.

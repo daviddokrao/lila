@@ -302,6 +302,55 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
     spinnerMask
   )
 
+  // Ba mảnh dưới đây trước nằm TRONG object siteHeader. Sidebar toàn site (siteSidebar)
+  // dùng lại y hệt chúng, nên phải ở cấp class — nhân bản là hai bản sẽ trôi khỏi nhau,
+  // và quyền kiểm duyệt hiện sai chỗ thì không ai phát hiện.
+  private def privileges(using Context) =
+    if Granter.opt(_.SeeReport) then
+      val threshold = reportScoreThreshold()
+      val maxScore = reportScore()
+      a(
+        cls := List(
+          "link data-count report-maxScore link-center" -> true,
+          "report-maxScore--high" -> (maxScore > threshold.high),
+          "report-maxScore--low" -> (maxScore <= threshold.mid)
+        ),
+        title := "Moderation",
+        href := routes.Report.list,
+        dataCount := maxScore,
+        dataIcon := Icon.Agent
+      ).some
+    else if Granter.opt(_.PublicChatView) then
+      a(
+        cls := "link",
+        title := "Moderation",
+        href := routes.Mod.publicChat,
+        dataIcon := Icon.Agent
+      ).some
+    else
+      (Granter.opt(_.Pages) || Granter.opt(_.ManageEvent)).option(
+        a(
+          cls := "link",
+          title := "Content",
+          href := Granter.opt(_.Pages).option(routes.Cms.index).orElse(routes.Event.manager().some),
+          dataIcon := Icon.InkQuill
+        )
+      )
+
+  private def teamRequests(nb: Int)(using Translate) =
+    Option.when(nb > 0):
+      a(
+        cls := "link data-count link-center",
+        href := routes.Team.requests,
+        dataCount := nb,
+        dataIcon := Icon.Group,
+        title := trans.team.teams.txt()
+      )
+
+  private val siteNameFrag: Frag =
+    if siteName == "lichess.org" then frag("lichess", span(".org"))
+    else frag(siteName)
+
   object siteHeader:
 
     private val topnavToggle = spaceless:
@@ -309,52 +358,6 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
 <input type="checkbox" id="tn-tg" class="topnav-toggle fullscreen-toggle" autocomplete="off" aria-label="Navigation">
 <label for="tn-tg" class="fullscreen-mask"></label>
 <label for="tn-tg" class="hbg"><span class="hbg__in"></span></label>"""
-
-    private def privileges(using Context) =
-      if Granter.opt(_.SeeReport) then
-        val threshold = reportScoreThreshold()
-        val maxScore = reportScore()
-        a(
-          cls := List(
-            "link data-count report-maxScore link-center" -> true,
-            "report-maxScore--high" -> (maxScore > threshold.high),
-            "report-maxScore--low" -> (maxScore <= threshold.mid)
-          ),
-          title := "Moderation",
-          href := routes.Report.list,
-          dataCount := maxScore,
-          dataIcon := Icon.Agent
-        ).some
-      else if Granter.opt(_.PublicChatView) then
-        a(
-          cls := "link",
-          title := "Moderation",
-          href := routes.Mod.publicChat,
-          dataIcon := Icon.Agent
-        ).some
-      else
-        (Granter.opt(_.Pages) || Granter.opt(_.ManageEvent)).option(
-          a(
-            cls := "link",
-            title := "Content",
-            href := Granter.opt(_.Pages).option(routes.Cms.index).orElse(routes.Event.manager().some),
-            dataIcon := Icon.InkQuill
-          )
-        )
-
-    private def teamRequests(nb: Int)(using Translate) =
-      Option.when(nb > 0):
-        a(
-          cls := "link data-count link-center",
-          href := routes.Team.requests,
-          dataCount := nb,
-          dataIcon := Icon.Group,
-          title := trans.team.teams.txt()
-        )
-
-    private val siteNameFrag: Frag =
-      if siteName == "lichess.org" then frag("lichess", span(".org"))
-      else frag(siteName)
 
     def apply(
         zenable: Boolean,
@@ -396,6 +399,160 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
               .getOrElse:
                 error.not.option(anonDasher)
         )
+      )
+
+  // ---------- Sidebar toàn site (cờ LILA_HOME_SIDEBAR) ----------
+  // Trước 04/08 sidebar chỉ sống trong homeV2.scala và chỉ dành cho khách vãng lai.
+  // David chốt: áp cho MỌI trang, cả người đã đăng nhập. Nên nó về đây nằm cạnh
+  // siteHeader — hai bản chrome thay thế nhau, page.scala chọn đúng một.
+  //
+  // Mang id="top" ĐỂ topBar.ts chạy miễn phí: dasher/theme/ngôn ngữ/tìm kiếm/thông báo
+  // đều wiring theo selector `#top ...`, và thiếu #top thì scroll handler ném TypeError.
+  // CSS phải vô hiệu `.hide`/`.scrolled` mà topBar gắn vào #top khi cuộn (_sidebar.scss).
+  object siteSidebar:
+
+    private val coachUrl = "https://hungkings-coach.vssa.com"
+
+    // Biểu tượng đứng trước nhãn, mỗi mục một dòng — cách xếp của Chess.com nhưng dùng
+    // bộ biểu tượng SẴN CÓ của lila. `extra` là chỗ cho huy hiệu MỚI.
+    private def navItem(url: String, icon: Icon, label: Frag, extra: Modifier*)(subs: Frag*) =
+      // Mỗi mục là một khối riêng để panel con neo được theo nó (position:relative).
+      div(cls := "hv2-side__item")(
+        a(href := url)(
+          span(cls := "hv2-side__ico", dataIcon := icon),
+          span(cls := "hv2-side__lb")(label),
+          extra
+        ),
+        subs.nonEmpty.option(div(cls := "hv2-side__sub")(subs))
+      )
+
+    private def subItem(url: String, label: Frag) = a(href := url)(label)
+
+    def apply(
+        challenges: Int,
+        notifications: Int,
+        error: Boolean,
+        foot: Option[Frag]
+    )(using ctx: PageContext) =
+      // Chuỗi song ngữ tại chỗ, KHÔNG thêm khoá registry dịch (sửa LangList = 19' compile).
+      def t(viText: String, enText: String): String =
+        if ctx.lang.language == "vi" then viText else enText
+      // Neo PHẢI có `/` đứng trước: sidebar nay hiện ở mọi trang, mà trên trang chi tiết
+      // `#ai` trần chỉ đổi hash chứ không có hộp thoại nào để mở. `/#ai` tải trang chủ
+      // rồi ctrl.ts đọc hash lúc dựng. Từ chính trang chủ thì path trùng nên trình duyệt
+      // chỉ đổi hash → listener hashchange của Mốc B bắt được, không tải lại trang.
+      frag(
+        st.aside(id := "top", cls := "hv2-side", aria.label := siteName)(
+          a(cls := "hv2-side__brand", href := langHref("/"))(
+            div(cls := "site-icon", dataIcon := Icon.Logo),
+            div(cls := "site-name")(siteNameFrag)
+          ),
+          st.nav(cls := "hv2-side__nav", aria.label := t("Điều hướng chính", "Main navigation"))(
+            // `/tv` CỐ Ý vắng mặt: 404 vĩnh viễn tới khi có ván tiêu chuẩn tính hệ số của
+            // người thật (xem HANDOFF, mục "/tv trả 404 là ĐÚNG").
+            navItem(routes.Tv.games.url, Icon.AnalogTv, t("Trực tiếp", "Live"))(
+              subItem(routes.Tv.games.url, t("Ván đang diễn ra", "Current games")),
+              subItem(routes.RelayTour.index().url, t("Tiếp sóng giải đấu", "Broadcasts")),
+              subItem(routes.Streamer.index().url, t("Người phát trực tiếp", "Streamers"))
+            ),
+            navItem("/#hv2-play", Icon.PlayTriangle, t("Chơi", "Play"))(
+              subItem("/#hv2-play", t("Xếp cặp nhanh", "Quick pairing")),
+              subItem("/#hook", t("Tạo ván tại sảnh", "Create a game")),
+              subItem("/#friend", t("Thách đấu bạn bè", "Play a friend")),
+              subItem("/#ai", t("Chơi với máy", "Play the computer"))
+            ),
+            navItem(routes.Puzzle.home.url, Icon.ArcheryTarget, t("Câu đố", "Puzzles"))(
+              subItem(routes.Puzzle.home.url, t("Câu đố hằng ngày", "Daily puzzle")),
+              subItem(routes.Puzzle.themes.url, t("Theo chủ đề", "Puzzle themes")),
+              subItem(routes.Storm.home.url, t("Bão câu đố", "Puzzle storm")),
+              subItem(routes.Racer.home.url, t("Đua câu đố", "Puzzle racer")),
+              // /streak thuộc controller Puzzle chứ không có controller riêng
+              subItem(routes.Puzzle.streak.url, t("Chuỗi thắng", "Puzzle streak"))
+            ),
+            navItem(routes.Learn.index.url, Icon.GraduateCap, t("Học cờ", "Learn"))(
+              subItem(routes.Learn.index.url, t("Học cơ bản", "Chess basics")),
+              subItem(routes.Practice.index.url, t("Luyện thế cờ", "Practice")),
+              subItem(routes.UserAnalysis.index.url, t("Bàn phân tích", "Analysis board")),
+              subItem(routes.Study.allDefault().url, t("Nghiên cứu", "Studies"))
+            ),
+            navItem(
+              coachUrl,
+              Icon.Cpu,
+              t("Huấn luyện AI", "AI coach"),
+              span(cls := "hv2-side__new")(t("MỚI", "NEW"))
+            )(),
+            navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments"))(
+              subItem(routes.Tournament.home.url, t("Đấu trường", "Arenas")),
+              subItem(routes.Tournament.calendar.url, t("Lịch giải", "Calendar"))
+            ),
+            navItem(routes.User.list.url, Icon.Group, t("Cộng đồng", "Community"))(
+              subItem(routes.User.list.url, t("Kỳ thủ", "Players")),
+              subItem(routes.Team.home().url, t("Đội", "Teams")),
+              subItem(routes.ForumCateg.index.url, t("Diễn đàn", "Forum"))
+            )
+          ),
+          // Cụm đáy: tìm kiếm → (khách: mời đăng ký) → công cụ. Dasher xuống DÒNG CUỐI vì
+          // bảng bung ra từ đây phải mở NGƯỢC LÊN, không thì đè cả cột (lỗi 03/08).
+          div(cls := "hv2-side__foot")(
+            div(cls := "hv2-side__search")(clinput),
+            // `ctx.me.isEmpty` chứ KHÔNG phải `ctx.isAnon`: isAnon là của Context, còn
+            // PageContext chỉ có isAuth/me.
+            (ctx.me.isEmpty && !error).option(
+              frag(
+                p(cls := "hv2-side__note")(
+                  t("Miễn phí · không quảng cáo · lưu mọi ván của bạn", "Free · no ads · every game saved")
+                ),
+                a(cls := "hv2-btn hv2-btn--gold hv2-side__cta", href := routes.Auth.signup)(
+                  t("Đăng ký miễn phí", "Sign up free")
+                ),
+                a(
+                  cls := "hv2-btn hv2-btn--line hv2-side__signin",
+                  // referrer là trang ĐANG đứng, không phải "/" như bản chỉ-trang-chủ:
+                  // đăng nhập từ trang giải đấu mà quẳng về trang chủ là mất chỗ.
+                  href := s"${routes.Auth.login.url}?referrer=${ctx.req.path}",
+                  testId("login")
+                )(t("Đăng nhập", "Sign in"))
+              )
+            ),
+            div(cls := "hv2-side__tools site-buttons")(
+              // Người đã đăng nhập: chuông + lời mời đấu + menu tài khoản. Mỗi mảnh chỉ
+              // được render MỘT lần trên trang — chúng mang id (#notify-app, #challenge-app,
+              // #dasher_app) mà topBar.ts tìm theo id, nhân đôi là hỏng im lặng.
+              // Ngoặc tròn chứ KHÔNG phải `map:` kiểu fewer-braces — mảnh này nằm GIỮA
+              // danh sách tham số, mà fewer-braces chỉ hợp lệ ở tham số cuối.
+              ctx.me.map(me => frag(allNotifications(challenges, notifications), dasher(me))),
+              privileges,
+              teamRequests(ctx.teamNbRequests),
+              ctx.me.isEmpty.option(anonDasherGear),
+              bgToggle,
+              langSelect
+            ),
+            foot
+          )
+        ),
+        // Thanh mobile + scrim cho drawer (<1020px); JS: bits.homeV2Sidebar
+        div(cls := "hv2-mobilebar")(
+          button(
+            tpe := "button",
+            cls := "hv2-mobilebar__menu",
+            attr("aria-expanded") := "false",
+            attr("aria-controls") := "top",
+            aria.label := t("Mở menu", "Open menu")
+          )(span, span, span),
+          a(cls := "hv2-mobilebar__brand", href := langHref("/"))(
+            div(cls := "site-icon", dataIcon := Icon.Logo),
+            siteName
+          ),
+          // Chuông/dasher KHÔNG lặp lại ở đây: chúng mang id duy nhất và đã nằm trong
+          // drawer. Khách vãng lai thì nút đăng nhập đáng để lộ ra ngoài.
+          ctx.me.isEmpty.option(
+            a(
+              cls := "hv2-mobilebar__login",
+              href := s"${routes.Auth.login.url}?referrer=${ctx.req.path}"
+            )(t("Đăng nhập", "Sign in"))
+          )
+        ),
+        div(cls := "hv2-scrim", attr("aria-hidden") := "true")
       )
 
   private val rtlCache = scala.collection.mutable.HashMap.empty[Lang, Boolean]
