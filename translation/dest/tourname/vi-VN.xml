@@ -43,5 +43,8 @@
   <string name="xTeamBattle">Giải Đa Đội %s</string>
   <string name="eliteXArena">Đấu trường %s Chuyên Nghiệp</string>
   <string name="eliteX">%s Chuyên nghiệp</string>
+  <string name="marathonX">%s Marathon</string>
+  <string name="weekendX">%s Cuối tuần</string>
+  <string name="uniqueX">%s Đặc biệt</string>
   <string name="xArena">Đấu trường %s</string>
 </resources>

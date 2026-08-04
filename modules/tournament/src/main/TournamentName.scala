@@ -73,6 +73,17 @@ private object TournamentName:
             case (Shield, Classical) => classicalShield.txt()
             case (Shield, _) if full => xShieldArena.txt(speed.trans)
             case (Shield, _) => xShield.txt(speed.trans)
+            // HungKings: Marathon/Weekend/Unique là 3 freq DUY NHẤT không có khoá dịch ở
+            // upstream — chúng rơi xuống nhánh fallback và ghép `freq.toString`, tức TÊN
+            // ENUM SCALA, tiếng Anh cứng, cho MỌI ngôn ngữ. Tên đó còn bị `Tournament.name()`
+            // đọc thẳng từ DB (short-circuit cho Marathon/Unique) nên nó dính vĩnh viễn vào
+            // bản ghi giải. Dùng `xArena` sẵn có cho biến thể "full" để chỉ tốn 3 khoá mới.
+            case (Marathon | ExperimentalMarathon, _) if full => xArena.txt(marathonX.txt(speed.trans))
+            case (Marathon | ExperimentalMarathon, _) => marathonX.txt(speed.trans)
+            case (Weekend, _) if full => xArena.txt(weekendX.txt(speed.trans))
+            case (Weekend, _) => weekendX.txt(speed.trans)
+            case (Unique, _) if full => xArena.txt(uniqueX.txt(speed.trans))
+            case (Unique, _) => uniqueX.txt(speed.trans)
             case _ if full => xArena.txt(s"${freq.toString} ${speed.trans}")
             case _ => s"${freq.toString} ${speed.trans}"
         case (Some(_), _) if full => eliteXArena.txt(speed.trans)
@@ -100,6 +111,13 @@ private object TournamentName:
         case Yearly => yearlyX.txt(variant.name)
         case Shield if full => xShieldArena.txt(variant.name)
         case Shield => xShield.txt(variant.name)
+        // HungKings: cùng lỗ hổng như nhánh cờ tiêu chuẩn ở trên, nhưng ghép với tên biến thể.
+        case Marathon | ExperimentalMarathon if full => xArena.txt(marathonX.txt(variant.name))
+        case Marathon | ExperimentalMarathon => marathonX.txt(variant.name)
+        case Weekend if full => xArena.txt(weekendX.txt(variant.name))
+        case Weekend => weekendX.txt(variant.name)
+        case Unique if full => xArena.txt(uniqueX.txt(variant.name))
+        case Unique => uniqueX.txt(variant.name)
         case _ =>
           val n = s"${freq.name} ${variant.name}"
           if full then xArena.txt(n) else n

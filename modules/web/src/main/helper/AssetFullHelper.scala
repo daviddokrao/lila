@@ -48,11 +48,17 @@ trait AssetFullHelper:
   def basicCsp(using ctx: Context): ContentSecurityPolicy =
     val sockets = socketDomains.map { x => s"wss://$x${(!ctx.req.secure).so(s" ws://$x")}" }
     // include both ws and wss when insecure because requests may come through a secure proxy
+    // HungKings: rẽ theo CẤU HÌNH chứ không theo `!ctx.req.secure` — sau proxy thì bản
+    // live cũng cho `false`, nên nhánh này vẫn nhét endpoint dev vào CSP của MỌI trang.
     val localDev =
-      (!ctx.req.secure).so(List("http://127.0.0.1:3000", "http://localhost:8666"))
+      (netConfig.localDev && !ctx.req.secure).so(List("http://127.0.0.1:3000", "http://localhost:8666"))
+    // HungKings: chỉ khai explorer/tablebase khi tính năng thực sự bật (demo không có
+    // service ở 9000/9002 — khai vào CSP là mời trình duyệt người dùng gọi localhost của họ).
+    val explorer =
+      analyseEndpoints.explorerEnabled.so(List(analyseEndpoints.explorer, analyseEndpoints.tablebase))
     lila.web.ContentSecurityPolicy.page(
       netConfig.assetDomain,
-      netConfig.assetDomain.value :: sockets ::: analyseEndpoints.explorer :: analyseEndpoints.tablebase :: localDev
+      netConfig.assetDomain.value :: sockets ::: explorer ::: localDev
     )
 
   def embedCsp: ContentSecurityPolicy =

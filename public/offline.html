@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#070E22" />
+    <title>Mất kết nối • HungKings</title>
+    <!--
+      Trang dự phòng khi mất mạng, do service worker trả về cho MỌI điều hướng thất bại.
+      BẮT BUỘC tự chứa hoàn toàn: không link CSS, không font ngoài, không ảnh ngoài —
+      lúc trang này được dùng thì theo định nghĩa là mạng đã hỏng, mọi thứ tải thêm sẽ trượt.
+      Mark vẽ bằng SVG nội tuyến vì thế.
+    -->
+    <style>
+      :root {
+        --bg: #070e22;
+        --fg: #eef2fb;
+        --dim: #9aa6c4;
+        --accent: #ffbf00;
+        --over-accent: #0d1733;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f3f6fc;
+          --fg: #12203f;
+          --dim: #566a95;
+          --accent: #785900;
+          --over-accent: #ffffff;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 34rem;
+        text-align: center;
+      }
+      svg {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-family: 'Noto Serif', Cambria, Georgia, serif;
+        font-size: 1.6rem;
+      }
+      p {
+        margin: 0 0 6px;
+        color: var(--dim);
+      }
+      .en {
+        font-size: 0.92rem;
+        opacity: 0.75;
+      }
+      button {
+        margin-top: 22px;
+        min-height: 44px;
+        padding: 0 22px;
+        border: none;
+        border-radius: 10px;
+        background: var(--accent);
+        color: var(--over-accent);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <svg viewBox="0 0 100 100" role="img" aria-label="HungKings">
+        <path d="M50 12 L88 78 L12 78 Z" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linejoin="round" />
+      </svg>
+      <h1>Mất kết nối mạng</h1>
+      <p>Không tải được trang vì thiết bị đang ngoại tuyến. Ván cờ và tiến độ của bạn vẫn an toàn trên máy chủ.</p>
+      <p class="en">You are offline. Your games and progress are safe on the server.</p>
+      <button type="button" onclick="location.reload()">Thử lại · Retry</button>
+    </main>
+  </body>
+</html>

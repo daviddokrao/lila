@@ -4,3 +4,14 @@
 @import 'after';
 @import 'session';
 @import 'zen';
+
+// HungKings P1.10 (do that o 360px, tieng Viet, chua dang nhap): nut hanh dong cua trang
+// cau do cao 34px — duoi nguong vung cham 44px cua BRAND.md muc 3b. `.button` la component
+// DUNG CHUNG toan site nen KHONG sua o bundle chung (nhieu man dac dung nut 34px); chi neo
+// trong pham vi trang cau do va chi o be ngang dien thoai.
+@media (max-width: 1019.98px) {
+  .puzzle .button,
+  .puzzle__side .button {
+    min-height: 44px;
+  }
+}

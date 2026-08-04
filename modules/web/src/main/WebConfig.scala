@@ -53,7 +53,8 @@ object WebConfig:
     lila.ui.AnalyseEndpoints(
       explorer = c.get[String]("explorer.endpoint"),
       tablebase = c.get[String]("explorer.tablebase_endpoint"),
-      externalEngine = c.get[String]("externalEngine.endpoint")
+      externalEngine = c.get[String]("externalEngine.endpoint"),
+      explorerEnabled = c.get[Boolean]("explorer.enabled")
     )
 
   def netConfig(c: Configuration) = NetConfig(
@@ -69,7 +70,8 @@ object WebConfig:
     crawlable = c.get[Boolean]("net.crawlable"),
     rateLimit = c.get[RateLimit]("net.ratelimit"),
     email = c.get[EmailAddress]("net.email"),
-    logRequests = c.get[Boolean]("net.http.log")
+    logRequests = c.get[Boolean]("net.http.log"),
+    localDev = c.get[Boolean]("net.local_dev")
   )
 
   final class LilaVersion(val date: String, val commit: String, val message: String)

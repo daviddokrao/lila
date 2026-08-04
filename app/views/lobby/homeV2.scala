@@ -255,6 +255,41 @@ object homeV2:
           )
       )
 
+    // P1.3 — trưng 3 chế độ câu đố lila ĐÃ CÓ SẴN và khách vãng lai chơi được ngay
+    // (không cần đăng nhập). Trước đây chúng chỉ nằm trong menu Câu đố ở thanh điều hướng,
+    // tức phải biết mà tìm. Không thêm khoá dịch: dùng helper song ngữ `t` tại chỗ.
+    val hooksFrag: Frag =
+      div(cls := "hv2-hooks")(
+        List(
+          (
+            routes.Puzzle.streak.url,
+            Icon.ArrowThruApple,
+            t("Chuỗi câu đố", "Puzzle Streak"),
+            t("Không đồng hồ. Sai một nước là hết — hôm nay bạn tới số mấy?",
+              "No clock. One wrong move ends it — how far can you go?")
+          ),
+          (
+            routes.Storm.home.url,
+            Icon.Storm,
+            t("Bão câu đố", "Puzzle Storm"),
+            t("Ba phút, giải được nhiều nhất có thể.", "Three minutes, solve as many as you can.")
+          ),
+          (
+            routes.Racer.home.url,
+            Icon.Bullseye,
+            t("Đua câu đố", "Puzzle Racer"),
+            t("Rủ bạn bè đua 90 giây.", "Race your friends for 90 seconds.")
+          )
+        ).map: (url, icon, title, desc) =>
+          a(cls := "hv2-hook", href := url)(
+            span(cls := "hv2-hook__i", dataIcon := icon),
+            span(cls := "hv2-hook__b")(
+              span(cls := "hv2-hook__t")(title),
+              span(cls := "hv2-hook__d")(desc)
+            )
+          )
+      )
+
     val starterFrag: Frag =
       div(cls := "hv2-starter")(
         div(
@@ -384,6 +419,7 @@ object homeV2:
                 puzzle.map(p => views.puzzle.bits.dailyLink(p)())
               )
             ),
+            hooksFrag,
             starterFrag
           ),
           // ---------- Zone 4: CỘNG ĐỒNG ----------

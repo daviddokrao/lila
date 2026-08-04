@@ -23,5 +23,9 @@ type EsmList = List[Option[Esm]]
 final class AnalyseEndpoints(
     val explorer: String,
     val tablebase: String,
-    val externalEngine: String
+    val externalEngine: String,
+    // HungKings: khám phá khai cuộc + tablebase cần service riêng mà image demo không có.
+    // Tắt = ẩn nút khỏi bàn phân tích VÀ bỏ 2 endpoint khỏi CSP, thay vì bảo trình duyệt
+    // người dùng tự gọi localhost của CHÍNH HỌ. Bật lại bằng env, không cần dựng lại image.
+    val explorerEnabled: Boolean
 )

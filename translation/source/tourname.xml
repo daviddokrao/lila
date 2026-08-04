@@ -43,5 +43,8 @@
   <string name="xTeamBattle">%s Team Battle</string>
   <string name="eliteXArena">Elite %s Arena</string>
   <string name="eliteX">Elite %s</string>
+  <string name="marathonX">Marathon %s</string>
+  <string name="weekendX">Weekend %s</string>
+  <string name="uniqueX">Unique %s</string>
   <string name="xArena">%s Arena</string>
 </resources>

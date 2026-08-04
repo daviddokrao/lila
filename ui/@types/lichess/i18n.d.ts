@@ -5953,6 +5953,8 @@ interface I18n {
     hourlyX: I18nFormat;
     /** Hourly %s Arena */
     hourlyXArena: I18nFormat;
+    /** Marathon %s */
+    marathonX: I18nFormat;
     /** Monthly Classical */
     monthlyClassical: string;
     /** Monthly Classical Arena */
@@ -5969,6 +5971,10 @@ interface I18n {
     rapidShield: string;
     /** Rapid Shield Arena */
     rapidShieldArena: string;
+    /** Unique %s */
+    uniqueX: I18nFormat;
+    /** Weekend %s */
+    weekendX: I18nFormat;
     /** Weekly Classical */
     weeklyClassical: string;
     /** Weekly Classical Arena */

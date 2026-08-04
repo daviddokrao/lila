@@ -52,8 +52,13 @@ export default class ExplorerCtrl {
     readonly opts: ExplorerOpts,
     previous?: ExplorerCtrl,
   ) {
-    this.allowed = prop(previous ? previous.allowed() : !root.isEmbed);
-    this.enabled = storedBooleanProp('analyse.explorer.enabled', false);
+    // HungKings: `opts.enabled === false` là máy chủ nói thẳng "không có service explorer".
+    // Gộp vào `allowed` chứ không thêm cờ mới: `allowed` đã là thứ `controls.ts` đọc để ẩn
+    // nút, và `ctrl.toggleExplorer` đã chặn sẵn theo nó.
+    this.allowed = prop(previous ? previous.allowed() : !root.isEmbed && opts.enabled !== false);
+    // HungKings: `enabled` đọc localStorage, nên người từng bật explorer trước khi tắt
+    // tính năng sẽ VẪN thấy bảng dù nút đã ẩn. Không allowed thì ghim cứng false.
+    this.enabled = this.allowed() ? storedBooleanProp('analyse.explorer.enabled', false) : prop(false);
     this.withGames = root.synthetic || replayable(root.data) || !!root.data.opponent.ai;
     this.effectiveVariant =
       root.data.game.variant.key === 'fromPosition' ? 'standard' : root.data.game.variant.key;
@@ -68,6 +73,9 @@ export default class ExplorerCtrl {
   };
 
   private readonly checkHash = (e?: HashChangeEvent) => {
+    // HungKings: hash `#explorer` mở được bảng KỂ CẢ khi nút đã ẩn — chặn ở đây, nếu không
+    // một cái link cũ vẫn bày ra bảng rỗng cứ quay mãi.
+    if (!this.allowed()) return;
     const parts = location.hash.split('/');
     if (parts[0] === '#explorer' || parts[0] === '#opening') {
       this.enabled(true);

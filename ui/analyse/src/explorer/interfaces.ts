@@ -11,6 +11,9 @@ export interface ExplorerOpts {
   endpoint: string;
   tablebaseEndpoint: string;
   showRatings: boolean;
+  // HungKings: false khi máy chủ không có service khám phá khai cuộc/tablebase.
+  // Không đặt (undefined) = bật, để bản upstream/dev không đổi hành vi.
+  enabled?: boolean;
 }
 
 export interface ExplorerData {

@@ -23,14 +23,19 @@
   }
 }
 
-$auth-input-radius: 16px;
-$auth-input-bg: rgb(26 22 16 / 1);
+// P1.4 - keo /login + /signup ve ngon ngu thi giac v2.
+// TRUOC: mot he bo goc 16px rieng + mau nen o nhap GHI CUNG rgb(26 22 16) (nau am) tren
+// mot trang nen xanh navy -> day chinh la cu "doi the gioi" ro nhat khi khach bam CTA.
+// NAY: bo goc theo he BRAND.md muc 3b (card 14 / control 10) va nen o nhap lay TOKEN
+// theo chu de, nen tu dung ca hai che do va tu doi neu palette doi.
+$auth-card-radius: 14px;
+$auth-control-radius: 10px;
 
 .auth {
   width: 100%;
   margin: 0 auto;
   height: min-content;
-  border-radius: $auth-input-radius;
+  border-radius: $auth-card-radius;
   border: $border;
 
   &__brand {
@@ -129,13 +134,10 @@ $auth-input-bg: rgb(26 22 16 / 1);
   .form-group input {
     height: 50px;
     font-size: 16px;
-    border: none;
-    border-radius: $auth-input-radius;
-    background: $auth-input-bg;
-
-    @include if-light {
-      background: rgb(245 242 237 / 1);
-    }
+    border: $border;
+    border-radius: $auth-control-radius;
+    // Token theo chu de: khong con nhanh if-light ghi cung mau nao nua.
+    background: $c-bg-input;
 
     &:focus-visible {
       outline: $outline;
@@ -208,7 +210,8 @@ $auth-input-bg: rgb(26 22 16 / 1);
   .button {
     width: 100%;
     padding: 1.3rem;
-    border-radius: $auth-input-radius;
+    // GIU mau primary cho nut gui: vang la accent NHAN, khong phai mau hanh dong mac dinh.
+    border-radius: $auth-control-radius;
   }
 
   .submit.button {

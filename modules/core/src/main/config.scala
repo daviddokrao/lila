@@ -47,7 +47,11 @@ object config:
       crawlable: Boolean,
       rateLimit: RateLimit,
       email: EmailAddress,
-      logRequests: Boolean
+      logRequests: Boolean,
+      // HungKings: bản dev mới khai điểm cuối localhost vào CSP. Trước đây nhánh này rẽ
+      // theo `!ctx.req.secure`, mà SAU PROXY thì live cũng là `false` → endpoint dev lọt
+      // ra bản production. Tắt bằng LILA_LOCAL_DEV=false trong deploy/.env.
+      localDev: Boolean
   ):
     def routeUrl(call: play.api.mvc.Call) = data.Url(s"${baseUrl}${call.url}")
 

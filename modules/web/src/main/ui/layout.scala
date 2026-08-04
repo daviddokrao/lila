@@ -569,11 +569,19 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
           ),
           // Chuông/dasher KHÔNG lặp lại ở đây: chúng mang id duy nhất và đã nằm trong
           // drawer. Khách vãng lai thì nút đăng nhập đáng để lộ ra ngoài.
+          // P1.3 — Đăng KÝ đứng cạnh Đăng NHẬP. Trước đây mobile khách vãng lai phải mở
+          // drawer mới thấy lối đăng ký, tức CTA quan trọng nhất bị giấu sau một cú bấm.
           ctx.me.isEmpty.option(
-            a(
-              cls := "hv2-mobilebar__login",
-              href := s"${routes.Auth.login.url}?referrer=${ctx.req.path}"
-            )(t("Đăng nhập", "Sign in"))
+            frag(
+              a(
+                cls := "hv2-mobilebar__login",
+                href := s"${routes.Auth.login.url}?referrer=${ctx.req.path}"
+              )(t("Đăng nhập", "Sign in")),
+              a(
+                cls := "hv2-mobilebar__signup",
+                href := routes.Auth.signup.url
+              )(t("Đăng ký", "Sign up"))
+            )
           )
         ),
         div(cls := "hv2-scrim", attr("aria-hidden") := "true")

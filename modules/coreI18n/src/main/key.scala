@@ -3054,6 +3054,9 @@ object I18nKey:
     val `xTeamBattle`: I18nKey = "tourname:xTeamBattle"
     val `eliteXArena`: I18nKey = "tourname:eliteXArena"
     val `eliteX`: I18nKey = "tourname:eliteX"
+    val `marathonX`: I18nKey = "tourname:marathonX"
+    val `weekendX`: I18nKey = "tourname:weekendX"
+    val `uniqueX`: I18nKey = "tourname:uniqueX"
     val `xArena`: I18nKey = "tourname:xArena"
 
   object ublog:

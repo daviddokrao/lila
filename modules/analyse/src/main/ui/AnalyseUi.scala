@@ -17,9 +17,14 @@ final class AnalyseUi(helpers: Helpers)(endpoints: AnalyseEndpoints):
   def explorerAndCevalConfig(using ctx: Context) =
     Json.obj(
       "explorer" -> Json.obj(
-        "endpoint" -> endpoints.explorer,
-        "tablebaseEndpoint" -> endpoints.tablebase,
-        "showRatings" -> ctx.pref.showRatings
+        // HungKings: tắt thì phát chuỗi RỖNG chứ không phát địa chỉ thật. Client đã không
+        // dùng tới (allowed=false), nhưng để nguyên là vẫn in "http://localhost:9002" vào
+        // trang của người dùng — đúng thứ vừa đi dọn.
+        "endpoint" -> (if endpoints.explorerEnabled then endpoints.explorer else ""),
+        "tablebaseEndpoint" -> (if endpoints.explorerEnabled then endpoints.tablebase else ""),
+        "showRatings" -> ctx.pref.showRatings,
+        // false → ExplorerCtrl.allowed = false → controls.ts ẩn hẳn nút.
+        "enabled" -> endpoints.explorerEnabled
       ),
       "externalEngineEndpoint" -> endpoints.externalEngine
     )

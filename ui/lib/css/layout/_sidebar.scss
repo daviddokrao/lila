@@ -142,6 +142,8 @@ aside#top.hv2-side {
     display: flex;
     align-items: center;
     gap: 10px;
+    // P1.10: link thương hiệu cao 30px, dưới ngưỡng vùng chạm 44.
+    min-height: 44px;
     color: $c-font-clear;
 
     .site-icon::before {
@@ -227,6 +229,8 @@ aside#top.hv2-side {
       display: flex;
       align-items: center;
       gap: 12px;
+      // P1.10 (do that o 360px trong ngan keo): hang dieu huong cao 39px, duoi 44.
+      min-height: 44px;
       padding: 9px 10px;
       border-radius: 8px;
       font-weight: 700;
@@ -288,7 +292,10 @@ aside#top.hv2-side {
     }
 
     a {
-      display: block;
+      // P1.10 (do that o 360px): muc con trong panel xo ngang cao 26px, duoi nguong 44.
+      display: flex;
+      align-items: center;
+      min-height: 44px;
       padding: 8px 10px;
       border-radius: 8px;
       font-weight: 600;
@@ -399,12 +406,13 @@ aside#top.hv2-side {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 38px;
-      // min-width là BẮT BUỘC: dưới 1020px site.css ép `min-width:44px` cho nút ngôn ngữ
-      // và bánh răng (chỗ hẹp của thanh ngang), min-width thắng width nên hàng thành
-      // 44/38/44 — so le thấy rõ. Không phải thừa.
-      min-width: 38px;
-      height: 38px;
+      // P1.10: 38px dưới ngưỡng vùng chạm 44 của BRAND.md mục 3b — nay cả ba nút là 44.
+      // Lý do cũ chọn 38 là để hàng KHỚP NHAU (site.css ép `min-width:44px` cho hai
+      // trong ba nút dưới 1020px, nên 38 làm hàng so le 44/38/44); đặt cả ba về 44 giải
+      // quyết đúng vấn đề đó theo chiều ngược lại, đừng hạ lại xuống 38.
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
       padding: 0;
       border: $border;
       border-radius: 8px;
@@ -470,9 +478,11 @@ aside#top.hv2-side {
       flex-direction: column;
       justify-content: center;
       gap: 4px;
-      width: 40px;
-      height: 40px;
-      padding: 8px;
+      // P1.10: 40x40 duoi nguong 44. Rong 100% cua vung cham chu khong phai cua net ve —
+      // 3 gach ben trong van 24px nho padding.
+      width: 44px;
+      height: 44px;
+      padding: 10px;
       background: none;
       border: none;
       cursor: pointer;
@@ -501,6 +511,41 @@ aside#top.hv2-side {
       margin-left: auto;
       font-weight: 700;
       color: $c-accent;
+      // BRAND.md muc 3b: vung cham >= 44px. Thanh cao 52px nen 44 van vua.
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      white-space: nowrap;
+    }
+
+    // P1.3 - CTA dang ky lo hang ngoai, khong con giau sau nut menu.
+    &__signup {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 14px;
+      // BRAND.md muc 3b: control = 10px
+      border-radius: 10px;
+      background: $c-accent;
+      // Chu tren nen accent dung token muc rieng, KHONG dung $c-font (P0.2)
+      color: $c-over-accent;
+      font-weight: 700;
+      white-space: nowrap;
+
+      &:focus-visible {
+        outline: 2px solid $c-accent;
+        outline-offset: 2px;
+      }
+    }
+
+    // Man rat hep: ten thuong hieu nhuong cho, cat bang ellipsis thay vi day tran ngang.
+    &__brand {
+      // P1.10: cao 24px -> 44px (be ngang do do dai ten, khong ep duoc).
+      min-height: 44px;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 
@@ -573,6 +618,8 @@ aside#top.hv2-side {
 .hv2-btn {
   display: inline-flex;
   align-items: center;
+  // P1.10 (do that o 360px): cap nut hero cao 39px, duoi nguong 44 cua BRAND.md muc 3b.
+  min-height: 44px;
   padding: 10px 16px;
   border-radius: 10px;
   font-weight: 700;
@@ -600,6 +647,7 @@ aside#top.hv2-side {
   }
 
   &--sm {
+    // Ban --sm van phai giu 44: "nho" la ve BE NGANG va co chu, khong phai vung cham.
     padding: 7px 12px;
     font-size: 0.85rem;
   }
@@ -610,6 +658,9 @@ aside#top.hv2-side {
   left: -9999px;
   top: 8px;
   z-index: 200;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 10px 16px;
   border-radius: 10px;
   background: $c-accent;

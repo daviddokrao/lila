@@ -38,17 +38,23 @@ export function renderControls(ctrl: AnalyseCtrl) {
           })
         : [
             displayColumns() === 1 && ctrl.isCevalAllowed() && renderMobileCevalTab(ctrl),
-            hl('button.fbt', {
-              attrs: {
-                title: i18n.site.openingExplorerAndTablebase,
-                'data-act': 'opening-explorer',
-                'data-icon': licon.Book,
-              },
-              class: {
-                hidden: !ctrl.explorer.allowed() || (!!ctrl.retro && !isMobileUi()),
-                active: ctrl.activeControlBarTool() === 'opening-explorer',
-              },
-            }),
+            // HungKings: `.hidden` của lila là `visibility: hidden` — nút biến mất nhưng VẪN
+            // chiếm 40×36 chỗ trong thanh công cụ (đã đo). Với nhúng thì giữ chỗ là đúng (nút
+            // quay lại ngay), còn khi máy chủ TẮT HẲN explorer thì đó là một lỗ trống vĩnh
+            // viễn giữa thanh. Không render node luôn; các trạng thái tạm thời (retro) vẫn
+            // dùng `.hidden` như cũ để không đổi hành vi upstream.
+            ctrl.explorer.allowed() &&
+              hl('button.fbt', {
+                attrs: {
+                  title: i18n.site.openingExplorerAndTablebase,
+                  'data-act': 'opening-explorer',
+                  'data-icon': licon.Book,
+                },
+                class: {
+                  hidden: !!ctrl.retro && !isMobileUi(),
+                  active: ctrl.activeControlBarTool() === 'opening-explorer',
+                },
+              }),
             displayColumns() > 1 && !ctrl.retro && !ctrl.ongoing && renderPracticeTab(ctrl),
           ],
       ctrl.study?.practice
