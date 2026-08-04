@@ -100,6 +100,11 @@ final class Env(
 
   lazy val printBan = PrintBan(db(config.collection.printBan))
 
+  // Tên collection ghi thẳng ở đây thay vì thêm vào SecurityConfig: config đó đọc từ
+  // `base.conf`, mà luật của dự án là KHÔNG sửa base.conf để giữ merge sạch với
+  // upstream. Đây là tính năng của riêng HungKings, không phải tuỳ chọn của lila.
+  lazy val migratedAccount = MigratedAccount(db(CollName("migrated_account")))
+
   private val curPlaying = () => lazyCurrentlyPlaying
 
   lazy val garbageCollector =

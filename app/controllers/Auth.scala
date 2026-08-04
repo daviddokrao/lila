@@ -177,7 +177,13 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
                                   lila.security.LoginCandidate.totpError(err) match
                                     case None =>
                                       t3Counter(_.login.failure("credentials"))
-                                      Unauthorized.page(loginPage(variant, err, isRemember))
+                                      // HungKings: người mang sang từ bản cũ không thể
+                                      // biết mật khẩu của chính mình — xem
+                                      // migratedAccountRescue. Mọi trường hợp khác rơi
+                                      // về đúng hành vi cũ.
+                                      migratedAccountRescue(loginData.username, isEmail, variant)(
+                                        Unauthorized.page(loginPage(variant, err, isRemember))
+                                      )
                                     case Some(err) =>
                                       for cookie <- env.security.turnstileCookie.create(loginData)
                                       yield Ok(err).withCookies(cookie),
@@ -526,6 +532,65 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
     variant match
       case AuthVariant.Takex3 => routes.Auth.passwordResetSentTakex3(email)
       case AuthVariant.Lichess => routes.Auth.passwordResetSent(email)
+
+  /** 16 người dùng mang sang từ HungKings bản cũ được chèn thẳng vào MongoDB với một mật
+    * khẩu ngẫu nhiên KHÔNG AI biết. Trả "sai mật khẩu" cho họ tuy đúng về kỹ thuật nhưng
+    * là ngõ cụt: họ không có mật khẩu nào để thử cho đúng. Thay vào đó gửi thư đặt lại
+    * rồi GỠ DẤU ngay.
+    *
+    * Gỡ dấu là thứ chặn luồng này biến thành máy gửi thư: mỗi tài khoản kích hoạt được
+    * đúng MỘT lần, nên trần số thư mà toàn bộ cơ chế có thể sinh ra bằng số tài khoản
+    * còn dấu. Không gửi thư hàng loạt — chỉ gửi cho người thực sự quay lại.
+    */
+  private def migratedAccountRescue(
+      login: UserStrOrEmail,
+      isEmail: Boolean,
+      variant: AuthVariant
+  )(fallback: => Fu[Result])(using ctx: Context): Fu[Result] =
+    // Ô đăng nhập nhận cả email lẫn tên tài khoản. Dấu di cư đánh theo id người dùng nên
+    // chỉ tra khi người ta gõ TÊN TÀI KHOẢN; gõ email thì giữ nguyên hành vi cũ.
+    if isEmail then fallback
+    else
+      val userId = UserId(login.normalize.value)
+      env.security.migratedAccount
+        .isMigrated(userId)
+        .flatMap:
+          if _ then
+            env.user.repo
+              .byId(userId)
+              .zip(env.user.repo.email(userId))
+              .flatMap:
+                case (Some(user), Some(email)) =>
+                  // Khoá giới hạn tần suất lấy email ĐÃ TRA TỪ DB, không lấy chuỗi người
+                  // gửi tự nhập: khoá dựng từ input chưa xác thực là khoá do kẻ tấn công
+                  // chọn. Và hạn theo danh tính là CỘNG THÊM vào hạn theo IP, không thay thế.
+                  env.security.passwordReset.limiter(email -> ctx.req.ipAddress, fallback):
+                    for
+                      _ <- env.security.passwordReset
+                        .send(user, email, origin = passwordResetOrigin(variant))
+                      // Gỡ dấu SAU khi gửi xong. Gỡ trước mà gửi hỏng là người đó mất hẳn
+                      // đường quay lại, phải nhờ người can thiệp tay.
+                      _ <- env.security.migratedAccount.clear(userId)
+                    yield
+                      // Form đăng nhập của lila gửi bằng XHR và chờ chuỗi `ok:<url>`;
+                      // trả thẳng một trang HTML thì client không chuyển trang, người
+                      // dùng đứng im trên form dù thư đã bay đi. Đây là đúng khuôn
+                      // `redirectTo` mà serveAuthenticate dùng cho nhánh đăng nhập thành công.
+                      val url = passwordResetSentRoute(maskEmail(email), variant).url
+                      if HTTPRequest.isXhr(ctx.req) then Ok(s"ok:$url") else Redirect(url)
+                case _ => fallback
+          else fallback
+
+  /** Che phần tên trước @ trước khi ĐƯA VÀO URL của trang "đã gửi thư". Luồng trên kích
+    * hoạt bằng TÊN TÀI KHOẢN do người lạ gõ vào, nên để nguyên địa chỉ là biến ô đăng
+    * nhập thành máy tra email — lila tự nó đặt email vào URL được vì ở đó chính người
+    * dùng vừa gõ email ra. Giữ tên miền để người dùng biết mở hòm thư nào.
+    */
+  private def maskEmail(email: EmailAddress): String =
+    val raw = email.value
+    val at = raw.indexOf('@')
+    if at <= 0 then "***"
+    else s"${raw.take(1)}***${raw.substring(at)}"
 
   private def passwordResetOrigin(variant: AuthVariant) =
     variant match

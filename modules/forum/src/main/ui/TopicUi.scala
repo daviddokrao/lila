@@ -286,7 +286,14 @@ final class TopicUi(helpers: Helpers, bits: ForumBits, postUi: PostUi)(
     // kéo theo đổi cả mã. Hai chỗ phải khớp nhau, chỗ còn lại ở web/ui/contact.scala.
     "hungkings-feedback" -> "HungKings Feedback",
     "game-analysis" -> "Game Analysis",
-    "off-topic-discussion" -> "Off-Topic Discussion"
+    // `offtopic-` chứ KHÔNG phải `off-topic-`: normalize_id của lila-db-seed nuốt dấu
+    // gạch nối khi sinh mã từ tên "Off-Topic Discussion", nên mã THẬT trong DB là
+    // `offtopic-discussion`. Đo trên live 04/08: /forum/off-topic-discussion = 404,
+    // /forum/offtopic-discussion = 200. Để sai thì kiểm duyệt viên chuyển chủ đề sang
+    // đây là gửi slug ma, và bộ lọc `slug != from.id.value` bên dưới không loại được
+    // chính chuyên mục đang đứng. Sửa theo DB chứ không đổi mã trong DB — đổi mã là
+    // mồ côi toàn bộ chủ đề đang trỏ vào nó.
+    "offtopic-discussion" -> "Off-Topic Discussion"
   )
 
   private def relocateModal(from: lila.forum.ForumCateg) =

@@ -109,8 +109,10 @@ export function view(ctrl: StudyForm): VNode {
               hl('img', { attrs: { src: data.flair ? site.asset.flairSrc(data.flair) : '' } }),
             ]),
             hl(
+              // Trước đây loại `activity.lichess` khỏi picker cho người thường. Bộ 23
+              // flair thương hiệu Lichess đã gỡ hẳn khỏi list.txt ngày 02/08 nên không
+              // còn gì để loại — giữ lại chỉ là tham chiếu chết tới khoá của Lichess.
               'div.flair-picker.none',
-              data.admin || { attrs: { 'data-except-emojis': 'activity.lichess' } },
               hl('button.button.button-metal.emoji-remove', { attrs: { type: 'button' } }, 'clear'),
             ),
           ],
