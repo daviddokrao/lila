@@ -51,7 +51,11 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             )
           ),
           question(
-            "built-on-lichess",
+            // id neo lọt vào HTML dưới dạng #built-on-lichess (hiện cả trên thanh địa chỉ khi
+            // bấm vào tiêu đề câu hỏi). Không nơi nào trỏ tới nó nên đổi tên an toàn. Phần
+            // NỘI DUNG bên dưới thì GIỮ NGUYÊN — ghi công Lichess là nghĩa vụ AGPL-3.0, không
+            // phải chuỗi thương hiệu sót lại.
+            "built-on",
             "What is HungKings built on?",
             p(
               "HungKings is a fork of ",
@@ -208,8 +212,14 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             "titles",
             trf.titlesAvailableOnLichess.txt(),
             p(
+              // Link cũ trỏ wiki của lichess-org/lila mô tả quy trình duyệt danh hiệu NỘI BỘ
+              // CỦA LICHESS — người dùng HungKings đọc xong cũng không nộp được gì ở đó. Mà
+              // HungKings có sẵn trang xác minh của mình: routes.TitleVerify.index, chính là
+              // link dùng ở câu ngay dưới trong file này. Không xoá vế được vì khoá dịch
+              // lichessRecognizeAllOTBtitles BẮT BUỘC 1 tham số (cùng bẫy với
+              // ifYouWantToBroadcastClause2 ở trang Liên hệ), nên thay đích chứ không bỏ.
               trf.lichessRecognizeAllOTBtitles(
-                a(href := "https://github.com/lichess-org/lila/wiki/Handling-title-verification-requests")(
+                a(href := routes.TitleVerify.index)(
                   trf.asWellAsManyNMtitles()
                 )
               )
@@ -389,10 +399,15 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
                 a(href := "https://getcoldturkey.com")("ColdTurkey"),
                 a(href := "https://freedom.to")("Freedom"),
                 a(href := "https://www.proginosko.com/leechblock")("LeechBlock"),
-                a(href := "https://lichess.org/page/userstyles")(trf.lichessUserstyles()),
-                a(href := "https://github.com/ornicar/userstyles/blob/master/lichess.fewer-pools.user.css")(
-                  trf.fewerLobbyPools()
-                ),
+                // Hai mục này vốn là LINK sang Lichess và cả hai đều vô dụng ở đây:
+                // lichess.org/page/userstyles là trang CMS của họ (HungKings không có khoá
+                // đó — /page/userstyles đo được 404), còn lichess.fewer-pools.user.css là
+                // userstyle viết riêng cho tên miền lichess.org nên cài vào cũng không ăn
+                // trên HungKings. Khoá adviceOnMitigatingAddiction BẮT BUỘC đủ 6 tham số
+                // nên không bỏ vế được — giữ nguyên chữ, chỉ gỡ thẻ <a>. Câu vẫn đọc trôi,
+                // và không còn hứa với người dùng một thứ bấm vào là hỏng.
+                trf.lichessUserstyles(),
+                trf.fewerLobbyPools(),
                 a(href := "https://icd.who.int/browse/2024-01/mms/en#1448597234")(trf.mentalHealthCondition())
               )
             )

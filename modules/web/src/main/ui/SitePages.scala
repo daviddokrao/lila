@@ -64,13 +64,17 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
         extra
       )
     )
+    // Bỏ hẳn .csp(_.copy(frameSrc = "https://lichess.org" :: Nil)) từng đứng ở đây. Mọi iframe
+    // minh hoạ bên dưới nay trỏ về chính HungKings, tức same-origin, mà CSP mặc định đã có
+    // 'self' nên không cần khai thêm gì. Dòng csp đó chính là thứ CHO PHÉP hai iframe tải nội
+    // dung sống của Lichess vào trang này — gỡ iframe mà để lại nó là dọn nửa vời: cửa vẫn mở
+    // cho lần sau ai đó nhúng lại mà không ai thấy.
     SitePage(
       title = "Webmasters",
       active = "webmasters",
       contentCls = "page force-ltr"
-    ).css("bits.page")
-      .csp(_.copy(frameSrc = "https://lichess.org" :: Nil)):
-        frag(
+    ).css("bits.page"):
+      frag(
           st.section(cls := "box box-pad developers")(
             h1(cls := "box__top")("HTTP API"),
             p(
@@ -93,7 +97,11 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
                 parameters(),
                 p(
                   "You can also show the channel for a specific variant or time control by adding the channel key to the URL, corresponding to the channels available at ",
-                  a(href := "/tv")("lichess.org/tv"),
+                  // Nhãn cũ là chuỗi "lichess.org/tv" trên một liên kết NỘI BỘ (/tv) — link đi
+                  // đúng chỗ nhưng chữ hiện ra lại là địa chỉ của site khác. Sống sót qua đợt
+                  // rebrand 76 file vì hàm đổi thương hiệu CỐ Ý bỏ qua chuỗi dạng URL trọn gói.
+                  // Dùng $netBaseUrl để nhãn tự đi theo domain, khỏi phải sửa tay lần sau.
+                  a(href := "/tv")(s"$netBaseUrl/tv"),
                   ". If not included, the top rated game will be shown."
                 ),
                 copyMeInput(
@@ -132,7 +140,12 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
               ),
               div(cls := "body")(
                 div(cls := "center"):
-                  raw(s"""<iframe src="/study/embed/XtFCFYlM/GCUTf2Jk?bg=auto&theme=auto" $args></iframe>""")
+                  // ID cũ (XtFCFYlM/GCUTf2Jk) là một study CỦA LICHESS — trên HungKings nó
+                  // trả 404, tức trang tài liệu này khoe một khung nhúng vỡ. Loại lỗi này
+                  // grep "lichess" KHÔNG bắt được vì nó là mã ID chứ không phải tên miền
+                  // (cùng họ với watermark con mã Lichess vẽ bằng path SVG). Nay dùng study
+                  // có thật của mình — đã đo /study/embed/9c6GrCTk/Il66Z5ua = 200.
+                  raw(s"""<iframe src="/study/embed/9c6GrCTk/Il66Z5ua?bg=auto&theme=auto" $args></iframe>""")
                 ,
                 p(
                   "Create ",
@@ -153,7 +166,9 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
               ),
               div(cls := "body")(
                 div(cls := "center"):
-                  raw(s"""<iframe src="/embed/game/MPJcy1JW?bg=auto&theme=auto" $args></iframe>""")
+                  // MPJcy1JW là một ván CỦA LICHESS -> 404 trên HungKings. Thay bằng ván thật
+                  // của mình (đã đo /embed/game/TaHSAsYD = 200).
+                  raw(s"""<iframe src="/embed/game/TaHSAsYD?bg=auto&theme=auto" $args></iframe>""")
                 ,
                 p(
                   "On a game analysis page, click the ",
@@ -175,13 +190,15 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
                 h1(cls := "box__top", id := "embed-broadcast")("Embed a broadcast in your site")
               ),
               div(cls := "body")(
-                div(cls := "center"):
-                  raw:
-                    s"""<iframe src="https://lichess.org/embed/broadcast/fide-world-rapidblitz-team-championships-2024--rapid-matches-1-10/G1YjiG7j" $args></iframe>"""
-                ,
+                // Iframe cũ TẢI THẬT một broadcast của Lichess (giải FIDE Rapid&Blitz 2024) vào
+                // trang này — đó là nội dung SỐNG của site khác chạy trên tên miền mình, không
+                // phải mẫu copy-paste. HungKings chưa có broadcast nào (BROADCAST-PLAN.md còn
+                // chờ duyệt) nên không có gì để chiếu thử; thay khung chiếu bằng đúng mẫu HTML,
+                // giống cách upstream vốn đã hướng dẫn ở câu ngay dưới.
                 p(
                   "On a broadcast page, select the embed iframe code, then optionally add query parameters to customize the appearance."
                 ),
+                copyMeInput(s"""<iframe src="$netBaseUrl/embed/broadcast/<slug>/<roundId>" $args></iframe>"""),
                 parameters(),
                 p("The text is automatically translated to your visitor's language.")
               )
@@ -190,8 +207,12 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
           br,
           st.section(cls := "box box-pad developers", id := "analysis") {
             val args = """style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
+            // Iframe này TẢI THẬT bàn phân tích của lichess.org vào trang HungKings, và mẫu
+            // copy-paste ngay dưới còn dạy webmaster khác đi nhúng Lichess — về hiệu ứng còn
+            // tệ hơn, vì nó phát tán ra ngoài. /embed/analysis của CHÍNH HungKings đã đo = 200
+            // nên trỏ về mình được ngay. Dùng $netBaseUrl để mẫu tự đi theo domain.
             val iframe =
-              s"""<iframe src="https://lichess.org/embed/analysis" $args></iframe>"""
+              s"""<iframe src="$netBaseUrl/embed/analysis" $args></iframe>"""
             frag(
               a(href := "#embed-analysis")(
                 h1(cls := "box__top", id := "embed-analysis")("Embed an analysis board")
@@ -211,7 +232,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
                 div(
                   "Example using a custom initial position:",
                   copyMeInput:
-                    s"""<iframe src="https://lichess.org/embed/analysis?fen=r1bqkb1r/pp2pppp/2np1n2/6B1/3NP3/2N5/PPP2PPP/R2QKB1R_b_KQkq_-_1_6&color=black" $args></iframe>"""
+                    s"""<iframe src="$netBaseUrl/embed/analysis?fen=r1bqkb1r/pp2pppp/2np1n2/6B1/3NP3/2N5/PPP2PPP/R2QKB1R_b_KQkq_-_1_6&color=black" $args></iframe>"""
                 ),
                 p("The text is automatically translated to your visitor's language.")
               )
@@ -241,12 +262,17 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
                     td(
                       span("Server"),
                       timeTag(v.date),
-                      span(a(href := s"https://github.com/lichess-org/lila/commits/${v.commit}"):
+                      // Hai link này trỏ kho lichess-org/lila, tức trang khoe MÃ NGUỒN CỦA
+                      // HUNGKINGS lại dẫn người xem sang kho của Lichess — mà commit sha in ra
+                      // là sha của fork, nên link còn 404 luôn khi commit chỉ có ở fork. Mã
+                      // đang thực sự chạy là daviddokrao/lila. Phần ghi công AGPL trong ruột
+                      // trang (do CMS render) GIỮ NGUYÊN — đó là nghĩa vụ giấy phép.
+                      span(a(href := s"https://github.com/daviddokrao/lila/commits/${v.commit}"):
                         pre(v.commit.take(7)))
                     ),
                     td(v.message),
                     td:
-                      a(href := s"https://github.com/lichess-org/lila/compare/${v.commit}...master"):
+                      a(href := s"https://github.com/daviddokrao/lila/compare/${v.commit}...master"):
                         pre("...")
                   ),
                 tr(
