@@ -26,10 +26,23 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
       div(cls := "answer")(answer)
     )
 
-  def apply(using Context) =
+  // Bốn câu hỏi RIÊNG của HungKings bên dưới (name, built-on, contributing, make-a-bot) không
+  // có khoá dịch nào của upstream mang đúng nghĩa đó. Hai đường quen thuộc đều bịt:
+  //   - thêm khoá vào registry lila -> đụng ranh giới P0.8 (DECISIONS.md), đúng thứ đang chặn F3;
+  //   - hardcode thẳng tiếng Việt -> site chạy 94 ngôn ngữ, tức bắt người dùng tiếng Anh đọc
+  //     tiếng Việt. Đổi một lỗi lấy một lỗi to hơn (xem BLOCKERS.md, phương án 2).
+  // Đường thứ ba, dùng ở đây: rẽ theo ngôn ngữ NGAY TẠI CHỖ. Khán giả chính là người Việt nên
+  // họ đọc tiếng Việt; mọi ngôn ngữ khác lùi về tiếng Anh như cũ. Không thêm một khoá nào vào
+  // registry, và không nói dối trong 94 ngôn ngữ.
+  private def isVi(using ctx: Context): Boolean = ctx.lang.language == "vi"
+
+  def apply(using ctx: Context) =
     sitePages
       .SitePage(
-        title = "Frequently Asked Questions",
+        // Trước đây hardcode "Frequently Asked Questions" nên <title> ra tiếng Anh trên trang
+        // tiếng Việt, dù h1 ngay dưới đã dịch đúng (h1 dùng trf.frequentlyAskedQuestions()).
+        // Khoá này CÓ SẴN ở upstream — dùng lại, không thêm khoá mới, không đụng P0.8.
+        title = trf.frequentlyAskedQuestions.txt(),
         active = "faq"
       )
       .css("bits.faq"):
@@ -44,11 +57,21 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
           // upstream không mang nghĩa mới này, dùng lại là nói dối trong 94 ngôn ngữ.
           question(
             "name",
-            "Why is it called HungKings?",
-            p(
-              "The site is named after the Hùng Kings, the legendary founders of Vietnam. ",
-              "This chess server is one part of the wider HungKings family of products."
-            )
+            if isVi then "Vì sao lại tên là HungKings?" else "Why is it called HungKings?",
+            // LƯU Ý nội dung: câu "đặt theo các Vua Hùng" là SUY ĐOÁN từ tên thương hiệu, David
+            // chưa từng xác nhận. Việc [human] xác nhận nội dung này vẫn đang treo trong HANDOFF
+            // — bản dịch giữ nguyên ý bản gốc chứ không tự bồi thêm, để lúc David sửa thì chỉ
+            // phải sửa một ý ở hai chỗ.
+            if isVi then
+              p(
+                "Tên site đặt theo các Vua Hùng, những người dựng nước trong truyền thuyết Việt Nam. ",
+                "Máy chủ cờ vua này là một phần trong hệ sinh thái sản phẩm HungKings."
+              )
+            else
+              p(
+                "The site is named after the Hùng Kings, the legendary founders of Vietnam. ",
+                "This chess server is one part of the wider HungKings family of products."
+              )
           ),
           question(
             // id neo lọt vào HTML dưới dạng #built-on-lichess (hiện cả trên thanh địa chỉ khi
@@ -56,37 +79,77 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
             // NỘI DUNG bên dưới thì GIỮ NGUYÊN — ghi công Lichess là nghĩa vụ AGPL-3.0, không
             // phải chuỗi thương hiệu sót lại.
             "built-on",
-            "What is HungKings built on?",
-            p(
-              "HungKings is a fork of ",
-              a(href := "https://lichess.org")("Lichess"),
-              ", a free chess server run as a charity. Nearly everything you see here — the ",
-              "analysis board, puzzles, tournaments, studies, the chess variants — was built by ",
-              "the Lichess community over many years. We use it under the AGPL-3.0 licence."
-            ),
-            p(
-              "The engine behind it is ",
-              a(href := "https://github.com/lichess-org/lila")("lila"),
-              ", written in ",
-              a(href := "https://scala-lang.org/")("Scala"),
-              "."
-            )
+            if isVi then "HungKings được dựng trên nền gì?" else "What is HungKings built on?",
+            // Đây là phần GHI CÔNG theo AGPL-3.0 — bắt buộc phải có và phải nói đúng sự thật.
+            // Dịch sang tiếng Việt để người đọc chính hiểu được mình đang ghi công ai; nội dung
+            // hai bản phải khớp nhau, đừng làm nhẹ bản nào.
+            if isVi then
+              p(
+                "HungKings là một bản fork của ",
+                a(href := "https://lichess.org")("Lichess"),
+                ", máy chủ cờ vua miễn phí hoạt động như một tổ chức phi lợi nhuận. Gần như mọi thứ ",
+                "bạn thấy ở đây — bàn phân tích, câu đố, giải đấu, nghiên cứu, các biến thể cờ — đều ",
+                "do cộng đồng Lichess xây dựng trong nhiều năm. Chúng tôi sử dụng theo giấy phép AGPL-3.0."
+              )
+            else
+              p(
+                "HungKings is a fork of ",
+                a(href := "https://lichess.org")("Lichess"),
+                ", a free chess server run as a charity. Nearly everything you see here — the ",
+                "analysis board, puzzles, tournaments, studies, the chess variants — was built by ",
+                "the Lichess community over many years. We use it under the AGPL-3.0 licence."
+              )
+            ,
+            if isVi then
+              p(
+                "Bộ máy phía sau là ",
+                a(href := "https://github.com/lichess-org/lila")("lila"),
+                ", viết bằng ",
+                a(href := "https://scala-lang.org/")("Scala"),
+                "."
+              )
+            else
+              p(
+                "The engine behind it is ",
+                a(href := "https://github.com/lichess-org/lila")("lila"),
+                ", written in ",
+                a(href := "https://scala-lang.org/")("Scala"),
+                "."
+              )
           ),
           question(
             "contributing",
-            "How can I contribute to HungKings?",
-            p(
-              "HungKings is free and open source. That same AGPL-3.0 licence obliges us to ",
-              "publish our own changes, so you can read every line, report a problem, or send ",
-              "a patch on ",
-              a(href := "https://github.com/daviddokrao/lila")("GitHub"),
-              "."
-            ),
-            p(
-              "See the ",
-              a(href := "/source")(trans.site.sourceCode()),
-              " page for the full list of repositories."
-            )
+            if isVi then "Tôi đóng góp cho HungKings bằng cách nào?"
+            else "How can I contribute to HungKings?",
+            if isVi then
+              p(
+                "HungKings là phần mềm tự do, mã nguồn mở. Chính giấy phép AGPL-3.0 buộc chúng tôi ",
+                "công khai các thay đổi của mình, nên bạn đọc được từng dòng mã, báo lỗi, hoặc gửi ",
+                "bản vá trên ",
+                a(href := "https://github.com/daviddokrao/lila")("GitHub"),
+                "."
+              )
+            else
+              p(
+                "HungKings is free and open source. That same AGPL-3.0 licence obliges us to ",
+                "publish our own changes, so you can read every line, report a problem, or send ",
+                "a patch on ",
+                a(href := "https://github.com/daviddokrao/lila")("GitHub"),
+                "."
+              )
+            ,
+            if isVi then
+              p(
+                "Xem trang ",
+                a(href := "/source")(trans.site.sourceCode()),
+                " để có danh sách đầy đủ các kho mã."
+              )
+            else
+              p(
+                "See the ",
+                a(href := "/source")(trans.site.sourceCode()),
+                " page for the full list of repositories."
+              )
           ),
           question(
             "keyboard-shortcuts",
@@ -374,22 +437,36 @@ final class FaqUi(helpers: Helpers, sitePages: SitePages)(
           ),
           question(
             "make-a-bot",
-            "Make a HungKings bot?",
+            if isVi then "Tự làm bot cho HungKings?" else "Make a HungKings bot?",
             // Hai liên kết này là tài liệu của Lichess. HungKings dùng chung bot API
             // của lila nên hướng dẫn vẫn đúng nguyên văn — nhưng phải nói rõ đó là tài
             // liệu của Lichess, đừng để anchor "HungKings bot" trỏ sang site người ta.
-            p(
-              "HungKings uses the same bot API as Lichess, so their documentation applies ",
-              "here unchanged: read ",
-              a(href := "https://lichess.org/@/thibault/blog/how-to-create-a-lichess-bot/FuKyvDuB")(
-                "how to create a bot"
-              ),
-              " and the ",
-              a(href := "https://lichess.org/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")(
-                "bot announcement"
-              ),
-              ". Point the bot at this server instead of lichess.org."
-            )
+            if isVi then
+              p(
+                "HungKings dùng chung bot API với Lichess, nên tài liệu của họ áp dụng được ",
+                "nguyên văn ở đây: đọc ",
+                a(href := "https://lichess.org/@/thibault/blog/how-to-create-a-lichess-bot/FuKyvDuB")(
+                  "cách tạo một bot"
+                ),
+                " và ",
+                a(href := "https://lichess.org/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")(
+                  "bài giới thiệu bot"
+                ),
+                ". Chỉ cần trỏ bot vào máy chủ này thay vì lichess.org."
+              )
+            else
+              p(
+                "HungKings uses the same bot API as Lichess, so their documentation applies ",
+                "here unchanged: read ",
+                a(href := "https://lichess.org/@/thibault/blog/how-to-create-a-lichess-bot/FuKyvDuB")(
+                  "how to create a bot"
+                ),
+                " and the ",
+                a(href := "https://lichess.org/blog/WvDNticAAMu_mHKP/welcome-lichess-bots")(
+                  "bot announcement"
+                ),
+                ". Point the bot at this server instead of lichess.org."
+              )
           ),
           question(
             "stop-chess-addiction",
