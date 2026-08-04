@@ -32,7 +32,14 @@ object contact:
       )
     )
 
-  private def howToReportBugs(forumEnabled: Boolean)(using Translate): Frag =
+  // Mọi kênh ở đây phải là kênh của HungKings. Bản fork vốn trỏ thẳng sang hạ tầng
+  // Lichess (github lichess-org/lila + lichess-org/mobile, discord.gg/lichess) => người
+  // dùng HungKings gặp lỗi lại đi báo cho dự án khác. Đã gỡ cả ba 04/08 theo David.
+  // Đã cân nhắc và LOẠI kho GitHub riêng: `daviddokrao/lila` TẮT tab Issues, nên
+  // `/issues` trả 200 (xem được) nhưng `/issues/new` trả 404 (không nộp được) — link
+  // trông sống mà thực chất là ngõ cụt. Muốn bật lại kênh này phải bật Issues TRƯỚC.
+  // Kênh "app mobile" gỡ HẲN: HungKings không có app mobile.
+  private def howToReportBugs(contactEmail: EmailAddress, forumEnabled: Boolean)(using Translate): Frag =
     frag(
       ul(
         // Diễn đàn tạm tắt => /forum/hungkings-feedback trả 404, đừng mời người dùng bấm.
@@ -41,15 +48,7 @@ object contact:
             a(href := routes.ForumCateg.show(ForumCategId("hungkings-feedback")))(reportBugInForum())
           )
         ),
-        li(
-          a(href := "https://github.com/lichess-org/lila/issues")(reportWebsiteIssue())
-        ),
-        li(
-          a(href := "https://github.com/lichess-org/mobile/issues")(reportMobileIssue())
-        ),
-        li(
-          a(href := "https://discord.gg/lichess")(reportBugInDiscord())
-        )
+        li(sendEmailAt(contactEmailLink(contactEmail.value)))
       ),
       p(howToReportBug())
     )
@@ -202,24 +201,22 @@ object contact:
               errorPage(),
               frag(
                 p(reportErrorPage()),
-                howToReportBugs(forumEnabled)
+                howToReportBugs(contactEmail, forumEnabled)
               )
             ),
             Leaf(
               "security",
               "Security vulnerability",
-              p(
-                "Please refer to our ",
-                a(href := "https://github.com/lichess-org/lila/security/policy")("Security policy"),
-                "."
-              )
+              // Trước đây trỏ security policy của lichess-org => lỗ hổng của HungKings
+              // báo về đội bảo mật Lichess. Nay về hòm thư đã cấu hình (net.email).
+              p(sendEmailAt(contactEmailLink(contactEmail.value)))
             ),
             Leaf(
               "other-bug",
               "Other bug",
               frag(
                 p("If you found a new bug, you may report it:"),
-                howToReportBugs(forumEnabled)
+                howToReportBugs(contactEmail, forumEnabled)
               )
             )
           )
@@ -283,15 +280,13 @@ object contact:
               broadcastTournamentOnLichess(),
               frag(
                 p(ifYouWantToBroadcastClause1()),
-                p(
-                  ifYouWantToBroadcastClause2(
-                    // Dùng địa chỉ đã cấu hình (net.email) chứ không phải hòm thư
-                    // broadcast@lichess.org của Lichess — thư gửi tới đó không ai
-                    // ở HungKings đọc được.
-                    contactEmailLink(contactEmail.value),
-                    a(href := "https://discord.gg/Syx9CbN8Jv")(ourDiscordServer())
-                  )
-                )
+                // Dùng địa chỉ đã cấu hình (net.email) chứ không phải hòm thư
+                // broadcast@lichess.org của Lichess — thư gửi tới đó không ai
+                // ở HungKings đọc được.
+                // Bỏ luôn ifYouWantToBroadcastClause2: chuỗi đó BẮT BUỘC 2 tham số
+                // ("...at %1$s or on %2$s") mà tham số thứ hai là Discord của Lichess.
+                // Dùng sendEmailAt (khoá đã có sẵn) thay vì thêm khoá mới — ranh giới P0.8.
+                p(sendEmailAt(contactEmailLink(contactEmail.value)))
               )
             ),
             Leaf(

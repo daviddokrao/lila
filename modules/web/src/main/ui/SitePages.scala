@@ -22,7 +22,6 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
 
   def menu(active: String)(using Translate) =
     val sep = div(cls := "sep")
-    val external = frag(" ", iconTag(Icon.ExternalArrow))
     def activeCls(c: String) = cls := active.activeO(c)
     lila.ui.bits.pageMenuSubnav(
       a(activeCls("about"), href := "/about")(trans.site.aboutX(siteName)),
@@ -43,11 +42,12 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
       // HungKings, cạnh Webmasters và API, nó đọc như kho dữ liệu của mình — mà
       // HungKings không xuất kho ván nào cả. Trang Câu đố vẫn ghi công nguồn thật,
       // ở đó lời ghi công là đúng vì bộ câu đố lấy từ Lichess.
-      // /api KHÔNG có route trong lila: trên lichess.org nó do một site tài liệu
-      // riêng phục vụ, bản fork này không dựng site đó nên link cũ trả 404 ở chân
-      // MỌI trang. API của HungKings đúng là API của lila nên tài liệu upstream
-      // dùng được nguyên văn; đánh dấu external cho người đọc biết là rời site.
-      a(activeCls("api"), href := "https://lichess.org/api")("API", external),
+      // Mục "API" đã GỠ HẲN (David chốt 04/08). Lịch sử để khỏi làm lại vòng nữa:
+      // /api KHÔNG có route trong lila (trên lichess.org nó do một site tài liệu
+      // riêng phục vụ) nên link gốc trả 404 ở chân MỌI trang; đợt 02/08 chữa bằng
+      // cách trỏ thẳng sang lichess.org/api, tức đổi link chết lấy link đưa người
+      // dùng sang site khác. Muốn có lại mục này thì phải TỰ dựng trang tài liệu,
+      // đừng trỏ ra ngoài. Kéo theo: `val external` cũng gỡ vì chỉ dùng ở đây.
       sep,
       a(activeCls("lag"), href := routes.Main.lag)(trans.lag.isLichessLagging()),
       a(activeCls("ads"), href := "/ads")("Block ads")
@@ -75,9 +75,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
             h1(cls := "box__top")("HTTP API"),
             p(
               "HungKings exposes a RESTish HTTP/JSON API that you are welcome to use. ",
-              "It is the same API as Lichess's, so their ",
-              a(href := "https://lichess.org/api", targetBlank)("HTTP API documentation"),
-              " applies here unchanged — point your client at this server instead."
+              "Point your client at this server. The embed endpoints documented below work as shown."
             )
           ),
           br,
