@@ -18,6 +18,38 @@
   // Khong con header nen bo khoang cho header cu (ke ca ban mq-sticky-header).
   margin-top: 0;
 
+  // ...NHUNG khoang do phai tra lai cho RIENG cot noi dung. Bo header ngang di ma
+  // khong tra thi MOI trang dinh sat mep tren: ban co /round va /training bat dau
+  // dung y=0 (David chup 04/08). Truoc do khong ai thay vi trang chu tinh co khong
+  // dinh — zone dau cua home-v2 tu co padding-top 40px.
+  //
+  // Dat tren `main` chu KHONG phai `#main-wrap`: sidebar la o grid CUNG CAP, day
+  // #main-wrap xuong la sidebar roi mep tren va `position:sticky; top:0` ho mot dai.
+  // Con so khop DUNG padding-top cua sidebar de hai cot bat dau cung mot duong.
+  @media (min-width: 1020px) {
+    > main {
+      margin-block-start: 22px;
+    }
+
+    // Trang chu v2 giu nguyen: zone dau da co padding-top 40px va David duyet ban do
+    // ngay 03/08. Cong them 22px nua la doi bo cuc da duyet.
+    > main.home-v2 {
+      margin-block-start: 0;
+    }
+  }
+
+  // DIEN THOAI: thanh mobilebar phai chiem TRON mot hang rieng.
+  // Loi do duoc 04/08: no la o grid khong duoc dat ten nen bi auto-place vao cot 1
+  // cua `. . main . .`, ma cot do rong 0px -> thanh bi bop con **24px**, chong len goc
+  // trai cua noi dung. Bam nut menu van chay (nut 40px tran ra ngoai o) nen phep thu
+  // "drawer mo duoc" van dau — phai do BE NGANG cua thanh moi bat duoc.
+  // aside va .hv2-scrim deu `position: fixed` tren mobile nen chung khong can o grid.
+  @media (max-width: 1019.98px) {
+    grid-template-areas:
+      'bar bar bar bar bar'
+      '. . main . .';
+  }
+
   @media (min-width: 1020px) {
     grid-template-areas: 'side gapl main gapr';
     // PHAI giu `---main-max-width` cho cot noi dung. Ban chi-trang-chu dung `1fr` vi
@@ -420,6 +452,8 @@ aside#top.hv2-side {
 
 @media (max-width: 1019.98px) {
   .hv2-mobilebar {
+    // Hang rieng do #main-wrap khai o dau file. Thieu dong nay la thanh bi bop 24px.
+    grid-area: bar;
     position: sticky;
     top: 0;
     z-index: 105;
@@ -685,6 +719,12 @@ body:has(main.racer) {
   @media (min-width: 1020px) {
     #main-wrap:has(> aside.hv2-side) {
       grid-template-columns: 64px 2vw minmax(0, var(---main-max-width)) 2vw;
+
+      // Cot thu nen padding-top cua sidebar cung xuong 14px — khoang tho cua cot noi
+      // dung phai theo, khong thi bau ban co lech xuong so voi mark thuong hieu.
+      > main {
+        margin-block-start: 14px;
+      }
     }
 
     aside#top.hv2-side {
