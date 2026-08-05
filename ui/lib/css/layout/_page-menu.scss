@@ -21,6 +21,14 @@
   &__content {
     grid-area: content;
     height: 100%;
+
+    // A11y (link-in-text-block): link mau sang #7890ce trong doan van chi 2.8:1 voi chu
+    // xung quanh (<3:1). Gach chan => phan biet bang phi-mau, khong con phu thuoc mau.
+    // Chi trong prose CMS (about/privacy/terms/contact/FAQ); __menu nav o nhanh rieng nen
+    // khong bi dung, tru nut .button. BRAND §2 (link tach mau) + WCAG 1.4.1.
+    a:not(.button) {
+      text-decoration: underline;
+    }
   }
 
   &__content.box {
