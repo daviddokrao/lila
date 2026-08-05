@@ -16,6 +16,28 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
 ):
   import helpers.{ *, given }
 
+  // HungKings: khối "nhà vô địch" đọc Winner.tourName — trường THÔ đóng băng tiếng Anh lúc
+  // tạo giải, KHÔNG đi qua Tournament.name() nên G2 không chạm tới. Với người đọc tiếng Việt,
+  // đổi các từ FREQ tiếng Anh sang tiếng Việt (Speed như HyperBullet giữ nguyên, khớp danh
+  // sách giải; Marathon vốn giữ nguyên cả hai ngôn ngữ). Rẽ theo ctx.lang — không thêm khoá
+  // dịch, không đụng model Winner/cache. Xem PROGRESS Mốc G nợ nhỏ #2.
+  private val viFreqWords = List(
+    "Hourly" -> "Hàng giờ",
+    "Daily" -> "Hàng ngày",
+    "Eastern" -> "phương Đông",
+    "Weekend" -> "Cuối tuần",
+    "Weekly" -> "Hàng tuần",
+    "Monthly" -> "Hàng tháng",
+    "Shield" -> "Khiên",
+    "Yearly" -> "Hàng năm",
+    "Unique" -> "Đặc biệt",
+    "Elite" -> "Ưu tú"
+  )
+  private def viTourName(name: String)(using ctx: Context): String =
+    if ctx.lang.language == "vi" then
+      viFreqWords.foldLeft(name) { case (n, (en, vi)) => n.replace(en, vi) }
+    else name
+
   def home(
       scheduled: List[Tournament],
       finished: List[Tournament],
@@ -40,10 +62,11 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
             ),
             ul(cls := "leaderboard")(
               winners.top.map: w =>
+                val nm = viTourName(w.tourName)
                 li(
                   userIdLink(w.userId.some),
-                  a(title := w.tourName, href := routes.Tournament.show(w.tourId))(
-                    ui.scheduledTournamentNameShortHtml(w.tourName)
+                  a(title := nm, href := routes.Tournament.show(w.tourId))(
+                    ui.scheduledTournamentNameShortHtml(nm)
                   )
                 )
             ),
