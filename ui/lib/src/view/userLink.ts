@@ -27,7 +27,7 @@ export const userLinkData = (u: AnyUser): VNodeData => ({
 });
 
 export const userFlair = (u: Pick<AnyUser, 'flair'>): VNode | undefined =>
-  u.flair ? h('img.uflair', { attrs: { src: site.asset.flairSrc(u.flair) } }) : undefined;
+  u.flair ? h('img.uflair', { attrs: { src: site.asset.flairSrc(u.flair), alt: '' } }) : undefined;
 
 export const userLine = (u: Pick<AnyUser, 'line' | 'patronColor' | 'moderator'>): VNode | undefined =>
   u.line !== false

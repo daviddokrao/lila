@@ -37,7 +37,18 @@ function dataAct(e: Event): string | null {
 }
 
 function jumpButton(icon: LiconValue, effect: string, disabled: boolean, glowing = false): VNode {
-  return hl('button.fbt', { class: { glowing }, attrs: { disabled, 'data-act': effect, 'data-icon': icon } });
+  const label =
+    effect === 'first'
+      ? i18n.site.firstMove
+      : effect === 'prev'
+        ? i18n.site.previousMove
+        : effect === 'next'
+          ? i18n.site.nextMove
+          : i18n.site.lastMove;
+  return hl('button.fbt', {
+    class: { glowing },
+    attrs: { disabled, 'data-act': effect, 'data-icon': icon, 'aria-label': label },
+  });
 }
 
 function controls(ctrl: PuzzleCtrl): VNode {

@@ -639,6 +639,9 @@ aside#top.hv2-side {
 
   &--line {
     border: $border;
+    // A11y (Lighthouse): khong dat color thi ke thua mau link #4c6bbe => 3.49:1, rot AA
+    // cho chu 16px dam. $c-font la mau chu chinh, dam bao tuong phan o MOI theme.
+    color: $c-font;
 
     &:hover {
       border-color: $c-accent;

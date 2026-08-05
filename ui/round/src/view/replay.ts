@@ -159,16 +159,18 @@ function renderButtons(ctrl: RoundController) {
     lastPly = util.lastPly(ctrl.data);
   return hl(rbuttonsTag, [
     analysisButton(ctrl) || hl('div.noop'),
-    [
-      ['JumpFirst', firstPly],
-      ['JumpPrev', ctrl.ply - 1],
-      ['JumpNext', ctrl.ply + 1],
-      ['JumpLast', lastPly],
-    ].map((b: [LiconKey, number], i) => {
+    (
+      [
+        ['JumpFirst', firstPly, i18n.site.firstMove],
+        ['JumpPrev', ctrl.ply - 1, i18n.site.previousMove],
+        ['JumpNext', ctrl.ply + 1, i18n.site.nextMove],
+        ['JumpLast', lastPly, i18n.site.lastMove],
+      ] as [LiconKey, number, string][]
+    ).map((b, i) => {
       const enabled = ctrl.ply !== b[1] && b[1] >= firstPly && b[1] <= lastPly;
       return hl('button.fbt.repeatable', {
         class: { glowing: i === 3 && ctrl.isLate() },
-        attrs: { disabled: !enabled, 'data-icon': licon[b[0]], 'data-ply': enabled ? b[1] : '-' },
+        attrs: { disabled: !enabled, 'data-icon': licon[b[0]], 'data-ply': enabled ? b[1] : '-', 'aria-label': b[2] },
         hook: onInsert(el =>
           addPointerListeners(el, {
             click: e => {

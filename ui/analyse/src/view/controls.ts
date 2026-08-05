@@ -144,7 +144,18 @@ function clickControl(ctrl: AnalyseCtrl, e: PointerEvent) {
   ctrl.redraw();
 }
 
+const jumpLabel = (effect: string): string =>
+  effect === 'first'
+    ? i18n.site.firstMove
+    : effect === 'prev'
+      ? i18n.site.previousMove
+      : effect === 'next'
+        ? i18n.site.nextMove
+        : i18n.site.lastMove;
+
 const jumpButton = (icon: LiconValue, effect: string, enabled: boolean): VNode =>
-  hl('button.fbt.move', { attrs: { disabled: !enabled, 'data-act': effect, 'data-icon': icon } });
+  hl('button.fbt.move', {
+    attrs: { disabled: !enabled, 'data-act': effect, 'data-icon': icon, 'aria-label': jumpLabel(effect) },
+  });
 
 const isMobileUi = (): boolean => displayColumns() === 1 && isTouchDevice();

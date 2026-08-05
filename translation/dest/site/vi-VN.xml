@@ -167,6 +167,10 @@
   </plurals>
   <string name="moveTimes">Thời gian nghĩ nước đi</string>
   <string name="flipBoard">Quay bàn cờ</string>
+  <string name="firstMove">Nước đầu</string>
+  <string name="previousMove">Nước trước</string>
+  <string name="nextMove">Nước sau</string>
+  <string name="lastMove">Nước cuối</string>
   <string name="threefoldRepetition">Lặp cờ 3 lần</string>
   <string name="claimADraw">Nhận hòa</string>
   <string name="drawClaimed">Hòa cờ</string>

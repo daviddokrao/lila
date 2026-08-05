@@ -29,6 +29,6 @@ trait TeamHelper:
   def teamFlair(team: LightTeam): Option[Tag] = team.flair.map(teamFlair)
 
   def teamFlair(flair: Flair): Tag =
-    img(cls := "uflair", src := flairSrc(flair))
+    img(cls := "uflair", src := flairSrc(flair), alt := "")
 
   def teamForumUrl(id: TeamId) = routes.ForumCateg.show(ForumCategId("team-" + id))
