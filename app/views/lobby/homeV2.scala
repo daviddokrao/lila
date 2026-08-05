@@ -22,7 +22,7 @@ import lila.core.user.LightPerf
   */
 object homeV2:
 
-  private val coachUrl = "https://hungkings-coach.vssa.com"
+  private val coachUrl = "https://coach.hungkings.com"
 
   def apply(
       homepage: Homepage,

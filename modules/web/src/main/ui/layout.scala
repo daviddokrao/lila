@@ -432,7 +432,7 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
   // CSS phải vô hiệu `.hide`/`.scrolled` mà topBar gắn vào #top khi cuộn (_sidebar.scss).
   object siteSidebar:
 
-    private val coachUrl = "https://hungkings-coach.vssa.com"
+    private val coachUrl = "https://coach.hungkings.com"
 
     // Biểu tượng đứng trước nhãn, mỗi mục một dòng — cách xếp của Chess.com nhưng dùng
     // bộ biểu tượng SẴN CÓ của lila. `extra` là chỗ cho huy hiệu MỚI.
