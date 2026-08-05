@@ -14,12 +14,11 @@ final class KeyPages(val env: Env)(using Executor)
     with lila.web.CtrlErrors
     with ControllerHelpers:
 
-  // Ván replay dùng cho hero trang chủ v2 khi TV nguội. Phải CACHE: truy vấn này lọc
-  // finished+rated+standard rồi sort theo `ca`, mà DB không có index phục vụ nó (đo
-  // 02/08 trên DB seed: COLLSCAN 3000 doc). Không cache thì mỗi lượt vào trang chủ
-  // trong "ngày vắng" là một lần quét bảng ván.
-  private val homeV2Replay = env.memo.cacheApi.unit[Option[lila.core.game.Game]]("home.v2.replay"):
-    _.refreshAfterWrite(3.minutes).buildAsyncFuture(_ => env.game.gameRepo.lastFinishedRated)
+  // Ván replay cho hero trang chủ v2 khi TV nguội. Phải CACHE (truy vấn lọc
+  // finished+rated+standard sort theo `ca`, không index → COLLSCAN 3000 doc, đo 02/08).
+  // Cache sống ở `env.homeV2Replay` (singleton) chứ KHÔNG ở đây: KeyPages bị `new` mỗi
+  // controller nên đặt cache tại chỗ sẽ đăng ký trùng tên "home.v2.replay".
+  export env.homeV2Replay
 
   def home(status: Results.Status)(using ctx: Context): Fu[Result] =
     homeHtml.map: html =>

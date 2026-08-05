@@ -116,6 +116,14 @@ final class Env(
   val gamePaginator = wire[mashup.GameFilterMenu.PaginatorBuilder]
   val pageCache = wire[http.PageCache]
 
+  // Cache ván replay cho hero trang chủ v2 (dùng ở KeyPages khi TV nguội). Đặt Ở ĐÂY
+  // vì Env là singleton: KeyPages bị `new` mỗi controller (ResponseBuilder là trait),
+  // nên nếu cache nằm trong KeyPages thì mỗi controller đăng ký lại cùng tên
+  // "home.v2.replay" → CacheApi log "duplicate cache name" lúc khởi động và
+  // metric/clearByName trỏ nhầm instance. Lazy: chỉ dựng khi lần đầu cần (homeV2 bật).
+  lazy val homeV2Replay = memo.cacheApi.unit[Option[lila.core.game.Game]]("home.v2.replay"):
+    _.refreshAfterWrite(3.minutes).buildAsyncFuture(_ => game.gameRepo.lastFinishedRated)
+
   lila.common.Bus.sub[lila.tv.RenderFeaturedJs]:
     case lila.tv.RenderFeaturedJs(game, promise) =>
       promise.success(Html(views.game.mini.noCtx(Pov.naturalOrientation(game), tv = true)))
