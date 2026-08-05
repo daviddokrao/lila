@@ -141,8 +141,12 @@ final class AnalyseUi(helpers: Helpers)(endpoints: AnalyseEndpoints):
         .csp:
           cspExternalEngine.compose(_.withPeer.withInlineIconFont.withChessDbCn)
 
-    def cspExternalEngine: Update[ContentSecurityPolicy] =
-      _.withWebAssembly.withExternalEngine(endpoints.externalEngine)
+    def cspExternalEngine: Update[ContentSecurityPolicy] = csp =>
+      val base = csp.withWebAssembly
+      // Demo để endpoint RỖNG (không có broker engine ngoài): đừng nhét chuỗi rỗng vào
+      // connect-src (render không lọc entry rỗng → token trống). Rỗng thì bỏ hẳn.
+      if endpoints.externalEngine.isEmpty then base
+      else base.withExternalEngine(endpoints.externalEngine)
 
     def analyseModule(mode: "userAnalysis" | "replay", json: JsObject) =
       PageModule("analyse.user", Json.obj("mode" -> mode, "cfg" -> json))
