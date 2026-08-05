@@ -17,6 +17,10 @@ html.light {
   --c-font: #0d1733;
   --c-font-dim: #465579;
   --c-primary: #244084;
+  // Re-pin link ve primary: default theme dat --c-link = primary lam sang 64% (cho nen
+  // toi). Light KHONG override thi ke thua bieu thuc do => link xanh nhat, ROT tren nen
+  // trang. Light primary #244084 = 9:1 tren trang nen dung thang lam link. BRAND §2.
+  --c-link: var(--c-primary);
   // Gold as text rather than the logo gold: #FFBF00 does not reach AA on white.
   --c-brag: #785900;
   --c-brag-hover: hsl(from var(--c-brag) h 100 30);

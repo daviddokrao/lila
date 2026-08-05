@@ -92,7 +92,7 @@ function renderMobileCevalTab(ctrl: AnalyseCtrl): LooseVNode {
     'button.fbt',
     {
       key: 'engine-mode',
-      attrs: { 'data-act': 'engine-mode', 'data-mode': engineMode },
+      attrs: { 'data-act': 'engine-mode', 'data-mode': engineMode, 'aria-label': i18n.site.toggleLocalEvaluation },
       class: { active, latent, computing: ctrl.ceval.isComputing },
     },
     [

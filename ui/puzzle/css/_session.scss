@@ -38,7 +38,8 @@
     }
 
     &.session-new {
-      background: $c-link;
+      // $c-primary chu khong $c-link (link sang len 64% de dat AA lam chu). O chip nay.
+      background: $c-primary;
     }
 
     &:hover {

@@ -93,7 +93,9 @@
       &:hover {
         @extend %box-radius-bottom;
 
-        background: $c-link;
+        // Nen cong chu trang: dung $c-primary (khong $c-link, vi link nay sang len 64%
+        // de dat AA lam CHU => cong chu trang chi con 3.14:1). Primary giu 5.06:1.
+        background: $c-primary;
         color: $c-over;
       }
     }

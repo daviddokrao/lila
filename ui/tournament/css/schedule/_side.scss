@@ -49,6 +49,10 @@
 
   a {
     color: $c-font;
+    // A11y target-size (WCAG 2.5.8): link nav cao 17px. inline-block + padding-block
+    // dua vung cham ~29px va gian dong >=24px, khong ep 44px (la link chu inline).
+    display: inline-block;
+    padding-block: 6px;
 
     @include transition;
 

@@ -10,7 +10,9 @@
     }
 
     .hidden {
-      color: $c-font-dimmer;
+      // $c-font-dimmer tren nen navy toi tu thanh xanh dam #2952ad = 2.45:1 (rot AA).
+      // $c-font-dim = 6.06:1. Chi la nhan placeholder chu an nen doi an toan.
+      color: $c-font-dim;
     }
 
     .infos {
@@ -36,6 +38,15 @@
       .players {
         margin-top: 0.3rem;
         font-size: 90%;
+
+        // A11y target-size (WCAG 2.5.8): link ten dau thu chi cao 15px. Cho moi dong
+        // .player cao >=24px de khoang cach doc giua cac link >=24px (dat qua ngoai le
+        // spacing), khong can phong to chu.
+        .player {
+          display: flex;
+          align-items: center;
+          min-height: 24px;
+        }
       }
     }
   }

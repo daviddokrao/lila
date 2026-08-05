@@ -59,7 +59,11 @@
   --c-secondary: #4ade80;
   --c-secondary-dim: color-mix(in oklab, var(--c-dimmer) 20%, var(--c-secondary));
   --c-secondary-dimmer: color-mix(in oklab, var(--c-dimmer) 40%, var(--c-secondary));
-  --c-link: var(--c-primary);
+  // A11y (Lighthouse): link = primary (#4c6bbe) chi dat 3.5:1 tren nen toi => rot AA.
+  // Mot mau xanh khong the vua lam CHU dat AA vua lam NEN cong chu trang, nen tach nhanh
+  // link sang hon (l=64%) => #7890ce, 4.92-6.10:1 tren moi be mat toi. Primary GIU nguyen
+  // cho nen/nut. Light theme re-pin link ve primary (xem _theme.light.scss). BRAND §2.
+  --c-link: hsl(from var(--c-primary) h s 64%);
   --c-link-dim: var(--c-primary-dim);
   --c-link-clear: var(--c-primary-clear);
   --c-over: white;
