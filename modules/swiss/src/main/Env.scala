@@ -109,7 +109,10 @@ final class Env(
   LilaScheduler("Swiss.checkOngoingGames", _.Every(10.seconds), _.AtMost(15.seconds), _.Delay(20.seconds)):
     api.checkOngoingGames.logFailure(logger)
 
-  LilaScheduler("Swiss.generate", _.Every(3.hours), _.AtMost(15.seconds), _.Delay(15.minutes)):
-    officialSchedule.generate.logFailure(logger)
+  // Bộ lịch giải chính thức chỉ chạy khi swiss.official_schedule = true. Trên demo tắt
+  // (LILA_SWISS_OFFICIAL=false) vì đội "lichess-swiss" không tồn tại → giải 404 + lộ brand.
+  if appConfig.get[Boolean]("swiss.official_schedule") then
+    LilaScheduler("Swiss.generate", _.Every(3.hours), _.AtMost(15.seconds), _.Delay(15.minutes)):
+      officialSchedule.generate.logFailure(logger)
 
 final private class SwissMongo(val swiss: Coll, val player: Coll, val pairing: Coll, val ban: Coll)
