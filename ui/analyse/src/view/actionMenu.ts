@@ -159,7 +159,7 @@ export function view(ctrl: AnalyseCtrl): VNode {
           'a',
           {
             attrs: {
-              href: `https://coach.hungkings.com/${d.game.id}`,
+              href: `/hlv/${d.game.id}`,
               target: '_blank',
               rel: 'noopener',
               'data-icon': licon.BubbleSpeech,

@@ -22,8 +22,6 @@ import lila.core.user.LightPerf
   */
 object homeV2:
 
-  private val coachUrl = "https://coach.hungkings.com"
-
   def apply(
       homepage: Homepage,
       multiview: List[(lila.tv.Tv.Channel, Option[lila.core.game.Game])],
@@ -103,7 +101,7 @@ object homeV2:
                     )
                   ),
                   div(cls := "hv2-cta")(
-                    a(cls := "hv2-btn hv2-btn--gold", href := s"$coachUrl/${g.id}")(
+                    a(cls := "hv2-btn hv2-btn--gold", href := s"/hlv/${g.id}")(
                       t("Nghe AI giải cả ván", "Hear the full AI commentary")
                     ),
                     a(cls := "hv2-btn hv2-btn--line", href := "#ai")(t("Chơi với máy", "Play the computer"))
@@ -323,7 +321,7 @@ object homeV2:
           )
         ),
         p(cls := "hv2-coach__src")(t("— trích một lời giải thật của AI", "— from a real AI annotation")),
-        a(cls := "hv2-btn hv2-btn--line", href := coachUrl)(
+        a(cls := "hv2-btn hv2-btn--line", href := "/hlv")(
           t("Xem AI phân tích ván của bạn", "Have the AI analyse your game")
         )
       )

@@ -915,6 +915,9 @@ POST  /cms/:id/delete                 controllers.Cms.delete(id: CmsPageId)
 
 # Misc
 GET   /developers                      controllers.Main.webmasters
+# HLV AI (coach): trang lila có sidebar, nhúng service coach qua iframe (coach.hungkings.com).
+GET   /hlv                             controllers.Main.hlvCoachHome
+GET   /hlv/$id<[a-zA-Z0-9]{8,12}>      controllers.Main.hlvCoach(id: String)
 GET   /app                             controllers.Main.app
 GET   /app-store                       controllers.Main.redirectToAppStore
 GET   /$lang<\w\w\w?>/app              controllers.Main.appLang(lang: Language)

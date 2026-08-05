@@ -30,6 +30,13 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
   def webmasters = Open:
     Ok.page(views.site.page.webmasters)
 
+  // HLV AI: trang lila (có sidebar) nhúng service coach qua iframe. Có/không mã ván.
+  def hlvCoach(id: String) = Open:
+    Ok.page(views.site.page.hlvCoach(id.some))
+
+  def hlvCoachHome = Open:
+    Ok.page(views.site.page.hlvCoach(none))
+
   def lag = Open:
     Ok.page(views.site.ui.lag)
 

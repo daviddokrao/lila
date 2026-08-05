@@ -290,6 +290,23 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
           st.section(cls := "box box-pad body")(rendered)
         )
 
+  // HLV AI: giữ coach TRONG site (cùng domain + sidebar) thay vì bắn người dùng ra
+  // subdomain riêng. Coach vẫn là service Node độc lập (đúng chủ ý tách khỏi lila) —
+  // ở đây chỉ nhúng nó qua iframe ở chế độ ?embed (coach ẩn header brand riêng). CSP
+  // frame-src chỉ nới cho ĐÚNG trang này, không đụng CSP toàn site.
+  def hlvCoach(gameId: Option[String])(using Context) =
+    val coachBase = "https://coach.hungkings.com"
+    val embedUrl  = gameId.fold(s"$coachBase/?embed=1")(id => s"$coachBase/$id?embed=1")
+    Page("Giải thích ván (AI)")
+      .csp(csp => csp.copy(frameSrc = coachBase :: csp.frameSrc)):
+        main(style := "max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
+          iframe(
+            src := embedUrl,
+            st.frameborder := "0",
+            style := "width:100%;height:80vh;border:0;display:block;border-radius:14px;background:transparent"
+          )
+        )
+
   def lag(using Context) =
     import trans.lag as trl
     SitePage(title = "Is HungKings lagging?", active = "lag")
