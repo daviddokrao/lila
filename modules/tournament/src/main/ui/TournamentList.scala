@@ -33,10 +33,15 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
     "Unique" -> "Đặc biệt",
     "Elite" -> "Ưu tú"
   )
-  private def viTourName(name: String)(using ctx: Context): String =
-    if ctx.lang.language == "vi" then
+  private def viTourName(name: String)(using t: Translate): String =
+    if t.lang.language == "vi" then
       viFreqWords.foldLeft(name) { case (n, (en, vi)) => n.replace(en, vi) }
     else name
+
+  // Song ngữ tại chỗ (đường thứ tư) cho nhãn hardcode tiếng Anh ở trang bảng vàng.
+  // KHÔNG đặt tên `tr` — trùng thẻ HTML <tr> (table row) của scalatags.
+  private def viEn(vi: String, en: String)(using t: Translate): String =
+    if t.lang.language == "vi" then vi else en
 
   def home(
       scheduled: List[Tournament],
@@ -239,7 +244,7 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
     private def freqWinner(w: Winner, freq: String)(using Translate) =
       li(
         userIdLink(w.userId.some),
-        a(title := w.tourName, href := routes.Tournament.show(w.tourId))(freq)
+        a(title := viTourName(w.tourName), href := routes.Tournament.show(w.tourId))(freq)
       )
 
     private val section = st.section(cls := "tournament-leaderboards__item")
@@ -249,24 +254,24 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
         h2(cls := "text", dataIcon := perfType.icon)(name),
         ul(
           fws.yearly.map: w =>
-            freqWinner(w, "Yearly"),
+            freqWinner(w, viEn("Hàng năm", "Yearly")),
           fws.monthly.map: w =>
-            freqWinner(w, "Monthly"),
+            freqWinner(w, viEn("Hàng tháng", "Monthly")),
           fws.weekly.map: w =>
-            freqWinner(w, "Weekly"),
+            freqWinner(w, viEn("Hàng tuần", "Weekly")),
           fws.daily.map: w =>
-            freqWinner(w, "Daily")
+            freqWinner(w, viEn("Hàng ngày", "Daily"))
         )
       )
 
     def apply(winners: AllWinners)(using Context) =
       def eliteWinners = section(
-        h2(cls := "text", dataIcon := Icon.CrownElite)("Elite Arena"),
+        h2(cls := "text", dataIcon := Icon.CrownElite)(viEn("Đấu trường Ưu tú", "Elite Arena")),
         ul(
           winners.elite.map: w =>
             li(
               userIdLink(w.userId.some),
-              a(title := w.tourName, href := routes.Tournament.show(w.tourId))(showDate(w.date))
+              a(title := viTourName(w.tourName), href := routes.Tournament.show(w.tourId))(showDate(w.date))
             )
         )
       )
@@ -276,14 +281,14 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
           winners.marathon.map { w =>
             li(
               userIdLink(w.userId.some),
-              a(title := w.tourName, href := routes.Tournament.show(w.tourId))(
-                w.tourName.replace(" Marathon", "")
+              a(title := viTourName(w.tourName), href := routes.Tournament.show(w.tourId))(
+                viTourName(w.tourName).replace(" Marathon", "")
               )
             )
           }
         )
       )
-      Page("Tournament leaderboard")
+      Page(viEn("Bảng vàng giải đấu", "Tournament leaderboard"))
         .css("tournament.leaderboard")
         .flag(_.fullScreen):
           main(cls := "page-menu")(
@@ -313,7 +318,7 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
     private val section = st.section(cls := "tournament-shields__item")
 
     def apply(history: TournamentShield.History)(using Context) =
-      Page("Tournament shields")
+      Page(viEn("Khiên giải đấu", "Tournament shields"))
         .css("tournament.leaderboard")
         .flag(_.fullScreen):
           main(cls := "page-menu")(
