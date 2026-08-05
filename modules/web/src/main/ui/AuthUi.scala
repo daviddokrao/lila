@@ -293,10 +293,21 @@ final class AuthUi(helpers: Helpers):
           )
         )
 
-  def passwordResetSent(email: String)(using Context) =
+  def passwordResetSent(email: String, migrated: Boolean = false)(using ctx: Context) =
     Page(trans.site.passwordReset.txt()).css("bits.auth"):
       main(cls := "page-small box box-pad")(
         boxTop(h1(cls := "is-green text", dataIcon := Icon.Checkmark)(trans.site.checkYourEmail())),
+        // Người mang sang từ HungKings bản cũ: nói RÕ vì sao mật khẩu bị đặt lại (đổi hệ
+        // thống), kẻo họ tưởng tài khoản hỏng. Rẽ theo ctx.lang tại chỗ để KHÔNG thêm khoá
+        // i18n mới (ranh giới P0.8) — tiếng Việt đọc tiếng Việt, còn lại lùi về tiếng Anh.
+        migrated.option(
+          p(cls := "text", style := "font-weight:bold")(
+            if ctx.lang.language == "vi" then
+              "HungKings vừa nâng cấp lên hệ thống mới, nên mật khẩu cũ của bạn cần được đặt lại một lần. Đây là bước bình thường, không phải tài khoản của bạn gặp lỗi."
+            else
+              "HungKings has just upgraded to a new system, so your old password needs to be reset once. This is expected — there is nothing wrong with your account."
+          )
+        ),
         p(trans.site.weHaveSentYouAnEmailTo(email)),
         p(trans.site.ifYouDoNotGetTheEmail()),
         ul(cls := "checklist")(

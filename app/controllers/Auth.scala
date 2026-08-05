@@ -585,7 +585,9 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
                         // trả thẳng một trang HTML thì client không chuyển trang, người
                         // dùng đứng im trên form dù thư đã bay đi. Đây là đúng khuôn
                         // `redirectTo` mà serveAuthenticate dùng cho nhánh đăng nhập thành công.
-                        val url = passwordResetSentRoute(maskEmail(email), variant).url
+                        // `?migrated=1` để trang "đã gửi thư" nêu rõ lý do là ĐỔI HỆ THỐNG
+                        // (xem passwordResetSent). Chỉ luồng cứu di cư gắn cờ này.
+                        val url = passwordResetSentRoute(maskEmail(email), variant).url + "?migrated=1"
                         if HTTPRequest.isXhr(ctx.req) then Ok(s"ok:$url") else Redirect(url)
                   case _ => fallback
             else fallback
@@ -608,18 +610,21 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
       case AuthVariant.Lichess => PasswordResetService.Origin.Lichess
 
   def passwordResetSent(email: String) = Open:
-    passwordResetSentPage(email, AuthVariant.Lichess)
+    // `?migrated=1` do luồng cứu tài khoản di cư gắn vào (migratedAccountRescue): người
+    // mang sang từ HungKings bản cũ cần biết mật khẩu bị đặt lại vì ĐỔI HỆ THỐNG, không
+    // phải họ quên. Người quên mật khẩu thường không có cờ này nên vẫn thấy trang cũ.
+    passwordResetSentPage(email, AuthVariant.Lichess, migrated = ctx.req.queryString.contains("migrated"))
 
   def passwordResetSentTakex3(email: String) = Open:
     withTakex3Referrer(routes.Auth.passwordResetSent(email)):
       passwordResetSentPage(email, AuthVariant.Takex3)
 
-  private def passwordResetSentPage(email: String, variant: AuthVariant)(using
+  private def passwordResetSentPage(email: String, variant: AuthVariant, migrated: Boolean = false)(using
       Context,
       Option[ValidReferrer]
   ) =
     variant match
-      case AuthVariant.Lichess => Ok.page(views.auth.passwordResetSent(email))
+      case AuthVariant.Lichess => Ok.page(views.auth.passwordResetSent(email, migrated))
       case AuthVariant.Takex3 =>
         given Option[AuthCustomUi] = takex3Client.design
         Ok.page(views.authTakex3.passwordResetSent(email))
