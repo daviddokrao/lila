@@ -71,7 +71,12 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
 
   val robots = Anon:
     Ok:
-      if env.net.crawlable && req.domain == env.net.domain.value && env.mode.isProd
+      // HungKings: bỏ ràng buộc `env.mode.isProd`. Image mono demo cố ý chạy Play ở
+      // Dev-mode (PlayServer đọc play.mode; ta KHÔNG lật sang prod vì đổi hành vi toàn
+      // app trên site thật). Tín hiệu opt-in cho crawl ở đây là `net.crawlable=true`
+      // (LILA_CRAWLABLE, mặc định false) + đúng domain chuẩn — đủ và tường minh. Máy dev
+      // và upstream để crawlable=false nên vẫn trả Disallow như cũ.
+      if env.net.crawlable && req.domain == env.net.domain.value
       then StaticContent.robotsTxt
       else "User-agent: *\nDisallow: /"
 
