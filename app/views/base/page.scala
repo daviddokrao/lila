@@ -15,11 +15,12 @@ object page:
     popularAlternateLanguages = lila.i18n.LangList.popularAlternateLanguages,
     reportScoreThreshold = env.report.scoreThresholdsSetting.get,
     reportScore = () => env.report.api.maxScores.dmap(_.highest).awaitOrElse(50.millis, "nbReports", 0),
-    forumEnabled = env.web.config.forumEnabled
+    forumEnabled = env.web.config.forumEnabled,
+    broadcastEnabled = env.web.config.broadcastEnabled
   )
   import ui.*
 
-  private val topnav = lila.web.ui.TopNav(helpers)(env.web.config.forumEnabled)
+  private val topnav = lila.web.ui.TopNav(helpers)(env.web.config.forumEnabled, env.web.config.broadcastEnabled)
 
   private def metaThemeColor(using ctx: Context): Frag =
     raw(s"""<meta name="theme-color" content="${ctx.pref.themeColor}">""")

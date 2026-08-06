@@ -12,14 +12,16 @@ final class HttpRequestHandler(
     filters: Seq[EssentialFilter],
     controllerComponents: ControllerComponents,
     // HungKings: diễn đàn tạm tắt (env LILA_FORUM). Xem forumOffHandler bên dưới.
-    forumEnabled: Boolean
+    forumEnabled: Boolean,
+    // HungKings: broadcast tạm tắt (env LILA_BROADCAST). Cùng cơ chế chặn với forum.
+    broadcastEnabled: Boolean
 ) extends DefaultHttpRequestHandler(() => router, errorHandler, configuration, filters)
     with lila.web.ResponseHeaders:
 
   override def routeRequest(request: RequestHeader): Option[Handler] =
     if request.method == "OPTIONS"
     then optionsHandler.some
-    else if isForumPath(request) then forumOffHandler.some
+    else if isForumPath(request) || isBroadcastPath(request) then forumOffHandler.some
     else router.handlerFor(request)
 
   // Chặn ở ĐÂY chứ không rải guard vào 3 controller Forum*: một chỗ duy nhất phủ hết
@@ -30,6 +32,21 @@ final class HttpRequestHandler(
     !forumEnabled && {
       val p = req.path
       p == "/forum" || p.startsWith("/forum/") || p.startsWith("/diagnostic")
+    }
+
+  // Cùng cơ chế: một chỗ phủ hết ~40 route RelayTour/RelayRound thay vì rải guard vào 2
+  // controller. Phủ cả bản có tiền tố (`/api/broadcast`, `/api/stream/broadcast/`,
+  // `/embed/broadcast/`) lẫn bản có tiền tố ngôn ngữ (`/vi/broadcast` — route
+  // `/$lang<\w\w\w?>/broadcast`). `endsWith("/broadcast")` bắt cả `/broadcast` lẫn
+  // `/<lang>/broadcast`; không route hợp lệ nào khác kết thúc bằng đúng segment này.
+  private def isBroadcastPath(req: RequestHeader): Boolean =
+    !broadcastEnabled && {
+      val p = req.path
+      p.endsWith("/broadcast") ||
+      p.startsWith("/broadcast/") ||
+      p.startsWith("/api/broadcast") ||
+      p.startsWith("/api/stream/broadcast/") ||
+      p.startsWith("/embed/broadcast/")
     }
 
   // Trả về đúng trang 404 của lila khi request đủ điều kiện hiện trang lỗi (xem

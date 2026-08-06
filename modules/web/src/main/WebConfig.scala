@@ -17,7 +17,9 @@ final class WebConfig(
     // HungKings: sidebar trang chủ v2 (vòng 3) — chỉ có nghĩa khi homeV2 bật
     val homeSidebar: Boolean,
     // HungKings: diễn đàn tạm tắt (env LILA_FORUM). Tắt = ẩn mọi lối vào + /forum 404.
-    val forumEnabled: Boolean
+    val forumEnabled: Boolean,
+    // HungKings: broadcast tạm tắt (env LILA_BROADCAST). Tắt = ẩn mọi lối vào + /broadcast 404.
+    val broadcastEnabled: Boolean
 )
 
 object WebConfig:
@@ -46,7 +48,8 @@ object WebConfig:
       ),
       c.get[Boolean]("net.home.v2"),
       c.get[Boolean]("net.home.sidebar"),
-      c.get[Boolean]("net.forum.enabled")
+      c.get[Boolean]("net.forum.enabled"),
+      c.get[Boolean]("net.broadcast.enabled")
     )
 
   def analyseEndpoints(c: Configuration) =

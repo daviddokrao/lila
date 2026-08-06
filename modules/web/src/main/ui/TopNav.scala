@@ -7,7 +7,8 @@ import ScalatagsTemplate.{ *, given }
 
 // forumEnabled: diễn đàn tạm tắt bằng env LILA_FORUM (David chốt 04/08). Route đã bị
 // chặn ở HttpRequestHandler; ở đây chỉ ẩn lối vào để không mời người dùng bấm vào 404.
-final class TopNav(helpers: Helpers)(forumEnabled: Boolean):
+// broadcastEnabled: broadcast tạm tắt bằng env LILA_BROADCAST (David chốt 06/08) — tương tự.
+final class TopNav(helpers: Helpers)(forumEnabled: Boolean, broadcastEnabled: Boolean):
   import helpers.{ *, given }
 
   private def linkTitle(url: String, name: Frag)(using ctx: Context) =
@@ -65,11 +66,13 @@ final class TopNav(helpers: Helpers)(forumEnabled: Boolean):
         )
       ),
       st.section:
-        val broadcastUrl = langHref(routes.RelayTour.index())
+        // Broadcast tắt thì tiêu đề mục "Xem" không được trỏ /broadcast (đã 404) — lùi về
+        // ván đang diễn ra. Link broadcast trong nhóm cũng ẩn theo cờ.
+        val watchUrl = if broadcastEnabled then langHref(routes.RelayTour.index()) else routes.Tv.games.url
         frag(
-          linkTitle(broadcastUrl, trans.site.watch()),
+          linkTitle(watchUrl, trans.site.watch()),
           div(role := "group")(
-            a(href := routes.RelayTour.index())(trans.broadcast.broadcasts()),
+            broadcastEnabled.option(a(href := routes.RelayTour.index())(trans.broadcast.broadcasts())),
             a(href := langHref(routes.Tv.index))("HungKings TV"),
             a(href := routes.Tv.games)(trans.site.currentGames()),
             (ctx.kid.no && ctx.noBot).option(a(href := routes.Streamer.index())(trans.site.streamersMenu())),

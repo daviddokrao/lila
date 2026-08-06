@@ -16,7 +16,9 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
     reportScore: () => Int,
     // HungKings: diễn đàn tạm tắt (env LILA_FORUM) — ẩn lối vào trong sidebar. Route đã
     // bị chặn ở HttpRequestHandler, cái này chỉ để không mời người dùng bấm vào 404.
-    forumEnabled: Boolean
+    forumEnabled: Boolean,
+    // HungKings: broadcast tạm tắt (env LILA_BROADCAST) — ẩn lối vào trong sidebar. Tương tự.
+    broadcastEnabled: Boolean
 ):
   import helpers.{ *, given }
   import assetHelper.{ defaultCsp, netConfig, cashTag, siteName }
@@ -471,7 +473,10 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
             // người thật (xem HANDOFF, mục "/tv trả 404 là ĐÚNG").
             navItem(routes.Tv.games.url, Icon.AnalogTv, t("Trực tiếp", "Live"))(
               subItem(routes.Tv.games.url, t("Ván đang diễn ra", "Current games")),
-              subItem(routes.RelayTour.index().url, t("Tiếp sóng giải đấu", "Broadcasts")),
+              // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số navItem là `Frag*`, mà
+              // Option chỉ thành Modifier chứ không thành Frag (cùng lý do với forum bên dưới).
+              if broadcastEnabled then subItem(routes.RelayTour.index().url, t("Tiếp sóng giải đấu", "Broadcasts"))
+              else emptyFrag,
               subItem(routes.Streamer.index().url, t("Người phát trực tiếp", "Streamers"))
             ),
             navItem("/#hv2-play", Icon.PlayTriangle, t("Chơi", "Play"))(
