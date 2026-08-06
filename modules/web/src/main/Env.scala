@@ -8,7 +8,7 @@ final class Env(
     appConfig: play.api.Configuration,
     cacheApi: lila.memo.CacheApi,
     settingStore: lila.memo.SettingStore.Builder,
-    ws: StandaloneWSClient,
+    val ws: StandaloneWSClient,
     net: lila.core.config.NetConfig,
     getFile: lila.common.config.GetRelativeFile
 )(using mode: play.api.Mode, scheduler: Scheduler)(using Executor):

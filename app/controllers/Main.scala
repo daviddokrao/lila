@@ -37,6 +37,35 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
   def hlvCoachHome = Open:
     Ok.page(views.site.ui.hlvCoach(none))
 
+  // Proxy SAME-ORIGIN cho service coach: trình duyệt gọi hungkings.com/hlv-app/*,
+  // lila chuyển tiếp nội bộ sang container coach (cùng mạng docker `edge`) rồi stream
+  // trả về. Nhờ vậy iframe ở /hlv là same-origin — không extension/quy tắc cross-origin
+  // nào chặn được (đó là gốc lỗi "ảnh vỡ" trước đây). Truyền `X-Base-Path` để coach
+  // phát URL tự trỏ dưới /hlv-app, và `X-Forwarded-For` để coach tính hạn mức theo IP
+  // thật. `.stream()` + chunked + `noProxyBuffer` để SSE (text/event-stream) chảy realtime
+  // chứ không bị đệm tới lúc đóng kết nối. Đích đổi được qua env, không cần dựng lại image.
+  private val coachInternalUrl =
+    sys.env.getOrElse("LILA_COACH_INTERNAL_URL", "http://hungkings-coach-web:8090")
+
+  def hlvCoachProxy(path: String) = Anon:
+    val qs     = ctx.req.rawQueryString
+    val target = s"$coachInternalUrl/$path" + (if qs.nonEmpty then s"?$qs" else "")
+    env.web.ws
+      .url(target)
+      .withMethod("GET")
+      .addHttpHeaders(
+        "X-Base-Path"     -> "/hlv-app",
+        "X-Forwarded-For" -> lila.common.HTTPRequest.ipAddressStr(ctx.req)
+      )
+      .stream()
+      .map: res =>
+        val ct = res.headers
+          .get("Content-Type")
+          .orElse(res.headers.get("content-type"))
+          .flatMap(_.headOption)
+          .getOrElse("text/html; charset=utf-8")
+        Status(res.status).chunked(res.bodyAsSource).as(ct).noProxyBuffer
+
   def lag = Open:
     Ok.page(views.site.ui.lag)
 

@@ -292,20 +292,20 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
 
   // HLV AI: giữ coach TRONG site (cùng domain + sidebar) thay vì bắn người dùng ra
   // subdomain riêng. Coach vẫn là service Node độc lập (đúng chủ ý tách khỏi lila) —
-  // ở đây chỉ nhúng nó qua iframe ở chế độ ?embed (coach ẩn header brand riêng). CSP
-  // frame-src chỉ nới cho ĐÚNG trang này, không đụng CSP toàn site.
+  // ở đây nhúng nó qua iframe SAME-ORIGIN `/hlv-app` (lila proxy sang container coach,
+  // xem Main.hlvCoachProxy). Trước đây iframe trỏ thẳng coach.hungkings.com (cross-origin)
+  // nên bị một số extension chặn → khung hiện "ảnh vỡ" dù coach vẫn khoẻ. Same-origin thì
+  // không quy tắc cross-origin nào chặn được, và KHÔNG cần nới CSP frame-src cho domain ngoài.
   def hlvCoach(gameId: Option[String])(using Context) =
-    val coachBase = "https://coach.hungkings.com"
-    val embedUrl  = gameId.fold(s"$coachBase/?embed=1")(id => s"$coachBase/$id?embed=1")
-    Page("Giải thích ván (AI)")
-      .csp(csp => csp.copy(frameSrc = coachBase :: csp.frameSrc)):
-        main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
-          iframe(
-            src := embedUrl,
-            st.frameborder := "0",
-            style := "width:100%;height:80vh;border:0;display:block;border-radius:14px;background:transparent"
-          )
+    val embedUrl = gameId.fold("/hlv-app?embed=1")(id => s"/hlv-app/$id?embed=1")
+    Page("Giải thích ván (AI)"):
+      main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
+        iframe(
+          src := embedUrl,
+          st.frameborder := "0",
+          style := "width:100%;height:80vh;border:0;display:block;border-radius:14px;background:transparent"
         )
+      )
 
   def lag(using Context) =
     import trans.lag as trl
