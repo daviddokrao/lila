@@ -296,8 +296,12 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
   // xem Main.hlvCoachProxy). Trước đây iframe trỏ thẳng coach.hungkings.com (cross-origin)
   // nên bị một số extension chặn → khung hiện "ảnh vỡ" dù coach vẫn khoẻ. Same-origin thì
   // không quy tắc cross-origin nào chặn được, và KHÔNG cần nới CSP frame-src cho domain ngoài.
-  def hlvCoach(gameId: Option[String])(using Context) =
-    val embedUrl = gameId.fold("/hlv-app?embed=1")(id => s"/hlv-app/$id?embed=1")
+  def hlvCoach(gameId: Option[String])(using ctx: Context) =
+    // Truyền ngôn ngữ người dùng đang dùng trên site xuống coach: proxy hlvCoachProxy
+    // chuyển tiếp query string (KHÔNG chuyển Accept-Language), nên đây là cách duy nhất
+    // để coach nhúng biết viết tiếng gì. Coach hỗ trợ vi/en; mã khác coach tự lùi mặc định.
+    val lang     = ctx.lang.language
+    val embedUrl = gameId.fold(s"/hlv-app?embed=1&lang=$lang")(id => s"/hlv-app/$id?embed=1&lang=$lang")
     Page("Giải thích ván (AI)"):
       main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
         iframe(
