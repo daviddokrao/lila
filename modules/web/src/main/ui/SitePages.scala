@@ -6,7 +6,9 @@ import lila.ui.*
 
 import ScalatagsTemplate.{ *, given }
 
-final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
+// broadcastEnabled: broadcast tạm tắt bằng env LILA_BROADCAST (David chốt 06/08) — mọi route
+// relay đều 404, nên trang tài liệu không được dạy nhúng một tính năng đang không tồn tại.
+final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastEnabled: Boolean):
   import helpers.{ *, given }
   // Nhãn "Giới thiệu về X" phải đi theo net.site.name, đừng viết cứng: bản dịch
   // được thay thương hiệu lúc build, còn tham số truyền vào đây thì không — viết
@@ -183,28 +185,37 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
             )
           },
           br,
-          st.section(cls := "box box-pad developers", id := "broadcast") {
-            val args = """style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
+          // Mục broadcast chỉ hiện khi module còn bật: từ 06/08 broadcast ẩn toàn site
+          // (LILA_BROADCAST=false → mọi route relay + /embed/broadcast/* đều 404), giữ mục
+          // này là dạy webmaster nhúng một khung chắc chắn vỡ. Bật lại cờ là mục tự quay về.
+          broadcastEnabled.option(
             frag(
-              a(href := "#embed-broadcast")(
-                h1(cls := "box__top", id := "embed-broadcast")("Embed a broadcast in your site")
-              ),
-              div(cls := "body")(
-                // Iframe cũ TẢI THẬT một broadcast của Lichess (giải FIDE Rapid&Blitz 2024) vào
-                // trang này — đó là nội dung SỐNG của site khác chạy trên tên miền mình, không
-                // phải mẫu copy-paste. HungKings chưa có broadcast nào (BROADCAST-PLAN.md còn
-                // chờ duyệt) nên không có gì để chiếu thử; thay khung chiếu bằng đúng mẫu HTML,
-                // giống cách upstream vốn đã hướng dẫn ở câu ngay dưới.
-                p(
-                  "On a broadcast page, select the embed iframe code, then optionally add query parameters to customize the appearance."
-                ),
-                copyMeInput(s"""<iframe src="$netBaseUrl/embed/broadcast/<slug>/<roundId>" $args></iframe>"""),
-                parameters(),
-                p("The text is automatically translated to your visitor's language.")
-              )
+              st.section(cls := "box box-pad developers", id := "broadcast") {
+                val args = """style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
+                frag(
+                  a(href := "#embed-broadcast")(
+                    h1(cls := "box__top", id := "embed-broadcast")("Embed a broadcast in your site")
+                  ),
+                  div(cls := "body")(
+                    // Iframe cũ TẢI THẬT một broadcast của Lichess (giải FIDE Rapid&Blitz 2024) vào
+                    // trang này — đó là nội dung SỐNG của site khác chạy trên tên miền mình, không
+                    // phải mẫu copy-paste. HungKings chưa có broadcast nào nên không có gì để chiếu
+                    // thử; thay khung chiếu bằng đúng mẫu HTML, giống cách upstream vốn đã hướng
+                    // dẫn ở câu ngay dưới.
+                    p(
+                      "On a broadcast page, select the embed iframe code, then optionally add query parameters to customize the appearance."
+                    ),
+                    copyMeInput(
+                      s"""<iframe src="$netBaseUrl/embed/broadcast/<slug>/<roundId>" $args></iframe>"""
+                    ),
+                    parameters(),
+                    p("The text is automatically translated to your visitor's language.")
+                  )
+                )
+              },
+              br
             )
-          },
-          br,
+          ),
           st.section(cls := "box box-pad developers", id := "analysis") {
             val args = """style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
             // Iframe này TẢI THẬT bàn phân tích của lichess.org vào trang HungKings, và mẫu

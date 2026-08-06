@@ -16,10 +16,12 @@ object contact:
   def contactEmailLink(email: String)(using Translate) =
     bits.contactEmailLinkEmpty(email)(trans.site.clickToRevealEmailAddress())
 
-  def apply(contactEmail: EmailAddress, forumEnabled: Boolean)(using Translate): Frag =
+  def apply(contactEmail: EmailAddress, forumEnabled: Boolean, broadcastEnabled: Boolean)(using
+      Translate
+  ): Frag =
     frag(
       h1(cls := "box__top")(contactLichess()),
-      div(cls := "nav-tree")(renderNode(menu(contactEmail, forumEnabled), none))
+      div(cls := "nav-tree")(renderNode(menu(contactEmail, forumEnabled, broadcastEnabled), none))
     )
 
   private def reopenLeaf(prefix: String)(using Translate) =
@@ -53,7 +55,9 @@ object contact:
       p(howToReportBug())
     )
 
-  def menu(contactEmail: EmailAddress, forumEnabled: Boolean)(using Translate): Branch =
+  def menu(contactEmail: EmailAddress, forumEnabled: Boolean, broadcastEnabled: Boolean)(using
+      Translate
+  ): Branch =
     Branch(
       "root",
       whatCanWeHelpYouWith(),
@@ -275,6 +279,10 @@ object contact:
                 "if you are the original copyright holder, or an agent acting on behalf of the copyright holder, and believe HungKings is hosting work(s) you hold the copyright to."
               )
             ),
+          ) ::: broadcastEnabled.option(
+            // Broadcast ẩn toàn site từ 06/08 (LILA_BROADCAST=false) — còn mời người dùng
+            // "tôi muốn tiếp sóng giải đấu" là chỉ đường vào tính năng 404. Bật lại cờ là
+            // node tự quay về.
             Leaf(
               "contact-broadcast",
               broadcastTournamentOnLichess(),
@@ -288,7 +296,8 @@ object contact:
                 // Dùng sendEmailAt (khoá đã có sẵn) thay vì thêm khoá mới — ranh giới P0.8.
                 p(sendEmailAt(contactEmailLink(contactEmail.value)))
               )
-            ),
+            )
+          ).toList ::: List(
             Leaf(
               "authorize",
               authorizationToUse(),

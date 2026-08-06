@@ -4,7 +4,7 @@ import lila.app.UiEnv.{ *, given }
 import lila.cms.CmsPage
 
 val message = lila.web.ui.SiteMessage(helpers)
-val ui = lila.web.ui.SitePages(helpers, assetHelper)
+val ui = lila.web.ui.SitePages(helpers, assetHelper)(env.web.config.broadcastEnabled)
 
 object page:
 
@@ -30,7 +30,9 @@ object page:
       active = "contact",
       contentCls = "page box box-pad"
     ).css("bits.contact")
-      .js(esmInitBit("contact"))(lila.web.ui.contact(netConfig.email, env.web.config.forumEnabled))
+      .js(esmInitBit("contact"))(
+        lila.web.ui.contact(netConfig.email, env.web.config.forumEnabled, env.web.config.broadcastEnabled)
+      )
 
   def webmasters(using Context) =
     ui.webmasters(lila.pref.PieceSet.all.map(_.name))
