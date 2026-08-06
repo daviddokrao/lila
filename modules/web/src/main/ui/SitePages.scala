@@ -299,7 +299,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper):
     val embedUrl  = gameId.fold(s"$coachBase/?embed=1")(id => s"$coachBase/$id?embed=1")
     Page("Giải thích ván (AI)")
       .csp(csp => csp.copy(frameSrc = coachBase :: csp.frameSrc)):
-        main(style := "max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
+        main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
           iframe(
             src := embedUrl,
             st.frameborder := "0",
