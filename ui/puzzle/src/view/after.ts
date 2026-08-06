@@ -51,6 +51,14 @@ export default function (ctrl: PuzzleCtrl): VNode {
             i18n.puzzle[ctrl.streak ? 'continueTheStreak' : 'continueTraining'],
           ]),
           hl('div.puzzle__more', [
+            // Giải thích câu đố bằng AI (service coach, nhúng same-origin qua /hlv/puzzle).
+            // Chỉ hiện sau khi đã xong câu đố. Song ngữ tại chỗ theo lang tài liệu (không
+            // thêm khoá i18n — giữ ranh giới P0.8), giống signupNudge bên round.
+            hl(
+              'a.button.button-empty',
+              { attrs: { href: `/hlv/puzzle/${data.puzzle.id}`, target: '_blank', rel: 'noopener' } },
+              document.documentElement.lang.startsWith('vi') ? 'Giải thích câu đố (AI)' : 'Explain puzzle (AI)',
+            ),
             canPlayComputer
               ? hl('a.practice.button.button-empty', {
                   attrs: {

@@ -918,6 +918,7 @@ GET   /developers                      controllers.Main.webmasters
 # HLV AI (coach): trang lila có sidebar, nhúng service coach qua iframe SAME-ORIGIN /hlv-app.
 GET   /hlv                             controllers.Main.hlvCoachHome
 GET   /hlv/$id<[a-zA-Z0-9]{8,12}>      controllers.Main.hlvCoach(id: String)
+GET   /hlv/puzzle/$id<[a-zA-Z0-9]{5}>  controllers.Main.hlvCoachPuzzle(id: String)
 # Proxy same-origin sang container coach (stream cả SSE). Xem Main.hlvCoachProxy.
 # `*path` KHÔNG khớp chuỗi rỗng → iframe home dùng `/hlv-app` (không dấu / cuối, khớp route
 # exact), còn favicon/SSE/điều hướng luôn có segment phía sau nên khớp `*path`.

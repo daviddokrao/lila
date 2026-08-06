@@ -34,6 +34,9 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
   def hlvCoach(id: String) = Open:
     Ok.page(views.site.ui.hlvCoach(id.some))
 
+  def hlvCoachPuzzle(id: String) = Open:
+    Ok.page(views.site.ui.hlvCoachPuzzle(id))
+
   def hlvCoachHome = Open:
     Ok.page(views.site.ui.hlvCoach(none))
 
