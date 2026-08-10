@@ -40,6 +40,45 @@ final class PracticeUi(helpers: Helpers)(
   private def viEn(vi: String, en: String)(using t: Translate): String =
     if t.lang.language == "vi" then vi else en
 
+  // Tên + mô tả các bài luyện là DỮ LIỆU hiển thị thẳng ra trang, không đi qua khoá dịch
+  // nào, nên bản tiếng Việt trước đó đọc nguyên tiếng Anh ("Pin it to win it", "Use the
+  // fork, Luke"…). Dịch ở ĐÂY chứ không ở `PracticeSections` vì bên đó `name` sinh ra
+  // `slug` nằm trong URL và `PracticeStructure` được cache dùng chung cho mọi ngôn ngữ —
+  // dịch bên đó là làm URL đổi theo ngôn ngữ người xem. Tra theo study id nên đổi tên
+  // tiếng Anh ở nguồn cũng không vỡ bản dịch.
+  private val viStudy: Map[String, (String, String)] = Map(
+    "BJy6fEDf" -> ("Chiếu hết bằng quân nhẹ I", "Những thế chiếu hết cơ bản"),
+    "fE4k21MW" -> ("Các thế chiếu hết I", "Nhận ra thế cờ quen thuộc"),
+    "8yadFPpU" -> ("Các thế chiếu hết II", "Nhận ra thế cờ quen thuộc"),
+    "PDkQDt6u" -> ("Các thế chiếu hết III", "Nhận ra thế cờ quen thuộc"),
+    "96Lij7wH" -> ("Các thế chiếu hết IV", "Nhận ra thế cờ quen thuộc"),
+    "Rg2cMBZ6" -> ("Chiếu hết bằng quân nhẹ II", "Những thế chiếu hết khó"),
+    "ByhlXnmM" -> ("Chiếu hết bằng Mã và Tượng", "Bài học tương tác"),
+    "9ogFv8Ac" -> ("Đòn ghim", "Ghim được là thắng được"),
+    "tuoBxVE5" -> ("Đòn xiên", "Ép quân lớn né ra để ăn quân đứng sau"),
+    "Qj281y1p" -> ("Đòn chĩa đôi", "Một quân doạ hai mục tiêu cùng lúc"),
+    "MnsJEWnI" -> ("Đòn mở tuyến", "Gồm cả chiếu mở tuyến"),
+    "RUQASaZm" -> ("Chiếu đôi", "Một đòn cực mạnh"),
+    "o734CNqp" -> ("Quân quá tải", "Chúng phải gánh quá nhiều việc"),
+    "ITWY4GN2" -> ("Nước xen giữa", "Chen một nước trước khi đáp trả"),
+    "9cKgYrHb" -> ("Thế bí nước đi", "Buộc phải đi, mà đi nước nào cũng hỏng"),
+    "g1fxVZu9" -> ("Đòn cản đường", "Chen một quân vào giữa tuyến phòng thủ"),
+    "s5pLU7Of" -> ("Đòn thí Tượng h7", "Đòn thí kinh điển \"Món quà Hy Lạp\""),
+    "xebrDvFe" -> ("Ô then chốt", "Chiếm bằng được ô then chốt"),
+    "pt20yRkT" -> ("Tốt hàng 7 cánh Xe", "Chống lại quân Hậu"),
+    "MkDViieT" -> ("Tốt hàng 7 cánh Xe", "Khi Xe của bạn bị động"),
+    "9c6GrCTk" -> ("Tàn cuộc Xe cơ bản", "Lucena và Philidor"),
+    "Z1DKk4Rl" -> ("Tàn cuộc Xe thực chiến", "Tàn cuộc Xe với nhiều Tốt")
+  )
+
+  private val viSection: Map[String, String] = Map(
+    "checkmates" -> "Chiếu hết",
+    "fundamental-tactics" -> "Đòn chiến thuật cơ bản",
+    "advanced-tactics" -> "Đòn chiến thuật nâng cao",
+    "pawn-endgames" -> "Tàn cuộc Tốt",
+    "rook-endgames" -> "Tàn cuộc Xe"
+  )
+
   def index(data: lila.practice.UserPractice)(using ctx: Context) =
     Page(viEn("Luyện thế cờ", "Practice chess positions"))
       .css("bits.practice.index")
@@ -85,7 +124,10 @@ final class PracticeUi(helpers: Helpers)(
           div(cls := "page-menu__content practice-app")(
             data.structure.sections.map: section =>
               st.section(
-                h2(section.name),
+                h2(
+                  if ctx.lang.language == "vi" then viSection.getOrElse(section.id, section.name)
+                  else section.name
+                ),
                 div(cls := "studies")(
                   section.studies.map: stud =>
                     val prog = data.progressOn(stud.id)
@@ -106,8 +148,13 @@ final class PracticeUi(helpers: Helpers)(
                       ),
                       iconTag(cls := stud.id),
                       span(cls := "text")(
-                        h3(stud.name),
-                        p(stud.desc)
+                        {
+                          val tr = (ctx.lang.language == "vi").so(viStudy.get(stud.id.value))
+                          frag(
+                            h3(tr.fold(stud.name.value)(_._1)),
+                            p(tr.fold(stud.desc)(_._2))
+                          )
+                        }
                       ),
                       (!prog.complete).option(div(cls := "attention-effect"))
                     )

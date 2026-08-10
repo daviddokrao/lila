@@ -148,13 +148,13 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
           lila.ui.bits.pageMenuSubnav(
             allFreqs.map: f =>
               a(cls := freq.name.active(f.name), href := routes.Tournament.history(f.name))(
-                viTourName(nameOf(f))
+                freqLabel(f)
               )
           ),
           div(cls := "page-menu__content box")(
             boxTop(
               h1(
-                if ctx.lang.language == "vi" then frag("Giải ", viTourName(nameOf(freq)))
+                if ctx.lang.language == "vi" then frag("Giải ", freqLabel(freq))
                 else frag(nameOf(freq), " tournaments")
               )
             ),
@@ -251,6 +251,27 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
       )
 
   private def nameOf(f: Freq) = if f == Freq.Weekend then "Elite" else f.name
+
+  // Nhãn tần suất cho trang Lịch sử giải. KHÔNG dùng lại `viTourName` được: nó thay chuỗi
+  // theo khoá VIẾT HOA ("Daily") vì đầu vào của nó là TÊN GIẢI ("Daily HyperBullet"), còn
+  // `Freq.name` ở đây là chữ THƯỜNG ("daily") — bảng cũ không khớp một khoá nào và h1 hiện
+  // ra "Giải daily". (Bản tiếng Anh không lộ vì CSS `text-transform: capitalize` che.)
+  private val viFreqLabel: Map[String, String] = Map(
+    "unique" -> "Đặc biệt",
+    "marathon" -> "Marathon",
+    "shield" -> "Khiên",
+    "yearly" -> "Hàng năm",
+    "monthly" -> "Hàng tháng",
+    "Elite" -> "Ưu tú",
+    "weekly" -> "Hàng tuần",
+    "daily" -> "Hàng ngày",
+    "eastern" -> "Phương Đông",
+    "hourly" -> "Hàng giờ"
+  )
+
+  private def freqLabel(f: Freq)(using t: Translate): String =
+    val en = nameOf(f)
+    if t.lang.language == "vi" then viFreqLabel.getOrElse(en, en) else en
 
   private val allFreqs = List(
     Freq.Unique,

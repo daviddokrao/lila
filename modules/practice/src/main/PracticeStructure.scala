@@ -46,7 +46,11 @@ case class PracticeStudy(
 
 object PracticeStructure:
 
-  private[practice] val totalChapters = 233
+  // HungKings: hằng số này là MẪU SỐ của thanh "Tiến trình %". Upstream để 233 cho danh
+  // sách 32 bài của họ; danh sách của ta còn 22 bài (12 bài kia trỏ vào study không tồn
+  // tại — xem PracticeSections). Đếm thật trên DB: 240 chương. Để nguyên 233 thì thanh
+  // tiến trình vượt quá 100%; đây là con số duy nhất phải sửa kèm khi đổi danh sách bài.
+  private[practice] val totalChapters = 240
 
   private[practice] def studyIds: List[StudyId] = PracticeSections.list.flatMap(_.studies.map(_.id))
 

@@ -16,14 +16,17 @@ final class HttpRequestHandler(
     // HungKings: broadcast tạm tắt (env LILA_BROADCAST). Cùng cơ chế chặn với forum.
     broadcastEnabled: Boolean,
     // HungKings: trang bảo trợ tạm tắt (env LILA_PATRON). Cùng cơ chế chặn.
-    patronEnabled: Boolean
+    patronEnabled: Boolean,
+    // HungKings: thư viện video tạm tắt (env LILA_VIDEO). Cùng cơ chế chặn.
+    videoEnabled: Boolean
 ) extends DefaultHttpRequestHandler(() => router, errorHandler, configuration, filters)
     with lila.web.ResponseHeaders:
 
   override def routeRequest(request: RequestHeader): Option[Handler] =
     if request.method == "OPTIONS"
     then optionsHandler.some
-    else if isForumPath(request) || isBroadcastPath(request) || isPatronPath(request)
+    else if isForumPath(request) || isBroadcastPath(request) || isPatronPath(request) ||
+      isVideoPath(request)
     then forumOffHandler.some
     else router.handlerFor(request)
 
@@ -63,6 +66,16 @@ final class HttpRequestHandler(
       p == "/patron" || p.startsWith("/patron/") ||
       p.startsWith("/api/patron/") ||
       p.endsWith("/features")
+    }
+
+  // Cùng cơ chế: 8 route /video. Thư viện này là bộ video do LICHESS tuyển chọn — 546 bài
+  // "Opening" v.v., tiêu đề toàn tiếng Anh, và trang kéo ảnh thu nhỏ từ img.youtube.com.
+  // Tức một trang nội dung không phải của mình, không dịch, lại thêm phụ thuộc ngoài, và
+  // không có lối vào nào từ thanh điều hướng. `endsWith("/video")` bắt cả `/vi/video`.
+  private def isVideoPath(req: RequestHeader): Boolean =
+    !videoEnabled && {
+      val p = req.path
+      p.endsWith("/video") || p.contains("/video/")
     }
 
   // Trả về đúng trang 404 của lila khi request đủ điều kiện hiện trang lỗi (xem

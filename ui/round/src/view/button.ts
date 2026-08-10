@@ -73,6 +73,60 @@ function coachButton(ctrl: RoundController): VNode | false {
   );
 }
 
+// P1.7 — "Nhận xét nhanh của AI" NGAY trong trang ván.
+//
+// Vì sao ở đây: Game Review của chess.com được ưa chuộng vì nó nằm TRONG luồng, còn
+// nút "Giải thích ván (AI)" hiện tại là một cú nhảy sang trang khác. Một câu hiện tại
+// chỗ là đủ để người chơi thấy giá trị mà không phải rời trang.
+//
+// Ba ràng buộc đã cân nhắc:
+//  1. KHÔNG BAO GIỜ chặn hay làm hỏng trang ván. Fetch chạy sau khi node được chèn,
+//     mọi lỗi đều nuốt, và khối tự gỡ nếu không có nội dung.
+//  2. Gọi qua `/hlv-app` (proxy same-origin của lila) chứ không sang coach.hungkings.com
+//     — cross-origin bị extension chặn, đã trả giá hồi 06/08 (memory hlv-nhung-same-origin).
+//  3. Mỗi ván chỉ hỏi MỘT lần cho mỗi ngôn ngữ; coach cache lại nên vào lại là tức thì.
+const summaryAsked = new Set<string>();
+
+function aiSummary(ctrl: RoundController): VNode | false {
+  const d = ctrl.data;
+  if (!finished(d)) return false;
+  const gameId = d.game.id;
+  const vi = document.documentElement.lang.startsWith('vi');
+  const lang = vi ? 'vi' : 'en';
+  return hl('div.round-ai-summary', { key: 'ai-summary' }, [
+    hl(
+      'div.round-ai-summary__body',
+      {
+        hook: onInsert(el => {
+          const box = el.parentElement as HTMLElement | null;
+          const cacheKey = `${gameId}:${lang}`;
+          if (summaryAsked.has(cacheKey)) return;
+          summaryAsked.add(cacheKey);
+          fetch(`/hlv-app/api/summary/${gameId}?lang=${lang}`, { credentials: 'omit' })
+            .then(r => (r.ok ? r.json() : null))
+            .then(j => {
+              const text = j && typeof j.summary === 'string' ? j.summary.trim() : '';
+              // Không có câu nào (hết hạn mức, ván chưa đọc được…) thì gỡ hẳn khối đi.
+              // Một khung rỗng trông như trang hỏng, tệ hơn là không có khung nào.
+              if (!text) box?.remove();
+              else {
+                el.textContent = text;
+                box?.classList.add('ready');
+              }
+            })
+            .catch(() => box?.remove());
+        }),
+      },
+      hl('span.round-ai-summary__wait', vi ? 'HLV AI đang xem ván…' : 'AI coach is reading…'),
+    ),
+    hl(
+      'a.round-ai-summary__more',
+      { attrs: { href: `/hlv/${gameId}`, target: '_blank', rel: 'noopener' } },
+      vi ? 'Nghe giải đầy đủ →' : 'Full explanation →',
+    ),
+  ]);
+}
+
 // P1.1: mời đăng ký đúng "khoảnh khắc vàng" — khách ẩn danh vừa chơi xong ván.
 // Một dòng link trong follow-up, KHÔNG popup (danh giới đã chốt trong DECISIONS).
 function signupNudge(ctrl: RoundController): VNode | false {
@@ -317,6 +371,7 @@ export function followUp(ctrl: RoundController): VNode {
     analysisButton(ctrl),
     coachButton(ctrl),
     signupNudge(ctrl),
+    aiSummary(ctrl),
   ]);
 }
 
@@ -335,6 +390,7 @@ export function watcherFollowUp(ctrl: RoundController): LooseVNode {
       d.swiss && hl('a.fbt', { attrs: { href: '/swiss/' + d.swiss.id } }, i18n.site.viewTournament),
       analysisButton(ctrl),
       coachButton(ctrl),
+      aiSummary(ctrl),
     ];
   return content.find(x => !!x) && hl('div.follow-up', content);
 }

@@ -21,7 +21,9 @@ final class WebConfig(
     // HungKings: broadcast tạm tắt (env LILA_BROADCAST). Tắt = ẩn mọi lối vào + /broadcast 404.
     val broadcastEnabled: Boolean,
     // HungKings: trang bảo trợ tạm tắt (env LILA_PATRON). Tắt = /patron + /features 404.
-    val patronEnabled: Boolean
+    val patronEnabled: Boolean,
+    // HungKings: thư viện video tạm tắt (env LILA_VIDEO). Tắt = /video 404.
+    val videoEnabled: Boolean
 )
 
 object WebConfig:
@@ -52,7 +54,8 @@ object WebConfig:
       c.get[Boolean]("net.home.sidebar"),
       c.get[Boolean]("net.forum.enabled"),
       c.get[Boolean]("net.broadcast.enabled"),
-      c.get[Boolean]("net.patron.enabled")
+      c.get[Boolean]("net.patron.enabled"),
+      c.get[Boolean]("net.video.enabled")
     )
 
   def analyseEndpoints(c: Configuration) =
