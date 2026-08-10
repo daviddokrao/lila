@@ -67,7 +67,7 @@ Sitemap: ${net.baseUrl.value.stripSuffix("/")}/sitemap.xml
     "contact",
     "source",
     "terms-of-service",
-    "page/privacy",
+    "privacy",
     "developers",
     "login",
     "signup"

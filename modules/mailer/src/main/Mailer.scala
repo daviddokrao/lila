@@ -120,6 +120,17 @@ object Mailer:
   case class Config(primary: Smtp, secondary: Smtp)
   given ConfigLoader[Config] = AutoConfig.loader[Config]
 
+  // HungKings — CHAN CUA MOI EMAIL truoc day tro ve lichess.org: "Ghi chu tu lichess.org",
+  // "lien he lichess.org/contact", "chinh sach rieng tu lichess.org/privacy". Do la thu
+  // 16 nguoi di cu nhin thay trong chinh thu dat lai mat khau cua ho.
+  //
+  // `object txt` / `object html` la companion TINH, duoc goi tu ~17 cho, nen thay vi luon
+  // NetConfig qua tung chuoi goi thi Env dat mot lan luc khoi dong (setBaseUrl). Mac dinh
+  // van la domain hien tai de neu Env quen goi thi cung khong bao gio ro ra lichess.org.
+  private var siteBaseUrl: String = "https://hungkings.com"
+  def setBaseUrl(url: String): Unit = siteBaseUrl = url.stripSuffix("/")
+  def baseUrl: String = siteBaseUrl
+
   case class Message(
       to: EmailAddress,
       subject: String,
@@ -130,9 +141,9 @@ object Mailer:
   object txt:
 
     private def serviceNote(using Translate): String = s"""
-${trans.common_note("https://lichess.org").render}
+${trans.common_note(Mailer.baseUrl).render}
 
-${trans.common_contact("https://lichess.org/contact").render}"""
+${trans.common_contact(s"${Mailer.baseUrl}/contact").render}"""
 
     def addServiceNote(body: String)(using Translate) = s"""$body
 
@@ -150,14 +161,14 @@ $serviceNote"""
       div(itemprop := "potentialAction", itemscope, itemtype := "http://schema.org/ViewAction")
     def metaName(cont: String) = meta(itemprop := "name", content := cont)
     val publisher = div(itemprop := "publisher", itemscope, itemtype := "http://schema.org/Organization")
-    val noteContact = a(itemprop := "url", href := "https://lichess.org/contact")(
-      span(itemprop := "name")("lichess.org/contact")
+    def noteContact = a(itemprop := "url", href := s"${Mailer.baseUrl}/contact")(
+      span(itemprop := "name")(Mailer.baseUrl.replace("https://", "") + "/contact")
     )
 
-    private val noteLink = a(
+    private def noteLink = a(
       itemprop := "url",
-      href := "https://lichess.org/"
-    )(span(itemprop := "name")("lichess.org"))
+      href := s"${Mailer.baseUrl}/"
+    )(span(itemprop := "name")(Mailer.baseUrl.replace("https://", "")))
 
     def serviceNote(using Translate) =
       publisher(
@@ -167,7 +178,7 @@ $serviceNote"""
           trans.common_contact(noteContact),
           " ",
           lila.core.i18n.I18nKey.site.readAboutOur(
-            a(href := "https://lichess.org/privacy")(
+            a(href := s"${Mailer.baseUrl}/privacy")(
               lila.core.i18n.I18nKey.site.privacyPolicy()
             )
           )

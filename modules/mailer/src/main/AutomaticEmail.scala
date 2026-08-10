@@ -79,7 +79,7 @@ The HungKings team"""
       body = alsoSendAsPrivateMessage(user): _ =>
         s"""Hello,
 
-Thank you for confirming your $title title on Lichess.
+Thank you for confirming your $title title on HungKings.
 It is now visible on your profile page: ${routeUrl(routes.User.show(user.username))}.
 
 $regards
@@ -89,7 +89,7 @@ $regards
         mailer.sendOrSkip:
           Mailer.Message(
             to = email,
-            subject = s"$title title confirmed on lichess.org",
+            subject = s"$title title confirmed on hungkings.com",
             text = Mailer.txt.addServiceNote(body),
             htmlBody = standardEmail(body).some
           )
@@ -101,10 +101,10 @@ $regards
 
   def onBecomeCoach(user: User): Funit =
     sendAsPrivateMessageAndEmail(user)(
-      subject = _ => "Coach profile unlocked on lichess.org",
+      subject = _ => "Coach profile unlocked on hungkings.com",
       body = _ => s"""Hello,
 
-It is our pleasure to welcome you as a Lichess coach.
+It is our pleasure to welcome you as a HungKings coach.
 Your coach profile awaits you on ${routeUrl(routes.Coach.edit)}.
 
 $regards
@@ -132,7 +132,7 @@ $regards
   def onAppealReply(user: User): Funit =
     val url = routeUrl(routes.Appeal.home)
     sendAsPrivateMessageAndEmail(user)(
-      subject = _ => "Appeal response on lichess.org",
+      subject = _ => "Appeal response on hungkings.com",
       body = _ => s"""Hello,
 
 Your appeal has received a response from the moderation team, to see it click here: $url
@@ -154,7 +154,7 @@ $regards
       mailer.sendOrSkip:
         Mailer.Message(
           to = email,
-          subject = "lichess.org account deletion",
+          subject = "hungkings.com account deletion",
           text = Mailer.txt.addServiceNote(body),
           htmlBody = standardEmail(body).some
         )

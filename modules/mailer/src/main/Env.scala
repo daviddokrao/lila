@@ -21,6 +21,11 @@ final class Env(
 
   private val config = appConfig.get[Mailer.Config]("mailer")
 
+  // HungKings: chan cua MOI email tro ve site cua minh thay vi lichess.org. Doc thang
+  // `net.base_url` nen doi domain la thu tu dung theo, khong phai sua chuoi o cho nao.
+  // Xem ghi chu trong Mailer.scala ve ly do dung bien tinh thay vi luon config qua 17 cho.
+  Mailer.setBaseUrl(appConfig.get[String]("net.base_url"))
+
   lazy val canSendEmailsSetting = settingStore[Boolean](
     "canSendEmails",
     default = true,
