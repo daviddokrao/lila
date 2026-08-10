@@ -3679,6 +3679,8 @@ interface I18n {
     findBetterMoveForWhite: string;
     /** Finished */
     finished: string;
+    /** First move */
+    firstMove: string;
     /** Flair */
     flair: string;
     /** Flip board */
@@ -3853,6 +3855,8 @@ interface I18n {
     kingInTheCenter: string;
     /** Language */
     language: string;
+    /** Last move */
+    lastMove: string;
     /** Last post */
     lastPost: string;
     /** Active %s */
@@ -4083,6 +4087,8 @@ interface I18n {
     newTournament: string;
     /** Next */
     next: string;
+    /** Next move */
+    nextMove: string;
     /** No */
     no: string;
     /** No challenges. */
@@ -4265,6 +4271,8 @@ interface I18n {
     practiceWithComputer: string;
     /** Previously on HungKings TV */
     previouslyOnLichessTV: string;
+    /** Previous move */
+    previousMove: string;
     /** Ctrl or shift = red; command, alt, or meta = blue; a key from each = yellow. */
     primaryColorArrowsHowTo: string;
     /** Privacy */

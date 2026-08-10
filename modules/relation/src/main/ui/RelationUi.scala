@@ -100,15 +100,8 @@ final class RelationUi(helpers: Helpers):
                 Some("relation")
               )
             ),
-            (!blocked && !blocks && !user.isPatron).option:
-              val url = if me.isPatron then routes.Plan.list else routes.Plan.index()
-              MenuItem(
-                trans.patron.giftPatronWingsShort.txt(),
-                Icon.Wings,
-                s"$url?dest=gift&giftUsername=${user.name}",
-                Some("relation")
-              )
-            ,
+            // HungKings: bỏ mục "tặng Patron Wings" — mọi lối vào Donate đã gỡ từ 02/08,
+            // giữ lại đây thì menu hồ sơ dẫn tới trang không dùng đến. Backend Plan vẫn còn.
             relation
               .has(Relation.Follow)
               .option:

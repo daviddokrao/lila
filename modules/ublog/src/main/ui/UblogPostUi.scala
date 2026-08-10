@@ -116,10 +116,9 @@ final class UblogPostUi(helpers: Helpers, ui: UblogUi)(connectLinks: Frag, forum
             strong(cls := "ublog-post__intro")(post.intro),
             div(cls := "ublog-post__markup expand-text")(markup),
             post.isLichess.option(
-              div(cls := "ublog-post__lichess")(
-                connectLinks,
-                p(a(href := routes.Plan.index())(trans.site.lichessPatronInfo()))
-              )
+              // HungKings: bỏ dòng mời làm Patron (lối vào Donate cuối còn sót, xem 02/08).
+              // connectLinks giữ nguyên — nay chỉ còn link GitHub kho nguồn của fork.
+              div(cls := "ublog-post__lichess")(connectLinks)
             ),
             div(cls := "ublog-post__footer")(
               (forumEnabled && post.live && ~post.discuss && ctx.kid.no).option(

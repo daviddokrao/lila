@@ -122,9 +122,17 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
             table(cls := "slist slist-pad")(
               thead(
                 tr(
-                  th(colspan := 2, cls := "large")(trans.site.finished()),
-                  th(cls := "date"),
-                  th(cls := "players")
+                  // HungKings a11y: hai ô tiêu đề cuối vốn RỖNG (thiết kế cố ý không hiện chữ),
+                  // nên trình đọc màn hình không gắn được cột nào cho ~40 ô dữ liệu bên dưới
+                  // (axe `td-has-header` đòi tiêu đề CÓ TÊN, không chỉ có thẻ <th>).
+                  // Đặt tên qua aria-label + scope: giao diện không đổi một pixel.
+                  th(colspan := 2, cls := "large", attr("scope") := "col")(trans.site.finished()),
+                  th(cls := "date", attr("scope") := "col", aria("label") := viEn("Ngày", "Date")),
+                  th(
+                    cls := "players",
+                    attr("scope") := "col",
+                    aria("label") := viEn("Kỳ thủ", "Players")
+                  )
                 )
               ),
               ui.finishedList(finished)
@@ -282,7 +290,10 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
             li(
               userIdLink(w.userId.some),
               a(title := viTourName(w.tourName), href := routes.Tournament.show(w.tourId))(
-                viTourName(w.tourName).replace(" Marathon", "")
+                // Khối này đã có tiêu đề "Marathon" nên upstream cắt chữ đó khỏi tên giải;
+                // nhưng nó chỉ cắt kiểu "X Marathon", còn giải của ta tên "Marathon X"
+                // → hiện ra "Marathon Hyperbullet" thừa chữ. Cắt cả hai kiểu.
+                viTourName(w.tourName).replace(" Marathon", "").replace("Marathon ", "")
               )
             )
           }
