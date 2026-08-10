@@ -363,7 +363,11 @@ final class Team(env: Env) extends LilaController(env):
           Redirect(env.web.referrerRedirect.fromReq.fold(routes.Team.show(team.id).url)(_.value)).flashSuccess
         case Requesting.NeedRequest | Requesting.NeedPassword =>
           Redirect(routes.Team.requestForm(team.id)).flashSuccess
-        case _ => Redirect(routes.Team.show(team.id)).flashFailure("You cannot join this team.")
+        case _ =>
+          Redirect(routes.Team.show(team.id)).flashFailure(
+            if ctx.lang.language == "vi" then "Bạn không tham gia được đội này."
+            else "You cannot join this team."
+          )
 
   def requestProcess(requestId: String) = AuthBody { ctx ?=> me ?=>
     Found(for

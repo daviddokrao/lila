@@ -119,10 +119,17 @@ final class Streamer(env: Env, apiC: => Api) extends LilaController(env):
     val uid = streamer.id
     val redir = Redirect(routes.Streamer.show(uid).url)
     if !env.socket.isOnline.exec(uid)
-    then redir.flashFailure("That player is not currently online.")
+    then
+      redir.flashFailure(
+        if ctx.lang.language == "vi" then "Người này hiện không trực tuyến."
+        else "That player is not currently online."
+      )
     else
       for _ <- limit.streamerOnlineCheck(uid -> ctx.ip, rateLimited)(api.forceCheck(uid))
-      yield redir.flashSuccess(s"Please wait one minute while we check, then reload the page.")
+      yield redir.flashSuccess(
+        if ctx.lang.language == "vi" then "Đợi khoảng một phút để chúng tôi kiểm tra, rồi tải lại trang."
+        else "Please wait one minute while we check, then reload the page."
+      )
   }
 
   def onTwitchEventSub = AnonBodyOf(parse.tolerantText): body =>

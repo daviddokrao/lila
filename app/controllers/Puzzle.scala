@@ -93,8 +93,11 @@ final class Puzzle(env: Env, apiC: => Api) extends LilaController(env):
           _.fold(redirectNoPuzzle):
             renderShow(_, angle, langPath = LangPath(routes.Puzzle.home).some)
 
-  private def redirectNoPuzzle: Fu[Result] =
-    Redirect(routes.Puzzle.themes).flashFailure("No more puzzles available! Try another theme.")
+  private def redirectNoPuzzle(using ctx: Context): Fu[Result] =
+    Redirect(routes.Puzzle.themes).flashFailure(
+      if ctx.lang.language == "vi" then "Hết câu đố cho chủ đề này rồi! Bạn thử chủ đề khác nhé."
+      else "No more puzzles available! Try another theme."
+    )
 
   def complete(angleStr: String, id: PuzzleId) = OpenBody:
     NoBot:

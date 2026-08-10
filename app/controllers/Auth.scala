@@ -245,7 +245,10 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
 
   def clasLogin = OpenBody:
     Firewall:
-      val failRedir = Redirect(routes.Clas.index).flashFailure("Invalid or expired login code")
+      val failRedir = Redirect(routes.Clas.index).flashFailure(
+        if ctx.lang.language == "vi" then "Mã đăng nhập sai hoặc đã hết hạn"
+        else "Invalid or expired login code"
+      )
       bindForm(lila.clas.ClasForm.login)(
         _ => failRedir,
         code =>
@@ -447,7 +450,12 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
           // HungKings P1.2: tài khoản mới hạ cánh vào khu thi đấu trang chủ thay vì
           // trang hồ sơ RỖNG của chính mình (điểm đứt phễu — audit 03/08).
           Redirect(referrerOrUrl("/#hv2-play"))
-            .flashSuccess("Welcome! Your account is now active.")
+            // HungKings: dong nay la CAU DAU TIEN mot tai khoan moi nhin thay, ngay
+            // sau khi bam dang ky. Re theo ngon ngu tai cho — khong them khoa registry.
+            .flashSuccess(
+              if ctx.lang.language == "vi" then "Chào mừng bạn! Tài khoản đã sẵn sàng."
+              else "Welcome! Your account is now active."
+            )
       .recoverWith(authRecovery)
 
   def setFingerPrint(fp: String, ms: Int) = Auth { ctx ?=> me ?=>
