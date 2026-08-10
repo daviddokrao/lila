@@ -35,6 +35,11 @@ Sitemap: ${net.baseUrl.value.stripSuffix("/")}/sitemap.xml
    * Song ngữ: mỗi trang khai kèm `xhtml:link hreflang` cho vi/en/x-default, khớp với
    * hreflang lila đã phát trong `<head>` (LangPath) — hai nơi lệch nhau là lỗi SEO khó thấy.
    */
+  // Ký tự xuống dòng đặt thành hằng số và viết bằng mã unicode: viết escape thẳng trong
+  // chuỗi Scala mà đi qua vài lớp script thì rất dễ bị nuốt mất một lớp và biến thành
+  // xuống dòng THẬT giữa string literal (đã mất một vòng build vì đúng lỗi này).
+  private val newline = "\u000a"
+
   private val sitemapPaths = List(
     "",
     "training",
@@ -81,8 +86,7 @@ Sitemap: ${net.baseUrl.value.stripSuffix("/")}/sitemap.xml
     <xhtml:link rel="alternate" hreflang="en" href="$en"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="$loc"/>
   </url>"""
-      .mkString("
-")
+      .mkString(newline)
     s"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 $urls

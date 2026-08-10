@@ -20,6 +20,9 @@
 
       &__angle-img {
         height: 3.5rem;
+        // Khai width/height tren the <img> de khong bi day bo cuc; `width: auto` giu
+        // dung ti le anh vuong thay vi ep theo so 56 trong markup.
+        width: auto;
         margin-inline-end: 1vw;
       }
 

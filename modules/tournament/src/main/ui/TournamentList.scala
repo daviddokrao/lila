@@ -264,8 +264,10 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
       frag(trans.site.nbPlayers.plural(tour.nbPlayers, tour.nbPlayers.localize), " • ")
     else emptyFrag
 
+  // Bọc bằng `frag(...)` thay vì trả thẳng String: chuyển đổi String -> Frag ở VỊ TRÍ
+  // TRẢ VỀ không chắc bằng ở vị trí tham số, mà một lần compile hỏng là mất ~15 phút CI.
   private def firstInLine(using Translate): Frag =
-    viEn("Chưa có ai tham gia — vào trước đi!", "Nobody has joined yet — be the first!")
+    frag(viEn("Chưa có ai tham gia — vào trước đi!", "Nobody has joined yet — be the first!"))
 
   private def nameOf(f: Freq) = if f == Freq.Weekend then "Elite" else f.name
 

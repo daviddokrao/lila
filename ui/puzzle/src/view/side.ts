@@ -22,7 +22,12 @@ const angleImg = (angle: Angle): string => {
 const puzzleInfos = (ctrl: PuzzleCtrl): VNode => {
   const { puzzle, angle } = ctrl.data;
   return hl('div.infos.puzzle', [
-    hl('img.infos__angle-img', { attrs: { src: angleImg(angle), alt: angle.name } }),
+    // HungKings: khai width/height de trinh duyet dat cho TRUOC khi anh ve xong
+    // (Lighthouse `unsized-images` tren /training). Anh la SVG vuong, CSS van quyet
+    // dinh kich thuoc that (height: 3.5rem) — hai so nay chi cho ti le khung.
+    hl('img.infos__angle-img', {
+      attrs: { src: angleImg(angle), alt: angle.name, width: 56, height: 56 },
+    }),
     hl('div', [
       hl(
         'p',
