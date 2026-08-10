@@ -179,14 +179,23 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
       else s"${trans.site.accessibility.txt()} - ${trans.site.enableBlindMode.txt()}"
     def tutorialLink = ctx.blind.so:
       val url = routes.Cms.lonePage(lila.core.id.CmsPageKey("blind-mode-tutorial"))
-      s"""&nbsp;-&nbsp;${a(href := url)("Blind mode tutorial")}"""
+      // HungKings: nhãn này chỉ hiện khi đã bật chế độ mù — người cần nó nhất lại là
+      // người ít có khả năng đọc tiếng Anh nhất. Rẽ tại chỗ, không thêm khoá.
+      val label = if ctx.lang.language == "vi" then "Hướng dẫn chế độ mù" else "Blind mode tutorial"
+      s"""&nbsp;-&nbsp;${a(href := url)(label)}"""
 
     s"""<form id="blind-mode" action="${routes.Main.toggleBlindMode}" method="POST"><input type="hidden" name="enable" value="${
         if ctx.blind then 0 else 1
       }"><input type="hidden" name="redirect" value="${ctx.req.path}"><button id="nvui-button" type="submit">$btnText</button>$tutorialLink</form>"""
 
-  val assetsMissingTroubleshooting = raw:
-    """<h2 id="assets-missing"><a href="/page/network-administrators">Your network blocks the HungKings assets!</a></h2>"""
+  // HungKings — "đường thứ tư" (rẽ theo ctx.lang tại chỗ, KHÔNG thêm khoá registry).
+  // Câu này nằm trong DOM của MỌI trang (ẩn cho tới khi asset tải hỏng), nên khi nó
+  // hiện ra là đúng lúc người dùng đang bối rối nhất — bắt họ đọc tiếng Anh thì tệ.
+  def assetsMissingTroubleshooting(using t: Translate) =
+    val msg =
+      if t.lang.language == "vi" then "Mạng của bạn đang chặn tài nguyên của HungKings!"
+      else "Your network blocks the HungKings assets!"
+    raw(s"""<h2 id="assets-missing"><a href="/page/network-administrators">$msg</a></h2>""")
 
   def zenZone(using Translate) = spaceless:
     s"""

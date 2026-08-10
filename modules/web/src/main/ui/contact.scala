@@ -16,6 +16,11 @@ object contact:
   def contactEmailLink(email: String)(using Translate) =
     bits.contactEmailLinkEmpty(email)(trans.site.clickToRevealEmailAddress())
 
+  // HungKings — "đường thứ tư": vài nhánh của cây Liên hệ chưa bao giờ có khoá dịch ở
+  // upstream nên hiện tiếng Anh giữa một trang tiếng Việt. Rẽ tại chỗ, KHÔNG thêm khoá.
+  private def viEn(vi: String, en: String)(using t: Translate): String =
+    if t.lang.language == "vi" then vi else en
+
   def apply(contactEmail: EmailAddress, forumEnabled: Boolean, broadcastEnabled: Boolean)(using
       Translate
   ): Frag =
@@ -210,16 +215,16 @@ object contact:
             ),
             Leaf(
               "security",
-              "Security vulnerability",
+              viEn("Lỗ hổng bảo mật", "Security vulnerability"),
               // Trước đây trỏ security policy của lichess-org => lỗ hổng của HungKings
               // báo về đội bảo mật Lichess. Nay về hòm thư đã cấu hình (net.email).
               p(sendEmailAt(contactEmailLink(contactEmail.value)))
             ),
             Leaf(
               "other-bug",
-              "Other bug",
+              viEn("Lỗi khác", "Other bug"),
               frag(
-                p("If you found a new bug, you may report it:"),
+                p(viEn("Nếu bạn tìm ra một lỗi mới, hãy báo cho chúng tôi:", "If you found a new bug, you may report it:")),
                 howToReportBugs(contactEmail, forumEnabled)
               )
             )
@@ -264,19 +269,27 @@ object contact:
           List(
             Leaf(
               "gdpr",
-              "GDPR erasure",
+              viEn("Xoá dữ liệu theo GDPR", "GDPR erasure"),
               p(
-                "You may request the ",
-                a(href := routes.Account.delete)("complete deletion of your HungKings account.")
+                viEn("Bạn có quyền yêu cầu ", "You may request the "),
+                a(href := routes.Account.delete)(
+                  viEn(
+                    "xoá hoàn toàn tài khoản HungKings của bạn.",
+                    "complete deletion of your HungKings account."
+                  )
+                )
               )
             ),
             Leaf(
               "dmca",
-              "DMCA / Intellectual Property Take Down Notice",
+              viEn("Thông báo gỡ bỏ theo DMCA / quyền sở hữu trí tuệ", "DMCA / Intellectual Property Take Down Notice"),
               p(
-                a(href := "/dmca")("Complete this form"),
+                a(href := "/dmca")(viEn("Điền vào biểu mẫu này", "Complete this form")),
                 " ",
-                "if you are the original copyright holder, or an agent acting on behalf of the copyright holder, and believe HungKings is hosting work(s) you hold the copyright to."
+                viEn(
+                  "nếu bạn là chủ sở hữu bản quyền gốc, hoặc là người đại diện được uỷ quyền, và cho rằng HungKings đang lưu trữ tác phẩm mà bạn giữ bản quyền.",
+                  "if you are the original copyright holder, or an agent acting on behalf of the copyright holder, and believe HungKings is hosting work(s) you hold the copyright to."
+                )
               )
             ),
           ) ::: broadcastEnabled.option(
@@ -325,7 +338,12 @@ object contact:
             Leaf(
               "buy",
               buyingLichess(),
-              p("We are not selling, to anyone, for any price. Ever.")
+              p(
+                viEn(
+                  "Chúng tôi không bán, cho bất kỳ ai, với bất kỳ giá nào. Không bao giờ.",
+                  "We are not selling, to anyone, for any price. Ever."
+                )
+              )
             ),
             Leaf(
               "contact-other",

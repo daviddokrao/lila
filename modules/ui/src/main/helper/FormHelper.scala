@@ -94,13 +94,18 @@ trait FormHelper:
           else script(src := scriptUrl, deferAttr, async)
         frag(scriptTag, widget, div(cls := "cf-turnstile-error error none"))
 
-    def submit(content: Frag) =
+    // HungKings: chuỗi này hiện NGAY trên nút Đăng nhập/Đăng ký lúc bấm — đúng khoảnh
+    // khắc chuyển đổi quan trọng nhất của phễu. Rẽ theo ngôn ngữ tại chỗ (đường thứ tư),
+    // KHÔNG thêm khoá vào registry (ranh giới P0.8).
+    def submit(content: Frag)(using t: Translate) =
+      val verifying =
+        if t.lang.language == "vi" then " Đang xác minh thiết bị…" else " Verifying your device..."
       form3.submit(
         frag(
           span(cls := "button__ready")(content),
           span(cls := "button__verifying")(
             span(cls := "button__loader white")(HtmlHelper.spinner),
-            " Verifying your device..."
+            verifying
           )
         ),
         icon = none

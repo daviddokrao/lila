@@ -14,14 +14,17 @@ final class HttpRequestHandler(
     // HungKings: diễn đàn tạm tắt (env LILA_FORUM). Xem forumOffHandler bên dưới.
     forumEnabled: Boolean,
     // HungKings: broadcast tạm tắt (env LILA_BROADCAST). Cùng cơ chế chặn với forum.
-    broadcastEnabled: Boolean
+    broadcastEnabled: Boolean,
+    // HungKings: trang bảo trợ tạm tắt (env LILA_PATRON). Cùng cơ chế chặn.
+    patronEnabled: Boolean
 ) extends DefaultHttpRequestHandler(() => router, errorHandler, configuration, filters)
     with lila.web.ResponseHeaders:
 
   override def routeRequest(request: RequestHeader): Option[Handler] =
     if request.method == "OPTIONS"
     then optionsHandler.some
-    else if isForumPath(request) || isBroadcastPath(request) then forumOffHandler.some
+    else if isForumPath(request) || isBroadcastPath(request) || isPatronPath(request)
+    then forumOffHandler.some
     else router.handlerFor(request)
 
   // Chặn ở ĐÂY chứ không rải guard vào 3 controller Forum*: một chỗ duy nhất phủ hết
@@ -47,6 +50,19 @@ final class HttpRequestHandler(
       p.startsWith("/api/broadcast") ||
       p.startsWith("/api/stream/broadcast/") ||
       p.startsWith("/embed/broadcast/")
+    }
+
+  // Cùng cơ chế: 15 route của module plan (/patron*, /api/patron/*) + /features. Mọi nút
+  // Donate đã gỡ từ Mốc D nên trang "trở thành Người bảo trợ" là ngõ cụt: nó mời góp tiền
+  // mà không có cổng thanh toán nào phía sau, lại còn liệt kê tiền tệ như thể mua được.
+  // /features cũng tắt theo vì nó là bảng SO SÁNH "tài khoản miễn phí vs Người bảo trợ" —
+  // khoe một gói trả phí không tồn tại. Bật lại = LILA_PATRON=true + deploy, KHÔNG rebuild.
+  private def isPatronPath(req: RequestHeader): Boolean =
+    !patronEnabled && {
+      val p = req.path
+      p == "/patron" || p.startsWith("/patron/") ||
+      p.startsWith("/api/patron/") ||
+      p.endsWith("/features")
     }
 
   // Trả về đúng trang 404 của lila khi request đủ điều kiện hiện trang lỗi (xem

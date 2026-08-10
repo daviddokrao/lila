@@ -6,4 +6,18 @@
   .subnav {
     text-transform: capitalize;
   }
+
+  // HungKings: capitalize la de lam dep ten freq tieng Anh ("yearly" -> "Yearly"). Tren
+  // ban tieng Viet no bien "Hang nam" thanh "Hang Nam" — sai chinh ta. Chuoi tieng Viet
+  // da viet hoa dung san.
+  &:lang(vi) h1,
+  &:lang(vi) .subnav {
+    text-transform: none;
+  }
+  // HungKings a11y `td-has-header`: dai tieu de chi de screen reader gan duoc cot cho
+  // moi o du lieu — trang lich su von thiet ke KHONG co dai tieu de nhin thay duoc,
+  // nen giu an hoan toan ve mat nhin (giao dien khong doi mot pixel).
+  thead.visually-hidden {
+    @extend %visually-hidden;
+  }
 }

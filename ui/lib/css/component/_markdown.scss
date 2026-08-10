@@ -9,6 +9,14 @@
 ) {
   @extend %break-word;
 
+  // HungKings — a11y `link-name`: neo tieu de (flexmark AnchorLinkExtension) nay boc
+  // chinh chu tieu de nen link co ten cho screen reader. Giu y nguyen ve nhin: khong
+  // gach chan, khong doi mau. Ap cho MOI noi render markdown (blog, study, CMS...).
+  :is(h1, h2, h3, h4, h5, h6) > a {
+    color: inherit;
+    text-decoration: none;
+  }
+
   strong {
     font-weight: bold;
   }

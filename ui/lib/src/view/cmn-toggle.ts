@@ -35,8 +35,12 @@ export const cmnToggleProp = (opts: CmnToggleProp): VNode =>
     change: v => opts.prop(v),
   });
 
+// HungKings — a11y `aria-command-name` (Lighthouse fail cu tren /analysis): span boc
+// nay mang role="button" nhung KHONG co ten (label ben trong rong, chi de ve cong tac).
+// Control that su la <input type=checkbox> ben trong; span chi la vo trang tri. Bo
+// role di la het loi ma khong doi hanh vi — khong CSS nao bat theo [role=button].
 export const cmnToggle = (opts: CmnToggle): VNode =>
-  h('span.cmn-toggle', { attrs: { role: 'button' } }, [
+  h('span.cmn-toggle', [
     h(`input#cmn-tg-${opts.id}`, {
       attrs: { type: 'checkbox', checked: opts.checked, disabled: !!opts.disabled },
       on: {

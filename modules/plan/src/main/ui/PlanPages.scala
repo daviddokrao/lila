@@ -56,24 +56,16 @@ final class PlanPages(helpers: Helpers)(fishnetPerDay: Int):
                 trans.features.boardEditorAndAnalysisBoardWithEngine("Stockfish 16+ NNUE")
               ),
               tr(unlimited)(
-                a(href := "https://lichess.org/blog/WN-gLzAAAKlI89Xn/thousands-of-stockfish-analysers")(
-                  trans.features.cloudEngineAnalysis()
-                )
+                trans.features.cloudEngineAnalysis()
               ),
               tr(unlimited)(
-                a(href := "https://lichess.org/blog/WFvLpiQAACMA8e9D/learn-from-your-mistakes")(
-                  trans.site.learnFromYourMistakes()
-                )
+                trans.site.learnFromYourMistakes()
               ),
               tr(unlimited)(
-                a(href := "https://lichess.org/blog/V0KrLSkAAMo3hsi4/study-chess-the-lichess-way")(
-                  trans.features.studies()
-                )
+                a(href := routes.Study.allDefault())(trans.features.studies())
               ),
               tr(unlimited)(
-                a(href := "https://lichess.org/blog/VmZbaigAABACtXQC/chess-insights")(
-                  trans.features.chessInsights()
-                )
+                trans.features.chessInsights()
               ),
               tr(check)(
                 a(href := routes.Learn.index)(trans.features.allChessBasicsLessons())
@@ -113,7 +105,7 @@ final class PlanPages(helpers: Helpers)(fishnetPerDay: Int):
                 trans.features.tvForumBlogTeamsMessagingFriendsChallenges()
               ),
               tr(check)(
-                trans.site.availableInNbLanguages(a(href := "https://crowdin.com/project/lichess")("140+"))
+                trans.site.availableInNbLanguages("140+")
               ),
               tr(check)(
                 trans.features.lightOrDarkThemeCustomBoardsPiecesAndBackground()
@@ -140,7 +132,7 @@ final class PlanPages(helpers: Helpers)(fishnetPerDay: Int):
                 a(href := routes.Puzzle.home)(trans.features.tacticalPuzzlesFromUserGames())
               ),
               tr(check)(
-                trans.site.availableInNbLanguages(a(href := "https://crowdin.com/project/lichess")("100+"))
+                trans.site.availableInNbLanguages("100+")
               ),
               tr(check)(
                 trans.features.lightOrDarkThemeCustomBoardsPiecesAndBackground()

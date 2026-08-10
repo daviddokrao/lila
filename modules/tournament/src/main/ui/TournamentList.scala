@@ -140,21 +140,39 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
           )
         )
 
-  def history(freq: Freq, pager: Paginator[Tournament])(using Context) =
-    Page("Tournament history")
+  def history(freq: Freq, pager: Paginator[Tournament])(using ctx: Context) =
+    Page(viEn("Lịch sử giải đấu", "Tournament history"))
       .js(infiniteScrollEsmInit)
       .css("tournament.history"):
         main(cls := "page-menu arena-history")(
           lila.ui.bits.pageMenuSubnav(
             allFreqs.map: f =>
               a(cls := freq.name.active(f.name), href := routes.Tournament.history(f.name))(
-                nameOf(f)
+                viTourName(nameOf(f))
               )
           ),
           div(cls := "page-menu__content box")(
-            boxTop(h1(nameOf(freq), " tournaments")),
+            boxTop(
+              h1(
+                if ctx.lang.language == "vi" then frag("Giải ", viTourName(nameOf(freq)))
+                else frag(nameOf(freq), " tournaments")
+              )
+            ),
             div(cls := "arena-list")(
               table(cls := "slist slist-pad")(
+                // HungKings a11y `td-has-header`: bảng này KHÔNG có <thead> nào (chỉ tbody +
+                // infinite-scroll), nên axe không gắn được cột cho mọi ô dữ liệu. Dùng đúng
+                // cách đã vá /tournament hồi 10/08: dải tiêu đề ĐÚNG 4 cột của finishedList,
+                // đặt tên bằng aria-label + scope="col". Giữ ẩn về mặt nhìn (`visually-hidden`)
+                // vì trang lịch sử vốn thiết kế không có dải tiêu đề — không đổi một pixel.
+                thead(cls := "visually-hidden")(
+                  tr(
+                    th(attr("scope") := "col", aria("label") := viEn("Biểu tượng", "Icon")),
+                    th(attr("scope") := "col", aria("label") := viEn("Giải đấu", "Tournament")),
+                    th(attr("scope") := "col", aria("label") := viEn("Ngày", "Date")),
+                    th(attr("scope") := "col", aria("label") := viEn("Kỳ thủ", "Players"))
+                  )
+                ),
                 tbody(cls := "infinite-scroll")(
                   pager.currentPageResults.map(ui.finishedList.apply),
                   pagerNextTable(pager, p => routes.Tournament.history(freq.name, p).url)

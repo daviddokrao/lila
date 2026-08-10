@@ -29,6 +29,14 @@
     a:not(.button) {
       text-decoration: underline;
     }
+
+    // Neo tieu de (flexmark AnchorLinkExtension, WRAP_TEXT=true) boc chinh chu tieu de
+    // de link co ten cho screen reader (a11y `link-name`). Nguoi nhin phai thay y het
+    // truoc: khong gach chan, khong doi mau.
+    :is(h1, h2, h3, h4, h5, h6) > a {
+      color: inherit;
+      text-decoration: none;
+    }
   }
 
   &__content.box {

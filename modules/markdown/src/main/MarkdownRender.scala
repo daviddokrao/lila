@@ -94,7 +94,12 @@ final class MarkdownRender(
 
     // configurable
     if table then o.set(TablesExtension.CLASS_NAME, "slist")
-    if header then o.set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, false)
+    // HungKings — A11y `link-name` (Lighthouse fail cũ trên /about, và mọi trang CMS/blog
+    // có tiêu đề). WRAP_TEXT=false sinh ra `<h2><a href="#x" id="x"></a>Tiêu đề</h2>`:
+    // một liên kết RỖNG, screen reader đọc thành "liên kết" trống. WRAP_TEXT=true bọc
+    // chính chữ tiêu đề nên liên kết có tên. Giao diện giữ nguyên nhờ rule CSS ở
+    // `_page-menu.scss` / `_markdown.scss` (bỏ gạch chân + kế thừa màu cho a trong h1-h6).
+    if header then o.set(AnchorLinkExtension.ANCHORLINKS_WRAP_TEXT, true)
     else o.set(Parser.HEADING_PARSER, false)
     if !blockQuote then o.set(Parser.BLOCK_QUOTE_PARSER, false)
     if !list then o.set(Parser.LIST_BLOCK_PARSER, false)

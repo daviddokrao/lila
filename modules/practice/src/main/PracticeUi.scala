@@ -34,12 +34,21 @@ final class PracticeUi(helpers: Helpers)(
       .flag(_.zoom):
         main(cls := "analyse")
 
+  // HungKings — "đường thứ tư": rẽ theo ngôn ngữ ngay tại chỗ cho chuỗi hardcode tiếng
+  // Anh của upstream, KHÔNG thêm khoá vào registry (ranh giới P0.8). Trang này trước đó
+  // hiện 100% tiếng Anh trên bản tiếng Việt: tiêu đề tab, h1/h2, và lời mời đăng ký.
+  private def viEn(vi: String, en: String)(using t: Translate): String =
+    if t.lang.language == "vi" then vi else en
+
   def index(data: lila.practice.UserPractice)(using ctx: Context) =
-    Page("Practice chess positions")
+    Page(viEn("Luyện thế cờ", "Practice chess positions"))
       .css("bits.practice.index")
       .graph(
-        title = "Practice your chess",
-        description = "Learn how to master the most common chess positions",
+        title = viEn("Luyện thế cờ cùng HungKings", "Practice your chess"),
+        description = viEn(
+          "Học cách xử lý thuần thục những thế cờ hay gặp nhất.",
+          "Learn how to master the most common chess positions"
+        ),
         url = routeUrl(routes.Practice.index)
       ):
         main(cls := "page-menu force-ltr")(
@@ -51,8 +60,8 @@ final class PracticeUi(helpers: Helpers)(
                 src := assetUrl("images/practice/robot-golem.svg")
               ),
               div(cls := "practice-side__title")(
-                h1("Practice"),
-                h2("makes your chess perfect")
+                h1(trans.site.practice()),
+                h2(viEn("giúp cờ của bạn hoàn hảo", "makes your chess perfect"))
               )
             ),
             div(cls := "progress")(
@@ -67,7 +76,10 @@ final class PracticeUi(helpers: Helpers)(
                     title := trl.youWillLoseAllYourProgress.txt()
                   )(trl.resetMyProgress.txt())
                 )
-              else a(href := routes.Auth.signup)("Sign up to save your progress")
+              else
+                a(href := routes.Auth.signup)(
+                  viEn("Đăng ký để lưu tiến độ", "Sign up to save your progress")
+                )
             )
           ),
           div(cls := "page-menu__content practice-app")(

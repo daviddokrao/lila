@@ -117,10 +117,12 @@ class MarkdownTest extends munit.FunSuite:
         s"""<p>foo <div data-pgn="$chapterPgn" class="lpv--autostart is2d">$chapterUrl</div> bar</p>
 """
     )
+  // HungKings: neo tieu de nay BOC chu tieu de (ANCHORLINKS_WRAP_TEXT=true) de link co
+  // ten cho screen reader — truoc day la mot the <a> RONG, fail a11y `link-name`.
   test("anchorlink added for headings"):
     assertEquals(
       render(Markdown("# heading")),
-      Html("""<h1><a href="#heading" id="heading"></a>heading</h1>
+      Html("""<h1><a href="#heading" id="heading">heading</a></h1>
 """)
     )
 

@@ -178,11 +178,13 @@ final class StudyListUi(helpers: Helpers, bits: StudyBits):
           topic.value
         )
       ,
-      a(activeCls(StudyGroup.staffPicks), href := routes.Study.staffPicks)("Staff picks"),
-      a(
-        dataIcon := Icon.InfoCircle,
-        href := "/@/lichess/blog/study-chess-the-lichess-way/V0KrLSkA"
-      )(trs.whatAreStudies())
+      a(activeCls(StudyGroup.staffPicks), href := routes.Study.staffPicks)(
+        if ctx.lang.language == "vi" then "Ban biên tập chọn" else "Staff picks"
+      )
+      // HungKings: bỏ mục "Nghiên cứu là gì?" — nó trỏ cứng vào bài blog của tài khoản
+      // `lichess` (`/@/lichess/blog/study-chess-the-lichess-way/V0KrLSkA`). Tài khoản đó
+      // KHÔNG tồn tại trên fork này, nên mục ấy là một link 404 nằm ngay thanh điều hướng.
+      // Bật lại khi có bài giới thiệu Nghiên cứu của chính HungKings để trỏ vào.
     )
 
   def searchForm(placeholder: String, value: String, order: StudyOrder) =
