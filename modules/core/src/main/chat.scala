@@ -33,7 +33,11 @@ enum BusChan:
 object BusChan:
   type Select = BusChan.type => BusChan
 
-val etiquetteUrl = Url("lichess.org/page/chat-etiquette")
+// HungKings: URL nay hien trong LY DO bi cam chat gui cho nguoi dung. Truoc do tro
+// lichess.org (va trang do khong ton tai ben minh nen cung se 404 neu ai go theo).
+// Day la mot trong rat it cho con ghi cung ten mien: `modules/core` khong co NetConfig
+// va day la mot `val` tinh. Doi domain thi sua o DAY va o `Mailer.siteBaseUrl`.
+val etiquetteUrl = Url("hungkings.com/page/chat-etiquette")
 
 enum PublicSource(val typeName: String, val someId: Any):
   case Tournament(id: TourId) extends PublicSource("tournament", id)
@@ -72,7 +76,7 @@ object ResourceId extends OpaqueString[ResourceId]
 
 enum TimeoutReason(val key: String, val name: String):
   lazy val shortName = name.split(';').lift(0) | name
-  case PublicShaming extends TimeoutReason("shaming", "public shaming; please use lichess.org/report")
+  case PublicShaming extends TimeoutReason("shaming", "public shaming; please use hungkings.com/report")
   case Insult extends TimeoutReason("insult", s"disrespecting other players; see $etiquetteUrl")
   case Spam extends TimeoutReason("spam", s"spamming the chat; see $etiquetteUrl")
   case Other extends TimeoutReason("other", s"inappropriate behavior; see $etiquetteUrl")

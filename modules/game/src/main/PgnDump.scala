@@ -66,16 +66,22 @@ final class PgnDump(
   def player(p: Player, u: Option[LightUser]): String | UserName =
     p.aiLevel.fold(
       u.fold(p.nameSplit.map(_._1.value).orElse(p.name.map(_.value)) | UserName.anonymous)(_.name)
-    )("lichess AI level " + _)
+      // HungKings: ten doi thu may hien trong PGN cua MOI van danh voi may — truoc do
+      // ghi "lichess AI level 3". PGN la thu nguoi dung tai ve va dan di noi khac.
+    )("HungKings AI level " + _)
 
   private val customStartPosition: Set[chess.variant.Variant] =
     Set(chess.variant.Chess960, chess.variant.FromPosition, chess.variant.Horde, chess.variant.RacingKings)
 
   private def eventOf(game: Game) =
     val perf = game.perfType.nameKey
+    // HungKings: the [Event] cua PGN xuat ra tro cung sang lichess.org. Dung routeUrl
+    // (sinh tu net.base_url) nen doi domain la thu tu dung theo. Route cua tournament/simul
+    // khong nam trong module nay nen dung Call thu cong thay vi reverse router.
+    def absUrl(path: String) = routeUrl(play.api.mvc.Call("GET", path))
     game.tournamentId
-      .map(id => s"${game.rated.name} $perf tournament https://lichess.org/tournament/$id")
-      .orElse(game.simulId.map(id => s"$perf simul https://lichess.org/simul/$id"))
+      .map(id => s"${game.rated.name} $perf tournament ${absUrl(s"/tournament/$id")}")
+      .orElse(game.simulId.map(id => s"$perf simul ${absUrl(s"/simul/$id")}"))
       .getOrElse(s"${game.rated.name} $perf game")
 
   private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =

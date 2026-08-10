@@ -8,12 +8,15 @@ object MsgPreset:
 
   import lila.core.msg.MsgPreset as Msg
 
-  private val baseUrl = "https://lichess.org"
+  // HungKings: cac tin nhan he thong nay gui THANG cho nguoi dung. Ghi cung ten mien
+  // vi module msg khong co NetConfig; doi domain thi sua o day, o `chat.etiquetteUrl`
+  // va o `Mailer.siteBaseUrl`.
+  private val baseUrl = "https://hungkings.com"
 
   def maxFollow(username: UserName, max: Max) =
     Msg(
       name = "Follow limit reached!",
-      text = s"""Sorry, you can't follow more than $max players on Lichess.
+      text = s"""Sorry, you can't follow more than $max players on HungKings.
 To follow new players, you must first unfollow some on $baseUrl/@/$username/following.
 
 Thank you for your understanding."""
@@ -40,7 +43,7 @@ Thank you for your understanding."""
     def byBlogAuthor(user: UserName) = compose(by = s"The community blog author $user")
 
     private def compose(by: String)(reason: String, forumPost: String) =
-      s"""$by deleted the following of your posts for this reason: $reason. Please read Lichess' Forum-Etiquette: $baseUrl/page/forum-etiquette
+      s"""$by deleted the following of your posts for this reason: $reason. Please read the HungKings Forum Etiquette: $baseUrl/page/forum-etiquette
 ----
 $forumPost
     """
@@ -57,13 +60,13 @@ ${teamUrl}"""
       name = "Prize payout",
       text = s"""Congratulations on your finish in $tourName! $tourUrl
 
-Lichess is offering prizes to top finishers in this tournament, and your performance means you may be eligible for a prize.
+HungKings is offering prizes to top finishers in this tournament, and your performance means you may be eligible for a prize.
 
 Please visit $payoutsUrl to provide the necessary information for payout. The deadline for claiming prizes is $deadline."""
     )
 
   def apiTokenRevoked(url: String) =
-    s"""Your Lichess API token has been found on GitHub
+    s"""Your HungKings API token has been found on GitHub
 
 We detected one of your API tokens in a public code repository on GitHub at the following URL:
 

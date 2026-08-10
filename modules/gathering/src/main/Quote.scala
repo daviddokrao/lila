@@ -1644,11 +1644,15 @@ object Quote:
       "Sometimes I think I’ve created a Frankenstein’s monster with this [Elo] system because some of the young players become just like race track habitues who never really see a race; all they do is peruse the tote sheets.",
       "Arpad Elo"
     ),
-    // lichess facts
-    Quote("All features for free; for everyone; forever.", "lichess.org"),
-    Quote("We will never display ads.", "lichess.org"),
-    Quote("We do not track you. It's a rare feature, nowadays.", "lichess.org"),
-    Quote("Every chess player is a premium user.", "lichess.org"),
+    // HungKings: bốn câu này là KHẨU HIỆU của chính site, hiện trên trang giải đấu kèm
+    // dòng ghi nguồn. Để nguyên "lichess.org" thì trang giải của ta đi quảng cáo cho site
+    // khác; còn đổi mỗi dòng nguồn sang "HungKings" mà giữ nguyên câu chữ thì là nhận về
+    // mình lời của họ. Nên viết lại bằng lời của mình — và cả bốn đều là sự thật kiểm
+    // chứng được trên site này. Giữ tiếng Anh cho khớp với toàn bộ danh sách trích dẫn.
+    Quote("Every feature, free for everyone, with nothing held back.", "HungKings"),
+    Quote("No ads. Not now, not later.", "HungKings"),
+    Quote("We don't track you. That is rare these days.", "HungKings"),
+    Quote("There is no premium tier here. Everyone gets everything.", "HungKings"),
     Quote("I never lose. I either win or learn.", "Nelson Mandela")
   )
 
