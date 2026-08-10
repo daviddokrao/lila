@@ -5,12 +5,20 @@
 // `follow-up` của round) không bao giờ hiện ở đúng chỗ người ta xem lại ván. Khối này
 // bám vào `div.game__meta`, thứ có mặt ở CẢ trang phân tích lẫn trang ván đang chơi.
 //
-// Ba ràng buộc:
-//  1. KHÔNG BAO GIỜ làm hỏng trang ván. Không lấy được câu nào thì gỡ hẳn khối đi —
-//     một khung rỗng trông như trang lỗi, tệ hơn là không có khung.
-//  2. Gọi qua `/hlv-app` (proxy same-origin của lila), KHÔNG sang coach.hungkings.com:
-//     iframe/fetch cross-origin bị extension chặn, đã trả giá 06/08.
-//  3. Chỉ hỏi khi ván ĐÃ KẾT THÚC. Ván đang chơi thì chưa có gì để nhận xét.
+// ⚠️ Vì sao KHÔNG giữ tham chiếu DOM qua lời hứa fetch (đã trả giá, đo trên live):
+// `analyse/src/view/main.ts` làm `$(elm).replaceWith(ctrl.opts.$side)` khi dựng
+// `aside.analyse__side`. Sau cú đó, phần tử ta vừa `append` có thể thành **mồ côi** —
+// khối vẫn hiện trên trang (bản trong DOM) nhưng biến trong closure trỏ vào bản đã bị
+// tách ra, nên cập nhật chữ xong thì KHÔNG ai thấy: khối đứng mãi ở "Đang xem ván…".
+// Nên: lúc trả kết quả thì TRUY VẤN LẠI DOM, và cập nhật MỌI bản đang có.
+//
+// Hai ràng buộc khác:
+//  - KHÔNG BAO GIỜ làm hỏng trang ván: không có câu nào thì gỡ hẳn khối đi (khung rỗng
+//    trông như trang lỗi, tệ hơn là không có khung), và có hạn chờ để không treo mãi.
+//  - Gọi qua `/hlv-app` (proxy same-origin của lila), KHÔNG sang coach.hungkings.com:
+//    fetch/iframe cross-origin bị extension chặn, đã trả giá 06/08.
+
+const TIMEOUT_MS = 25_000;
 
 export function initModule(): void {
   const meta = document.querySelector<HTMLElement>('.game__meta');
@@ -39,15 +47,27 @@ export function initModule(): void {
   box.append(head, body, more);
   meta.append(box);
 
-  fetch(`/hlv-app/api/summary/${encodeURIComponent(gameId)}?lang=${lang}`, { credentials: 'omit' })
-    .then(r => (r.ok ? r.json() : null))
-    .then(j => {
-      const text: string = j && typeof j.summary === 'string' ? j.summary.trim() : '';
-      if (!text) box.remove();
+  // Truy vấn lại DOM thay vì dùng `box`/`body` ở trên — xem ghi chú mồ côi ở đầu tệp.
+  const apply = (text: string) => {
+    document.querySelectorAll<HTMLElement>('.game-ai-summary').forEach(el => {
+      if (!text) el.remove();
       else {
-        body.textContent = text;
-        box.classList.add('ready');
+        const p = el.querySelector<HTMLElement>('.game-ai-summary__body');
+        if (p) p.textContent = text;
+        el.classList.add('ready');
       }
-    })
-    .catch(() => box.remove());
+    });
+  };
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+
+  fetch(`/hlv-app/api/summary/${encodeURIComponent(gameId)}?lang=${lang}`, {
+    credentials: 'omit',
+    signal: ctrl.signal,
+  })
+    .then(r => (r.ok ? r.json() : null))
+    .then(j => apply(j && typeof j.summary === 'string' ? j.summary.trim() : ''))
+    .catch(() => apply(''))
+    .finally(() => clearTimeout(timer));
 }
