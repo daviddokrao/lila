@@ -73,7 +73,12 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
   def clinput(using ctx: Context) =
     val label = trans.search.search.txt()
     div(id := "clinput")(
-      a(cls := "link", dataIcon := Icon.Search),
+      // HungKings — SEO `crawlable-anchors` (audit DUY NHẤT còn fail, kéo SEO xuống 92
+      // trên MỌI trang): đây là <a> KHÔNG có href, dùng làm nút mở ô tìm kiếm chứ không
+      // dẫn đi đâu. Nó vốn không phải liên kết, nên đổi hẳn sang <button> — vừa hết audit,
+      // vừa đúng ngữ nghĩa cho trình đọc màn hình (kèm aria-label để có tên).
+      // Đổi kèm ở: topBar.ts (`$wrap.find('button')`) và _clinput.scss (`> button`).
+      button(tpe := "button", cls := "link", dataIcon := Icon.Search, aria.label := label),
       input(
         spellcheck := "false",
         autocomplete := ctx.blind.toString,

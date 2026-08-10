@@ -999,6 +999,8 @@ GET   /assets/*file                    controllers.ExternalAssets.at(path="publi
 
 GET   /manifest.json                   controllers.Main.manifest
 GET   /robots.txt                      controllers.Main.robots
+# HungKings: sitemap cho Search Console (P2.3). Chi liet ke trang cong khai on dinh.
+GET   /sitemap.xml                     controllers.Main.sitemap
 
 GET   /mobile                          controllers.Main.mobile
 GET   /$lang<\w\w\w?>/mobile           controllers.Main.mobileLang(lang: Language)

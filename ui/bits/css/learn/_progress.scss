@@ -4,7 +4,10 @@
   position: relative;
   height: 30px;
   color: $c-over;
-  background: #1a7edb;
+  // HungKings a11y `color-contrast`: chu trang tren #1a7edb chi dat 4.15:1 (can 4.5).
+  // Toi mau xanh vua du de qua nguong ma gan nhu khong doi ve nhin: #1a75d0 = 4.67:1.
+  // Thanh nay dung chung o /practice va /learn nen sua mot cho la qua ca hai.
+  background: #1a75d0;
   box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.1);
   overflow: hidden;
 }

@@ -11,6 +11,51 @@
     padding-bottom: 0.8rem;
   }
 
+  // HungKings P1.7 — "Nhan xet nhanh cua HLV AI" (bits.aiSummary chen vao cuoi khoi).
+  // La thu TRANG TRI them: no tu go minh neu coach khong tra cau nao, nen o day chi lo
+  // phan nhin. Mo di khi dang cho de no khong "keu" hon thong tin van that.
+  .game-ai-summary {
+    display: flex;
+    flex-flow: column;
+    gap: 0.35em;
+    border-top: $border;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-inline-start: 3px solid $c-secondary;
+    padding-inline-start: 0.8em;
+    opacity: 0.72;
+    transition: opacity 0.2s;
+
+    &.ready {
+      opacity: 1;
+    }
+
+    &__head {
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: $c-font-dim;
+      margin: 0;
+    }
+
+    &__body {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    &__more {
+      align-self: flex-end;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .game-ai-summary {
+      transition: none;
+    }
+  }
+
   &__infos {
     @extend %flex-center-nowrap;
 

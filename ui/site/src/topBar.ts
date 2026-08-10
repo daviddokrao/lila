@@ -252,7 +252,10 @@ export default function () {
         $('body').addClass('clinput');
       },
     });
-    $wrap.find('a').on({
+    // Nut mo o tim kiem la <button> (truoc la <a> khong href — fail crawlable-anchors).
+    // Chon theo 'button' chu khong phai 'a': ket qua goi y trong dropdown CUNG nam trong
+    // #clinput va deu la the <a>, chon 'a' se gan nham handler vao ca chung.
+    $wrap.find('button').on({
       mouseover: boot,
       click() {
         $('body').hasClass('clinput') ? $input[0]!.blur() : $input[0]!.focus();

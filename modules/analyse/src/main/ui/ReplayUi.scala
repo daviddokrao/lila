@@ -87,6 +87,10 @@ final class ReplayUi(helpers: Helpers)(analyseUi: AnalyseUi):
       .i18nOpt(ctx.speechSynthesis, _.nvui)
       .i18nOpt(ctx.blind, _.keyboardMove, _.nvui)
       .js(analyseNvuiTag)
+      // HungKings P1.7: khối "Nhận xét nhanh của HLV AI" trong bảng thông tin ván. Bám
+      // vào `div.game__meta` (do views.game.side dựng) nên chạy được ở CẢ trang phân tích
+      // lẫn trang ván; tự bỏ qua nếu ván chưa kết thúc hoặc coach không trả câu nào.
+      .js(esmInit("bits.aiSummary"))
       .js:
         analyseUi.bits.analyseModule(
           "replay",

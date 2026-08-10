@@ -32,7 +32,13 @@ def meta(
 )(using ctx: Context): Option[Frag] =
   ctx.noBlind.option:
     import pov.*
-    div(cls := "game__meta")(
+    div(
+      cls := "game__meta",
+      // HungKings P1.7 — mã ván cho khối "Nhận xét nhanh của HLV AI" (bits.aiSummary).
+      // Chỉ gắn khi ván ĐÃ KẾT THÚC: ván đang chơi thì chưa có gì để nhận xét, và khối
+      // sẽ tự bỏ qua khi không thấy thuộc tính này.
+      game.finished.option(attrData("ai-summary-game") := game.id.value)
+    )(
       st.section(
         div(cls := "game__meta__infos", dataIcon := ui.gameIcon(game))(
           div(cls := "header")(

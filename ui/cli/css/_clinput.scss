@@ -25,9 +25,19 @@
   }
 
   &:has(input:focus) {
-    > a {
+    > button {
       color: $c-primary;
     }
+  }
+
+  // Nut mo o tim kiem: truoc day la <a> nen khong can reset gi; <button> thi phai.
+  > button.link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
   }
 }
 

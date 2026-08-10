@@ -48,6 +48,8 @@ def player(
 
   ui.RoundPage(pov.game.variant, s"${trans.site.play.txt()} $opponentNameOrZen")
     .js(roundNvuiTag)
+    // HungKings P1.7: khối "Nhận xét nhanh của HLV AI" (xem ReplayUi cho lý do).
+    .js(esmInit("bits.aiSummary"))
     .js:
       PageModule(
         "round",

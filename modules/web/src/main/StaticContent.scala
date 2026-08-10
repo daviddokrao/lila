@@ -9,7 +9,9 @@ import lila.core.config.NetConfig
 
 object StaticContent:
 
-  val robotsTxt = """User-agent: *
+  // HungKings: nhận `net` để khai dòng `Sitemap:` bằng ĐÚNG baseUrl đang chạy. Hardcode
+  // tên miền ở đây là thứ sẽ âm thầm sai ngay lần đổi domain kế tiếp (đã đổi 1 lần rồi).
+  def robotsTxt(net: NetConfig) = s"""User-agent: *
 Allow: /
 Disallow: /game/export/
 Disallow: /games/export/
@@ -17,6 +19,74 @@ Disallow: /api/
 Disallow: /opening/config/
 Disallow: /study/search
 Allow: /game/export/gif/thumbnail/
+
+Sitemap: ${net.baseUrl.value.stripSuffix("/")}/sitemap.xml
+"""
+
+  /**
+   * HungKings — sitemap.xml (P2.3). Chỉ liệt kê các trang CÔNG KHAI, ỔN ĐỊNH và có nội
+   * dung thật; cố ý KHÔNG liệt kê trang sinh động (ván, hồ sơ, giải cụ thể) vì chúng đổi
+   * liên tục và Google tự tìm qua liên kết.
+   *
+   * Chỉ khai những đường CÒN SỐNG: các tính năng đã tắt theo cờ (/forum, /broadcast,
+   * /patron, /features, /video) đều 404, khai vào sitemap là tự nộp lỗi cho Search Console.
+   * Bật lại cờ nào thì thêm lại dòng đó ở đây.
+   *
+   * Song ngữ: mỗi trang khai kèm `xhtml:link hreflang` cho vi/en/x-default, khớp với
+   * hreflang lila đã phát trong `<head>` (LangPath) — hai nơi lệch nhau là lỗi SEO khó thấy.
+   */
+  private val sitemapPaths = List(
+    "",
+    "training",
+    "training/themes",
+    "storm",
+    "racer",
+    "streak",
+    "learn",
+    "practice",
+    "analysis",
+    "study",
+    "editor",
+    "tournament",
+    "tournament/calendar",
+    "tournament/leaderboard",
+    "swiss",
+    "player",
+    "team",
+    "games",
+    "streamer",
+    "simul",
+    "hlv",
+    "about",
+    "faq",
+    "contact",
+    "source",
+    "terms-of-service",
+    "page/privacy",
+    "developers",
+    "login",
+    "signup"
+  )
+
+  def sitemapXml(net: NetConfig): String =
+    val base = net.baseUrl.value.stripSuffix("/")
+    val urls = sitemapPaths
+      .map: path =>
+        val loc = if path.isEmpty then s"$base/" else s"$base/$path"
+        val vi = if path.isEmpty then s"$base/vi" else s"$base/vi/$path"
+        val en = if path.isEmpty then s"$base/en" else s"$base/en/$path"
+        s"""  <url>
+    <loc>$loc</loc>
+    <xhtml:link rel="alternate" hreflang="vi" href="$vi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="$en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="$loc"/>
+  </url>"""
+      .mkString("
+")
+    s"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+$urls
+</urlset>
 """
 
   def manifest(net: NetConfig) =

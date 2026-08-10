@@ -109,8 +109,15 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
       // (LILA_CRAWLABLE, mặc định false) + đúng domain chuẩn — đủ và tường minh. Máy dev
       // và upstream để crawlable=false nên vẫn trả Disallow như cũ.
       if env.net.crawlable && req.domain == env.net.domain.value
-      then StaticContent.robotsTxt
+      then StaticContent.robotsTxt(env.net)
       else "User-agent: *\nDisallow: /"
+
+  // HungKings: sitemap.xml (P2.3). Cùng cổng opt-in với robots.txt — site nào đang
+  // Disallow toàn bộ thì nộp sitemap là mâu thuẫn, nên 404 luôn cho gọn.
+  val sitemap = Anon:
+    if env.net.crawlable && req.domain == env.net.domain.value
+    then Ok(StaticContent.sitemapXml(env.net)).as("application/xml")
+    else NotFound("")
 
   def manifest = Anon:
     JsonOk:

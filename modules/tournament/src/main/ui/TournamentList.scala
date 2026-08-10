@@ -218,8 +218,7 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
                 frag(
                   span(cls := "headline")(spot.headline),
                   span(cls := "more")(
-                    trans.site.nbPlayers.plural(tour.nbPlayers, tour.nbPlayers.localize),
-                    " • ",
+                    playersOrInvite(tour),
                     if tour.isStarted then timeRemaining(tour.finishesAt)
                     else momentFromNow(tour.startsAt)
                   )
@@ -242,13 +241,31 @@ final class TournamentList(helpers: Helpers, ui: TournamentUi)(
               )
             ),
             span(cls := "more")(
-              trans.site.nbPlayers.plural(tour.nbPlayers, tour.nbPlayers.localize),
-              " • ",
-              if tour.isStarted then trans.site.eventInProgress() else momentFromNow(tour.startsAt)
+              // Giải chưa ai tham gia: câu mời thay cho "0 kỳ thủ • Đang diễn ra".
+              if tour.nbPlayers == 0 && tour.isStarted then firstInLine
+              else
+                frag(
+                  playersOrInvite(tour),
+                  if tour.isStarted then trans.site.eventInProgress()
+                  else momentFromNow(tour.startsAt)
+                )
             )
           )
         )
       )
+
+  // HungKings — nguyên tắc "số nhỏ tệ hơn không có số" (NANG-CAP-DANG-CAP §1). Bốn giải
+  // nổi bật trên trang chủ đều in "0 kỳ thủ • Đang diễn ra": với khách lần đầu, đó là bốn
+  // lần khẳng định site vắng tanh, ngay khối trên màn hình đầu tiên. Khi CHƯA có ai tham
+  // gia thì thay con số bằng LỜI MỜI — vẫn trung thực (không bịa số), mà đúng việc cần
+  // làm: rủ họ là người đầu tiên. Có người rồi thì hiện số thật như cũ.
+  private def playersOrInvite(tour: Tournament)(using Translate): Frag =
+    if tour.nbPlayers > 0 then
+      frag(trans.site.nbPlayers.plural(tour.nbPlayers, tour.nbPlayers.localize), " • ")
+    else emptyFrag
+
+  private def firstInLine(using Translate): Frag =
+    viEn("Chưa có ai tham gia — vào trước đi!", "Nobody has joined yet — be the first!")
 
   private def nameOf(f: Freq) = if f == Freq.Weekend then "Elite" else f.name
 

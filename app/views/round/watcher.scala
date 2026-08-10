@@ -31,6 +31,8 @@ def watcher(
 
   ui.RoundPage(pov.game.variant, s"${gameVsText(pov.game, withRatings = ctx.pref.showRatings)} • spectator")
     .js(roundNvuiTag)
+    // HungKings P1.7: khối "Nhận xét nhanh của HLV AI" (xem ReplayUi cho lý do).
+    .js(esmInit("bits.aiSummary"))
     .js(
       PageModule(
         "round",
