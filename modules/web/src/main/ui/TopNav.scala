@@ -8,7 +8,15 @@ import ScalatagsTemplate.{ *, given }
 // forumEnabled: diễn đàn tạm tắt bằng env LILA_FORUM (David chốt 04/08). Route đã bị
 // chặn ở HttpRequestHandler; ở đây chỉ ẩn lối vào để không mời người dùng bấm vào 404.
 // broadcastEnabled: broadcast tạm tắt bằng env LILA_BROADCAST (David chốt 06/08) — tương tự.
-final class TopNav(helpers: Helpers)(forumEnabled: Boolean, broadcastEnabled: Boolean):
+// pointsEnabled: hệ điểm tích luỹ + đổi quà + giới thiệu 33% (env LILA_POINTS).
+// Đây là lối vào DUY NHẤT tới /diem trong Phase 1 — huy hiệu điểm động trên thanh
+// đầu trang để sang Phase 2 (nó cần thêm một module JS + bundle CSS mới, tức thêm
+// rủi ro cho một vòng build vốn đã dài).
+final class TopNav(helpers: Helpers)(
+    forumEnabled: Boolean,
+    broadcastEnabled: Boolean,
+    pointsEnabled: Boolean
+):
   import helpers.{ *, given }
 
   private def linkTitle(url: String, name: Frag)(using ctx: Context) =
@@ -86,6 +94,14 @@ final class TopNav(helpers: Helpers)(forumEnabled: Boolean, broadcastEnabled: Bo
           a(href := routes.User.list)(trans.site.players()),
           ctx.me.map(me => a(href := routes.Relation.following(me.username))(trans.site.friends())),
           a(href := routes.Team.home())(trans.team.teams()),
+          // Song ngữ tại chỗ theo tiền lệ đã dùng nhiều lần: KHÔNG thêm khoá vào
+          // registry i18n của lila (ranh giới P0.8), vì đây là chuỗi riêng của
+          // HungKings chứ không phải chuỗi upstream.
+          pointsEnabled.option(
+            a(href := routes.Main.pointsHome)(
+              if ctx.lang.language == "vi" then "Điểm thưởng" else "Points"
+            )
+          ),
           (forumEnabled && ctx.kid.no).option(a(href := routes.ForumCateg.index)(trans.site.forum())),
           ctx.kid.no.option(a(href := langHref(routes.Ublog.communityAll()))(trans.site.blog()))
         )

@@ -928,6 +928,19 @@ GET   /hlv/puzzle/$id<[a-zA-Z0-9]{5}>  controllers.Main.hlvCoachPuzzle(id: Strin
 # exact), còn favicon/SSE/điều hướng luôn có segment phía sau nên khớp `*path`.
 GET   /hlv-app                         controllers.Main.hlvCoachProxy(path = "")
 GET   /hlv-app/*path                   controllers.Main.hlvCoachProxy(path: String)
+
+# HungKings: HỆ ĐIỂM tích luỹ + đổi quà + giới thiệu 33%. Gác sau cờ LILA_POINTS
+# (mặc định TẮT — mọi route dưới đây trả 404 khi tắt).
+GET   /diem                            controllers.Main.pointsHome
+GET   /cua-hang                        controllers.Main.pointsShopHome
+# Link mời: đặt cookie hk_ref rồi chuyển về trang chủ. Mã sinh từ userId nên chỉ
+# gồm chữ HOA + số, không có ký tự dễ nhìn nhầm (bỏ I, O, 0, 1).
+GET   /r/$code<HK[A-Z2-9]{5}>          controllers.Main.pointsReferral(code: String)
+# Proxy same-origin sang container hệ điểm. POST cần cho việc đổi quà — proxy coach
+# chỉ có GET, xem Main.streamProxy. Cùng bẫy `*path` không khớp rỗng như /hlv-app.
+GET   /diem-app                        controllers.Main.pointsProxy(path = "")
+GET   /diem-app/*path                  controllers.Main.pointsProxy(path: String)
+POST  /diem-app/*path                  controllers.Main.pointsProxyPost(path: String)
 GET   /app                             controllers.Main.app
 GET   /app-store                       controllers.Main.redirectToAppStore
 GET   /$lang<\w\w\w?>/app              controllers.Main.appLang(lang: Language)

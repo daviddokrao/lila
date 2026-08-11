@@ -23,7 +23,11 @@ final class WebConfig(
     // HungKings: trang bảo trợ tạm tắt (env LILA_PATRON). Tắt = /patron + /features 404.
     val patronEnabled: Boolean,
     // HungKings: thư viện video tạm tắt (env LILA_VIDEO). Tắt = /video 404.
-    val videoEnabled: Boolean
+    val videoEnabled: Boolean,
+    // HungKings: hệ điểm tích luỹ + đổi quà + giới thiệu 33% (env LILA_POINTS).
+    // Mặc định TẮT. Tắt = /diem + /cua-hang + /diem-app + /r/<mã> đều 404 và
+    // huy hiệu điểm trên header không hiện. Bật lại = env + deploy, KHÔNG rebuild.
+    val pointsEnabled: Boolean
 )
 
 object WebConfig:
@@ -55,7 +59,8 @@ object WebConfig:
       c.get[Boolean]("net.forum.enabled"),
       c.get[Boolean]("net.broadcast.enabled"),
       c.get[Boolean]("net.patron.enabled"),
-      c.get[Boolean]("net.video.enabled")
+      c.get[Boolean]("net.video.enabled"),
+      c.get[Boolean]("net.points.enabled")
     )
 
   def analyseEndpoints(c: Configuration) =

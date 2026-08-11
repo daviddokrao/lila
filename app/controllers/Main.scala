@@ -54,24 +54,126 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
   private val coachInternalUrl =
     sys.env.getOrElse("LILA_COACH_INTERNAL_URL", "http://hungkings-coach-web:8090")
 
-  def hlvCoachProxy(path: String) = Anon:
-    val qs     = ctx.req.rawQueryString
-    val target = s"$coachInternalUrl/$path" + (if qs.nonEmpty then s"?$qs" else "")
-    env.web.ws
+  private def pointsInternalUrl = Main.pointsInternalUrl
+
+  /**
+   * Proxy dung chung cho ca coach (/hlv-app) lan he diem (/diem-app).
+   *
+   * `withFollowRedirects(false)` la BAT BUOC: he diem dung mau POST -> 303 ->
+   * GET de nap lai trang sau khi doi qua khong doi them lan nua. Neu WS tu di
+   * theo redirect thi trinh duyet khong bao gio thay 303, va URL tren thanh dia
+   * chi ket lai o /redeem — nap lai trang la doi qua lan hai.
+   */
+  private def streamProxy(
+      baseUrl: String,
+      basePath: String,
+      path: String,
+      method: String,
+      body: Option[(String, String)],
+      extraHeaders: List[(String, String)]
+  )(using req: RequestHeader): Fu[Result] =
+    val qs     = req.rawQueryString
+    val target = s"$baseUrl/$path" + (if qs.nonEmpty then s"?$qs" else "")
+    val base = env.web.ws
       .url(target)
-      .withMethod("GET")
+      .withMethod(method)
+      .withFollowRedirects(false)
       .addHttpHeaders(
-        "X-Base-Path"     -> "/hlv-app",
-        "X-Forwarded-For" -> lila.common.HTTPRequest.ipAddressStr(ctx.req)
+        (("X-Base-Path" -> basePath) ::
+          ("X-Forwarded-For" -> lila.common.HTTPRequest.ipAddressStr(req)) ::
+          extraHeaders)*
       )
+    val withBody = body.fold(base): (contentType, raw) =>
+      base.addHttpHeaders("Content-Type" -> contentType).withBody(raw)
+    withBody
       .stream()
       .map: res =>
-        val ct = res.headers
-          .get("Content-Type")
-          .orElse(res.headers.get("content-type"))
-          .flatMap(_.headOption)
-          .getOrElse("text/html; charset=utf-8")
-        Status(res.status).chunked(res.bodyAsSource).as(ct).noProxyBuffer
+        def header(name: String) =
+          res.headers.get(name).orElse(res.headers.get(name.toLowerCase)).flatMap(_.headOption)
+        val ct  = header("Content-Type").getOrElse("text/html; charset=utf-8")
+        val out = Status(res.status).chunked(res.bodyAsSource).as(ct).noProxyBuffer
+        header("Location").fold(out)(loc => out.withHeaders("Location" -> loc))
+
+  def hlvCoachProxy(path: String) = Anon:
+    streamProxy(coachInternalUrl, "/hlv-app", path, "GET", none, Nil)(using ctx.req)
+
+  /**
+   * DANH TINH CO KY cho he diem.
+   *
+   * Service diem nam trong mang noi bo, nhung neu no chi doc `X-HK-User` tran
+   * thi bat cu thu gi cham duoc cong 8091 deu tu xung la ai cung duoc. Ky HMAC
+   * thi ke tan cong phai co secret, ma secret chi nam o day va o service diem.
+   *
+   * Han dung 5 phut de mot header lo lot ra ngoai (log, anh chup man hinh)
+   * khong dung lai duoc mai.
+   *
+   * Secret RONG => khong gui header nao => service diem coi nhu khach chua dang
+   * nhap va tra trang "can dang nhap". Hong an toan, khong hong im lang.
+   */
+  private def pointsIdentity(using ctx: Context): List[(String, String)] =
+    ctx.me.so(me => Main.pointsIdentityHeaders(me.userId.value))
+
+  // He diem: trang lila (co sidebar) nhung service points qua iframe same-origin.
+  def pointsHome = Open:
+    if !env.web.config.pointsEnabled then notFound
+    else Ok.page(views.site.ui.pointsHome)
+
+  def pointsShopHome = Open:
+    if !env.web.config.pointsEnabled then notFound
+    else Ok.page(views.site.ui.pointsShop)
+
+  /**
+   * Link moi `/r/<ma>`: dat cookie roi chuyen ve trang chu.
+   *
+   * CHI dat cookie, KHONG ghi gi vao DB — nguoi bam link co the khong bao gio dang
+   * ky, va mot ban ghi cho moi luot bam la mot be mat rac ai cung tao duoc.
+   * Quan he giới thiệu chi duoc ghi luc TAO TAI KHOAN (xem `pointsReferralCookie`).
+   *
+   * 90 ngay: du dai de nguoi ta suy nghi vai tuan, du ngan de khong gan nham mot
+   * lan bam tu nam ngoai.
+   */
+  def pointsReferral(code: String) = Open:
+    if !env.web.config.pointsEnabled then notFound
+    else
+      Redirect(routes.Lobby.home)
+        .withCookies(
+          env.security.lilaCookie.cookie(
+            Main.referralCookieName,
+            code,
+            maxAge = (90 * 24 * 3600).some, // 90 ngày, viết bằng giây cho khỏi phụ thuộc import
+            httpOnly = false.some
+          )
+        )
+        .toFuccess
+
+  def pointsProxy(path: String) = Open:
+    if !env.web.config.pointsEnabled then notFound
+    else streamProxy(pointsInternalUrl, "/diem-app", path, "GET", none, pointsIdentity)(using ctx.req)
+
+  /**
+   * POST di qua proxy — can cho viec doi qua. Chi chuyen tiep form-urlencoded
+   * (thu duy nhat cua hang gui) roi ma hoa lai; khong bung nguyen luong byte,
+   * de be mat proxy khong rong hon viec no thuc su phuc vu.
+   */
+  def pointsProxyPost(path: String) = OpenBody:
+    if !env.web.config.pointsEnabled then notFound
+    else
+      val form = ctx.body.body.asFormUrlEncoded.getOrElse(Map.empty)
+      val encoded = form.toList
+        .flatMap: (k, vs) =>
+          vs.map(v => s"${urlEncode(k)}=${urlEncode(v)}")
+        .mkString("&")
+      streamProxy(
+        pointsInternalUrl,
+        "/diem-app",
+        path,
+        "POST",
+        ("application/x-www-form-urlencoded" -> encoded).some,
+        pointsIdentity
+      )(using ctx.req)
+
+  private def urlEncode(s: String): String =
+    java.net.URLEncoder.encode(s, "UTF-8")
 
   def lag = Open:
     Ok.page(views.site.ui.lag)
@@ -212,3 +314,42 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
         )
       )
   }
+
+/**
+ * HungKings: phan dung chung cho HE DIEM.
+ *
+ * De o companion object vi CA HAI controller can: `Main` ky danh tinh cho moi
+ * request di qua proxy /diem-app, con `Auth` ky mot lan luc tao tai khoan de gan
+ * quan he gioi thieu. Nhan ban doan ky HMAC sang ca hai noi la cach chac chan
+ * nhat de mot ngay nao do hai noi ky khac nhau.
+ */
+object Main:
+
+  /** Cookie link moi. `hk_ref` — dat boi /r/<ma>, doc luc TAO TAI KHOAN. */
+  val referralCookieName = "hk_ref"
+
+  val pointsInternalUrl =
+    sys.env.getOrElse("LILA_POINTS_INTERNAL_URL", "http://hungkings-points-web:8091")
+
+  /**
+   * Khoa ky danh tinh. RONG = khong gui header nao = service diem coi nhu khach
+   * chua dang nhap. Hong AN TOAN, khong hong im lang: khong bao gio co chuyen
+   * thieu khoa ma van tin duoc nguoi goi la ai.
+   */
+  private val pointsSecret = sys.env.getOrElse("LILA_POINTS_HMAC_SECRET", "")
+
+  private def hmacSha256Hex(secret: String, msg: String): String =
+    val mac = javax.crypto.Mac.getInstance("HmacSHA256")
+    mac.init(new javax.crypto.spec.SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"))
+    mac.doFinal(msg.getBytes("UTF-8")).map("%02x".format(_)).mkString
+
+  /** Han 5 phut: header lo lot ra ngoai (log, anh chup man hinh) khong dung lai duoc mai. */
+  def pointsIdentityHeaders(userId: String): List[(String, String)] =
+    if pointsSecret.isEmpty then Nil
+    else
+      val exp = java.time.Instant.now.getEpochSecond + 300
+      List(
+        "X-HK-User" -> userId,
+        "X-HK-Exp"  -> exp.toString,
+        "X-HK-Sig"  -> hmacSha256Hex(pointsSecret, s"$userId.$exp")
+      )

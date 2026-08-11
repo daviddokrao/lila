@@ -363,7 +363,32 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
     garbageCollect(user)(email)
     if sendWelcomeEmail then env.mailer.automaticEmail.welcomeEmail(user, email)
     env.mailer.automaticEmail.welcomePM(user)
+    bindPointsReferral(user.id)
     env.pref.api.saveNewUserPrefs(user, ctx.req)
+
+  /**
+   * HungKings: gan quan he gioi thieu neu nguoi nay den tu link /r/<ma>.
+   *
+   * Day la thoi diem DUY NHAT bat duoc: cookie chi noi "nguoi nay tung bam link
+   * moi", con quan he chi co nghia khi da co tai khoan de gan vao.
+   *
+   * BAN-VA-QUEN CO CHU Y (khong `>>`, khong await): he diem chet KHONG duoc lam
+   * hong viec dang ky. Mat mot quan he gioi thieu la mat mot phan thuong; chan
+   * duoc mot nguoi dang ky la mat han nguoi do. Hai thu do khong cung hang.
+   */
+  private def bindPointsReferral(userId: UserId)(using ctx: Context): Unit =
+    if env.web.config.pointsEnabled then
+      ctx.req.cookies
+        .get(Main.referralCookieName)
+        .map(_.value)
+        .filter(_.nonEmpty)
+        .foreach: code =>
+          env.web.ws
+            .url(s"${Main.pointsInternalUrl}/internal/referral/bind")
+            .addHttpHeaders(Main.pointsIdentityHeaders(userId.value)*)
+            .post(Json.obj("code" -> code))
+            .addFailureEffect: e =>
+              lila.log("points").warn(s"gan gioi thieu that bai cho $userId", e)
 
   private def garbageCollect(user: UserModel)(email: EmailAddress)(using ctx: Context) =
     env.security.garbageCollector.delay(user, email, ctx.req, quickly = lila.web.AnnounceApi.get.isDefined)

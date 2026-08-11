@@ -345,6 +345,32 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
         )
       )
 
+  // HungKings: HỆ ĐIỂM. Cùng cách nhúng như HLV AI — service Node riêng, iframe
+  // same-origin qua proxy /diem-app. Lý do tách y hệt: sửa hệ điểm không được phải
+  // dựng lại image lila (13-20 phút mỗi vòng).
+  def pointsHome(using Context) = pointsEmbed("", "Điểm HungKings")
+
+  def pointsShop(using Context) = pointsEmbed("shop", "Đổi quà")
+
+  private def pointsEmbed(path: String, title: String)(using ctx: Context) =
+    val lang = ctx.lang.language
+    val sep  = if path.contains("?") then "&" else "?"
+    val embedUrl =
+      if path.isEmpty then s"/diem-app?embed=1&lang=$lang"
+      else s"/diem-app/$path${sep}embed=1&lang=$lang"
+    Page(title):
+      // `width:100%` BẮT BUỘC đi kèm `margin:0 auto`: `main` là grid item
+      // (`main{grid-area:main}`), mà margin auto trên grid item làm nó co về
+      // max-content = 300px mặc định của iframe. Đã trả giá đúng lỗi này ở /hlv.
+      main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
+        iframe(
+          src            := embedUrl,
+          st.title       := title,
+          st.frameborder := "0",
+          style := "width:100%;height:88vh;border:0;display:block;border-radius:14px;background:transparent"
+        )
+      )
+
   def lag(using Context) =
     import trans.lag as trl
     SitePage(title = "Is HungKings lagging?", active = "lag")

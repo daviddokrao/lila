@@ -20,7 +20,11 @@ object page:
   )
   import ui.*
 
-  private val topnav = lila.web.ui.TopNav(helpers)(env.web.config.forumEnabled, env.web.config.broadcastEnabled)
+  private val topnav = lila.web.ui.TopNav(helpers)(
+    env.web.config.forumEnabled,
+    env.web.config.broadcastEnabled,
+    env.web.config.pointsEnabled
+  )
 
   private def metaThemeColor(using ctx: Context): Frag =
     raw(s"""<meta name="theme-color" content="${ctx.pref.themeColor}">""")
