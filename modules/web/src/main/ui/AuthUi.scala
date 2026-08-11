@@ -157,7 +157,12 @@ final class AuthUi(helpers: Helpers):
                   form3.passwordRevealButton
                 ),
                 simple.option:
-                  div(cls := "password-generator")(button("Generate a random password"))
+                  div(cls := "password-generator")(
+                    button(
+                      if ctx.lang.language == "vi" then "Tạo mật khẩu ngẫu nhiên"
+                      else "Generate a random password"
+                    )
+                  )
                 ,
                 form3.passwordComplexityMeter(trans.site.newPasswordStrength())(
                   cls := f.value.orZero.isEmpty.option("none")

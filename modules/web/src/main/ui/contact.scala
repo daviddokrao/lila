@@ -153,7 +153,15 @@ object contact:
             ),
             p(
               youCanAlsoReachReportPage(
-                button(cls := "thin button button-empty", dataIcon := Icon.CautionTriangle)
+                // HungKings a11y `button-name`: nut nay chi co bieu tuong. Day chi la HINH
+                // MINH HOA cho cau "bam nut hinh tam giac o goc trang" chu khong bam duoc,
+                // nen aria-hidden moi dung — dat ten cho no la moi nguoi di tim mot nut khong
+                // ton tai.
+                button(
+                  cls := "thin button button-empty",
+                  dataIcon := Icon.CautionTriangle,
+                  aria("hidden") := "true"
+                )
               )
             ),
             p(

@@ -125,7 +125,11 @@
 
   .view_solution.show {
     visibility: visible;
-    opacity: 0.8;
+    // HungKings a11y `color-contrast`: opacity 0.8 lam mo mau chu tu #7890ce xuong
+    // #6378b0 -> 3.94:1, van duoi nguong 4.5. Do la mo di CHO DEP, ma o day no lam
+    // chinh cai nut "xem loi giai" kho doc. Hieu ung hien dan van con nguyen (chuyen
+    // tu 0 len 1).
+    opacity: 1;
 
     @include transition(opacity, 1.5s);
   }

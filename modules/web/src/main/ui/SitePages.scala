@@ -86,8 +86,10 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
           ),
           br,
           st.section(cls := "box box-pad developers") {
+            // HungKings a11y `frame-title`: hai iframe minh hoa nay khong co title, trinh
+            // doc man hinh chi doc "khung". Them title vao chuoi thuoc tinh dung chung.
             val args =
-              """style="width: 400px; aspect-ratio: 10/11;" allowtransparency="true" frameborder="0""""
+              """title="HungKings" style="width: 400px; aspect-ratio: 10/11;" allowtransparency="true" frameborder="0""""
             frag(
               a(href := "#embed-tv")(
                 h1(cls := "box__top", id := "embed-tv")("Embed HungKings TV in your site")

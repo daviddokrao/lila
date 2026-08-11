@@ -3,6 +3,7 @@ package lila.ui
 import scalatags.text.Builder
 
 import lila.core.config.NetDomain
+import lila.core.i18n.{ I18nKey as trans, Translate }
 import lila.ui.ScalatagsTemplate.{ *, given }
 
 object HtmlHelper:
@@ -19,17 +20,27 @@ object HtmlHelper:
     if blind then t.addChild(StringFrag(v))
     else t.setAttr("title", Builder.GenericAttrValueSource(v))
 
-  def copyMeLink(url: Url, name: Frag): Tag = copyMe(a(targetBlank, href := url)(name))
+  def copyMeLink(url: Url, name: Frag)(using Translate): Tag = copyMe(a(targetBlank, href := url)(name))
 
-  def copyMeContent(url: Url, name: Frag): Tag = copyMeLink(url, name)(cls := "fetch-content")
+  def copyMeContent(url: Url, name: Frag)(using Translate): Tag =
+    copyMeLink(url, name)(cls := "fetch-content")
 
-  def copyMeInput(content: String): Tag =
+  // HungKings a11y (`label` + `button-name`, do that tren /developers): o nay khong co
+  // nhan nao va nut chep chi co bieu tuong. Ca hai lay ten tu khoa i18n CO SAN
+  // `copyToClipboard`, khong them khoa moi.
+  def copyMeInput(content: String)(using Translate): Tag =
     copyMe(input(spellcheck := "false", readonly, value := content))
 
-  private def copyMe(target: Tag): Tag =
+  private def copyMe(target: Tag)(using Translate): Tag =
+    val label = trans.site.copyToClipboard.txt()
     div(cls := "copy-me")(
-      target(cls := "copy-me__target"),
-      button(cls := "copy-me__button button button-metal", dataIcon := Icon.Clipboard)
+      target(cls := "copy-me__target", aria("label") := label),
+      button(
+        cls := "copy-me__button button button-metal",
+        dataIcon := Icon.Clipboard,
+        title := label,
+        aria("label") := label
+      )
     )
 
 trait HtmlHelper:

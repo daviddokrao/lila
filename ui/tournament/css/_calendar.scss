@@ -94,9 +94,13 @@
       background-color: #c93d3d;
     }
 
+    // HungKings a11y `color-contrast`: cac o giai nay lay nen vang $c-brag (#ffcb24)
+    // trong khi chu ke thua color:#fff o tren -> 1.51:1. Cung ban va da dung cho tieu de
+    // bang xep hang o /player: nen mang mau nhan hieu thi chu phai la muc TOI.
     &.yearly,
     &.weekend {
       background-color: $c-brag;
+      color: $c-over-accent;
     }
 
     &.marathon {
@@ -105,6 +109,7 @@
 
     &.unique {
       background-color: $c-brag;
+      color: $c-over-accent;
     }
 
     &.max-rating {

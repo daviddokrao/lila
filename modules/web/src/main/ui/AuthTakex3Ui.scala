@@ -175,7 +175,12 @@ final class AuthTakex3Ui(helpers: Helpers):
                   ),
                   form3.passwordRevealButton
                 ),
-                div(cls := "password-generator")(button("Generate a random password"))
+                div(cls := "password-generator")(
+                    button(
+                      if ctx.lang.language == "vi" then "Tạo mật khẩu ngẫu nhiên"
+                      else "Generate a random password"
+                    )
+                  )
               ),
             form3.group(form("email"), "Email"): f =>
               div(cls := "text-wrapper")(

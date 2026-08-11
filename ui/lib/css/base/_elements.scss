@@ -58,6 +58,28 @@ button {
   text-align: inherit;
 }
 
+// HungKings: nut "bam de hien email" (trang Lien he) truoc day la the <a> khong co
+// href — fail `crawlable-anchors` va sai ngu nghia. Nay la <button>; reset o tren da
+// bo het chrome cua nut, chi con phai tra lai dang LIEN KET cho no.
+.contact-email-obfuscated {
+  color: $c-link;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+}
+
+// HungKings a11y `link-in-text-block` (WCAG 1.4.1). Mau link $c-link (#7890ce) chi
+// dat 2.8:1 so voi CHU XUNG QUANH — duoi nguong 3:1 — nen chi doi mau thoi la chua du
+// de phan biet dau la link. Dot thiet ke a11y 05/08 da gach chan link trong prose CMS
+// (`.page-menu__content`); do lai tren /signup va /swiss thi thay con nhieu cho khac
+// cung dinh, nen ap chung cho link nam TRONG MOT DOAN VAN.
+// Loai tru: nut (.button/.fbt) va link nguoi dung (co avatar/flair di kem, gach chan
+// lam ho trong nhu bi xoa).
+p > a:not(.button):not(.fbt):not(.user-link) {
+  text-decoration: underline;
+}
+
 p {
   margin-bottom: 1em;
   unicode-bidi: plaintext;

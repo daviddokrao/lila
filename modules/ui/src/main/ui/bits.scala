@@ -90,8 +90,16 @@ object bits:
       lila.core.i18n.I18nKey.site.analysis()
     )
 
+  // HungKings a11y/SEO: day von la the <a> KHONG co href (dia chi email duoc giau di
+  // chong thu rac, JS moi hien ra khi bam) — tuc no fail `crawlable-anchors` va cung
+  // khong phai mot lien ket that. Dung <button> moi dung ngu nghia; CSS bat theo class
+  // nen giao dien khong doi.
   def contactEmailLinkEmpty(email: String) =
-    a(cls := "contact-email-obfuscated", attr("data-email") := scalalib.StringOps.base64.encode(email))
+    button(
+      tpe := "button",
+      cls := "contact-email-obfuscated",
+      attr("data-email") := scalalib.StringOps.base64.encode(email)
+    )
 
   def ariaTabList(prefix: String, selected: String)(tabs: (String, String, Frag)*) = frag(
     div(cls := "tab-list", role := "tablist")(

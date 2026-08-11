@@ -69,11 +69,18 @@ function contact() {
 }
 
 export function contactEmail(): void {
-  $('a.contact-email-obfuscated').one('click', function (this: HTMLLinkElement) {
+  // HungKings: phan tu nay nay la <button> chu khong con la <a> khong-href (xem
+  // ui/bits.scala). Sau khi hien dia chi thi THAY bang mot the <a href="mailto:">
+  // that — dat href len button khong lam gi ca, va luc do no da la mot lien ket that.
+  $('button.contact-email-obfuscated').one('click', function (this: HTMLElement) {
     $(this).html('...');
     setTimeout(() => {
       const address = atob(this.dataset.email!);
-      $(this).html(address).attr('href', `mailto:${address}`);
+      const link = document.createElement('a');
+      link.className = 'contact-email-obfuscated';
+      link.href = `mailto:${address}`;
+      link.textContent = address;
+      this.replaceWith(link);
     }, 300);
     return false;
   });

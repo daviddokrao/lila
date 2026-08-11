@@ -234,7 +234,18 @@ final class Form3(formHelper: FormHelper & I18nHelper & AssetHelper, flairApi: F
         reveal.option(passwordRevealButton)
       )
 
-  def passwordRevealButton = button(cls := "password-reveal", tpe := "button", dataIcon := Icon.Eye)
+  // HungKings a11y: nut nay nam tren /login va /signup — dung phe chuyen doi chinh.
+  // Truoc do khong co TEN nao (chi mot bieu tuong) va chi 19x23px (duoi nguong 24x24
+  // cua WCAG 2.5.8). Ten dat tai cho theo ngon ngu, khong them khoa registry.
+  def passwordRevealButton(using t: Translate) =
+    val label = if t.lang.language == "vi" then "Hiện mật khẩu" else "Show password"
+    button(
+      cls := "password-reveal",
+      tpe := "button",
+      dataIcon := Icon.Eye,
+      title := label,
+      aria("label") := label
+    )
 
   def passwordComplexityMeter(labelContent: Frag): Tag =
     div(cls := "password-complexity")(
