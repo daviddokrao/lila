@@ -176,11 +176,14 @@ final class AuthTakex3Ui(helpers: Helpers):
                   form3.passwordRevealButton
                 ),
                 div(cls := "password-generator")(
-                    button(
-                      if ctx.lang.language == "vi" then "Tạo mật khẩu ngẫu nhiên"
-                      else "Generate a random password"
-                    )
+                  button(
+                    // Ham nay khai `(using Context, ...)` KHONG dat ten, ma `ctx` thi la
+                    // helper cua LilaController chu khong co trong module view nay — nen
+                    // phai summon tuong minh.
+                    if summon[Context].lang.language == "vi" then "Tạo mật khẩu ngẫu nhiên"
+                    else "Generate a random password"
                   )
+                )
               ),
             form3.group(form("email"), "Email"): f =>
               div(cls := "text-wrapper")(
