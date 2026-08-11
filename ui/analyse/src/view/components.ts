@@ -171,7 +171,10 @@ export function renderInputs(ctrl: AnalyseCtrl): VNode | undefined {
     hl('div.pair', [
       hl('label.name', 'FEN'),
       hl('input.copyable', {
-        attrs: { spellcheck: 'false', enterkeyhint: 'done' },
+        // HungKings a11y `label`: <label class="name"> ben canh khong co `for` nen no
+        // KHONG gan voi o nhap nay — o nhap thanh ra khong co ten. Dat ten thang bang
+        // aria-label (them `for`/`id` thi phai sinh id duy nhat, khong dang).
+        attrs: { spellcheck: 'false', enterkeyhint: 'done', 'aria-label': 'FEN' },
         hook: {
           ...onInsert<HTMLInputElement>(el => {
             el.value = defined(ctrl.fenInput) ? ctrl.fenInput : ctrl.node.fen;
@@ -197,7 +200,8 @@ export function renderInputs(ctrl: AnalyseCtrl): VNode | undefined {
       hl('div.pair', [
         hl('label.name', 'PGN'),
         hl('textarea.copyable', {
-          attrs: { spellcheck: 'false' },
+          // Cung ly do voi o FEN ngay tren.
+          attrs: { spellcheck: 'false', 'aria-label': 'PGN' },
           class: { 'is-error': !!ctrl.pgnError },
           hook: {
             ...onInsert<HTMLTextAreaElement>(el => {
