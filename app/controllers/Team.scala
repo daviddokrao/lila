@@ -352,9 +352,13 @@ final class Team(env: Env) extends LilaController(env):
           )
   }
 
+  // HungKings: them Context de thong bao loi ra dung ngon ngu nguoi dung. Ca hai noi goi
+  // (`join`, `requestCreate`) deu nam trong khoi AuthOrScopedBody/AuthBody voi `ctx ?=>`
+  // nen Context da co san — khong phai doi gi o cho goi.
   private def webJoin(team: TeamModel, request: Option[String], password: Option[String])(using
       Me,
-      RequestHeader
+      RequestHeader,
+      Context
   ) =
     api
       .join(team, request = request, password = password)
