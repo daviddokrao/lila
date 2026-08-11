@@ -335,6 +335,9 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
       main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
         iframe(
           src := embedUrl,
+          // HungKings a11y `frame-title`: iframe khong ten thi trinh doc man hinh chi
+          // doc "khung", khong biet ben trong la gi. Dung chinh tieu de trang.
+          st.title := title,
           st.frameborder := "0",
           style := "width:100%;height:80vh;border:0;display:block;border-radius:14px;background:transparent"
         )

@@ -191,7 +191,9 @@ final class StudyListUi(helpers: Helpers, bits: StudyBits):
     form(cls := "search", action := routes.Study.search(), method := "get")(
       form3.hidden("order", order.key),
       input(name := "q", st.placeholder := placeholder, st.value := value, enterkeyhint := "search"),
-      submitButton(cls := "button", dataIcon := Icon.Search)
+      // HungKings a11y `button-name`: nut nay chi co bieu tuong, khong chu nao — trinh
+      // doc man hinh doc thanh "nut" trong. `placeholder` chinh la nhan cua o tim kiem.
+      submitButton(cls := "button", dataIcon := Icon.Search, aria("label") := placeholder)
     )
 
   object topic:

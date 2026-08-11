@@ -42,7 +42,15 @@ export const cmnToggleProp = (opts: CmnToggleProp): VNode =>
 export const cmnToggle = (opts: CmnToggle): VNode =>
   h('span.cmn-toggle', [
     h(`input#cmn-tg-${opts.id}`, {
-      attrs: { type: 'checkbox', checked: opts.checked, disabled: !!opts.disabled },
+      // HungKings a11y `label`: <label for> di kem cong tac nay RONG (no chi de ve cai
+      // gat), nen o danh dau khong co ten nao cho trinh doc man hinh. `title` von da la
+      // nhan cua cong tac -> dung luon lam aria-label.
+      attrs: {
+        type: 'checkbox',
+        checked: opts.checked,
+        disabled: !!opts.disabled,
+        ...(opts.title ? { 'aria-label': opts.title } : {}),
+      },
       on: {
         click: blurIfPrimaryClick,
       },

@@ -26,9 +26,13 @@ object bits:
         st.id := s"mselect-$id",
         autocomplete := "off"
       ),
-      label(`for` := s"mselect-$id", cls := "mselect__label", role := "menu")(current),
+      // HungKings a11y `aria-required-children`: `role="menu"` truoc day nam tren
+      // <label> — ma label chi chua CHU cua muc dang chon, khong chua menuitem nao, nen
+      // axe bao "menu thieu con bat buoc". Menu THAT la <nav class="mselect__list"> ben
+      // duoi, noi cac muc deu mang role="menuitem". Chuyen role sang dung cho do.
+      label(`for` := s"mselect-$id", cls := "mselect__label")(current),
       label(`for` := s"mselect-$id", cls := "fullscreen-mask"),
-      st.nav(cls := "mselect__list")(items.map(_(cls := "mselect__item", role := "menuitem")))
+      st.nav(cls := "mselect__list", role := "menu")(items.map(_(cls := "mselect__item", role := "menuitem")))
     )
 
   // url: (year: Int, month: Int)
