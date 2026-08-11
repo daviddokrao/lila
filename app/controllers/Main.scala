@@ -1,6 +1,9 @@
 package controllers
 import play.api.libs.json.*
 import play.api.mvc.*
+// Can cho streamProxy: `.withBody(raw: String)` doi mot BodyWritable[String], ma
+// lila khong mixin DefaultBodyWritables o day.
+import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
 
 import lila.app.{ *, given }
 import lila.common.Json.given
@@ -155,13 +158,19 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
    * (thu duy nhat cua hang gui) roi ma hoa lai; khong bung nguyen luong byte,
    * de be mat proxy khong rong hon viec no thuc su phuc vu.
    */
-  def pointsProxyPost(path: String) = OpenBody:
+  // `OpenBody: ctx ?=>` CO CHU Y: `ctx` mac dinh cua LilaController la
+  // `inline def ctx(using it: Context) = it`, tuc luon tra ve `Context` chu khong
+  // phai `BodyContext` — nen `ctx.body` khong ton tai. Dat ten tuong minh thi no
+  // che dinh nghia kia (dung khuon Setup.scala). Than request la kieu ton tai nen
+  // phai khop mau ve AnyContent (dung khuon FormCompatLayer).
+  def pointsProxyPost(path: String) = OpenBody: ctx ?=>
     if !env.web.config.pointsEnabled then notFound
     else
-      val form = ctx.body.body.asFormUrlEncoded.getOrElse(Map.empty)
+      val form: Map[String, Seq[String]] = ctx.body.body match
+        case content: AnyContent => content.asFormUrlEncoded.getOrElse(Map.empty)
+        case _                   => Map.empty
       val encoded = form.toList
-        .flatMap: (k, vs) =>
-          vs.map(v => s"${urlEncode(k)}=${urlEncode(v)}")
+        .flatMap((k, vs) => vs.map(v => s"${urlEncode(k)}=${urlEncode(v)}"))
         .mkString("&")
       streamProxy(
         pointsInternalUrl,

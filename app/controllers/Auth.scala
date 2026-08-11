@@ -2,6 +2,8 @@ package controllers
 import play.api.data.Form
 import play.api.libs.json.*
 import play.api.mvc.*
+// Can cho `.post[JsValue](...)` khi gan quan he gioi thieu sang service diem.
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 import lila.app.{ *, given }
 import lila.common.HTTPRequest
@@ -386,7 +388,9 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
           env.web.ws
             .url(s"${Main.pointsInternalUrl}/internal/referral/bind")
             .addHttpHeaders(Main.pointsIdentityHeaders(userId.value)*)
-            .post(Json.obj("code" -> code))
+            // Kieu tuong minh `[JsValue]`: BodyWritable khong hiep bien, de suy
+            // luan tu do thi T = JsObject va khong tim thay instance nao.
+            .post[JsValue](Json.obj("code" -> code))
             .addFailureEffect: e =>
               lila.log("points").warn(s"gan gioi thieu that bai cho $userId", e)
 
