@@ -16,7 +16,8 @@ object page:
     reportScoreThreshold = env.report.scoreThresholdsSetting.get,
     reportScore = () => env.report.api.maxScores.dmap(_.highest).awaitOrElse(50.millis, "nbReports", 0),
     forumEnabled = env.web.config.forumEnabled,
-    broadcastEnabled = env.web.config.broadcastEnabled
+    broadcastEnabled = env.web.config.broadcastEnabled,
+    pointsEnabled = env.web.config.pointsEnabled
   )
   import ui.*
 

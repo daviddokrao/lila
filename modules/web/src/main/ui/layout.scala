@@ -18,7 +18,11 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
     // bị chặn ở HttpRequestHandler, cái này chỉ để không mời người dùng bấm vào 404.
     forumEnabled: Boolean,
     // HungKings: broadcast tạm tắt (env LILA_BROADCAST) — ẩn lối vào trong sidebar. Tương tự.
-    broadcastEnabled: Boolean
+    broadcastEnabled: Boolean,
+    // HungKings: hệ điểm (env LILA_POINTS) — mục "Điểm thưởng" trong sidebar. Đây là lối
+    // vào THẬT: site dùng sidebar chứ không dùng TopNav trên các trang có sidebar, nên
+    // thêm mục vào TopNav thôi là không ai nhìn thấy (đã đo và trả giá đúng chỗ này).
+    pointsEnabled: Boolean
 ):
   import helpers.{ *, given }
   import assetHelper.{ defaultCsp, netConfig, cashTag, siteName }
@@ -519,6 +523,23 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
               t("Huấn luyện AI", "AI coach"),
               span(cls := "hv2-side__new")(t("MỚI", "NEW"))
             )(),
+            // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số của st.nav là `Frag*`,
+            // mà Option chỉ thành Modifier chứ không thành Frag (cùng lý do đã ghi ở
+            // mục Diễn đàn/Tiếp sóng bên dưới).
+            // Ngoặc bao trọn biểu thức if: tiền lệ `if ... then x else emptyFrag,` trong
+            // file này đều nằm gọn MỘT dòng; dạng nhiều dòng kèm dấu phẩy theo sau thì
+            // cú pháp thụt lề dễ hiểu nhầm, mà một vòng build ở đây là 13-20 phút.
+            (if pointsEnabled then
+               navItem(
+                 routes.Main.pointsHome.url,
+                 Icon.Star,
+                 t("Điểm thưởng", "Rewards"),
+                 span(cls := "hv2-side__new")(t("MỚI", "NEW"))
+               )(
+                 subItem(routes.Main.pointsHome.url, t("Điểm của tôi", "My points")),
+                 subItem(routes.Main.pointsShopHome.url, t("Đổi quà", "Rewards shop"))
+               )
+             else emptyFrag),
             navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments"))(
               subItem(routes.Tournament.home.url, t("Đấu trường", "Arenas")),
               subItem(routes.Tournament.calendar.url, t("Lịch giải", "Calendar"))
