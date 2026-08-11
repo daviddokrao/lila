@@ -167,6 +167,25 @@ export function view(ctrl: AnalyseCtrl): VNode {
           },
           'Giải thích ván (AI)',
         ),
+      // HLV AI giai thich THE CO DANG XEM. Khac nut tren: nut kia noi ve ca van, nut
+      // nay noi ve dung the co hien tai — dung duoc ca tren ban phan tich trong
+      // (/analysis, khong co van nao) lan khi dang xem lai mot van.
+      // Ban phan tich da co Stockfish, tuc nguoi dung da biet "ai hon bao nhieu"; thu
+      // may khong cho ho la *vi sao*, va cang khong cho bang tieng Viet.
+      hl(
+        'a',
+        {
+          attrs: {
+            href: `/hlv/position?fen=${encodeURIComponent(ctrl.node.fen)}`,
+            target: '_blank',
+            rel: 'noopener',
+            'data-icon': licon.InfoCircle,
+          },
+        },
+        document.documentElement.lang.startsWith('vi')
+          ? 'Giải thích thế cờ này (AI)'
+          : 'Explain this position (AI)',
+      ),
       ctrl.idbTree.movesDirty &&
         hl(
           'a',

@@ -37,6 +37,10 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
   def hlvCoachPuzzle(id: String) = Open:
     Ok.page(views.site.ui.hlvCoachPuzzle(id))
 
+  // HLV AI giai thich MOT THE CO bat ky. FEN den qua query vi no chua dau cach va "/".
+  def hlvCoachPosition = Open:
+    Ok.page(views.site.ui.hlvCoachPosition(get("fen").getOrElse("")))
+
   def hlvCoachHome = Open:
     Ok.page(views.site.ui.hlvCoach(none))
 

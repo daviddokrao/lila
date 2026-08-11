@@ -917,6 +917,10 @@ POST  /cms/:id/delete                 controllers.Cms.delete(id: CmsPageId)
 GET   /developers                      controllers.Main.webmasters
 # HLV AI (coach): trang lila có sidebar, nhúng service coach qua iframe SAME-ORIGIN /hlv-app.
 GET   /hlv                             controllers.Main.hlvCoachHome
+# The co bat ky: FEN di qua query (co dau cach va "/", khong nhet vao path duoc).
+# PHAI dung TRUOC route /hlv/<gameId> ngay duoi: "position" dai dung 8 ky tu chu-so
+# nen no KHOP mau {8,12} va se bi hieu nham thanh ma van.
+GET   /hlv/position                    controllers.Main.hlvCoachPosition
 GET   /hlv/$id<[a-zA-Z0-9]{8,12}>      controllers.Main.hlvCoach(id: String)
 GET   /hlv/puzzle/$id<[a-zA-Z0-9]{5}>  controllers.Main.hlvCoachPuzzle(id: String)
 # Proxy same-origin sang container coach (stream cả SSE). Xem Main.hlvCoachProxy.

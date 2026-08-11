@@ -314,13 +314,23 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
   def hlvCoachPuzzle(puzzleId: String)(using Context) =
     hlvEmbed(s"puzzle/$puzzleId", "Giải thích câu đố (AI)")
 
+  // The co bat ky tren ban phan tich: nhung trang /hlv-app/position?fen=...
+  // FEN phai duoc ma hoa URL: no chua dau cach va "/" nen de nguyen la vo query string.
+  def hlvCoachPosition(fen: String)(using Context) =
+    val encoded = java.net.URLEncoder.encode(fen, "UTF-8")
+    hlvEmbed(s"position?fen=$encoded", "Giải thích thế cờ (AI)")
+
   // Truyền ngôn ngữ người dùng đang dùng trên site xuống coach: proxy hlvCoachProxy
   // chuyển tiếp query string (KHÔNG chuyển Accept-Language), nên đây là cách duy nhất
   // để coach nhúng biết viết tiếng gì. Coach hỗ trợ vi/en; mã khác coach tự lùi mặc định.
   private def hlvEmbed(path: String, title: String)(using ctx: Context) =
     val lang     = ctx.lang.language
+    // `path` co the DA mang san query (vd "position?fen=..."), luc do phai noi bang "&"
+    // chu khong phai "?" — neu khong coach nhan mot query string hong va tra 400.
+    val sep = if path.contains("?") then "&" else "?"
     val embedUrl =
-      if path.isEmpty then s"/hlv-app?embed=1&lang=$lang" else s"/hlv-app/$path?embed=1&lang=$lang"
+      if path.isEmpty then s"/hlv-app?embed=1&lang=$lang"
+      else s"/hlv-app/$path${sep}embed=1&lang=$lang"
     Page(title):
       main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
         iframe(
