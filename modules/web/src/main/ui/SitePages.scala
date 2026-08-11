@@ -117,7 +117,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
           br,
           st.section(cls := "box box-pad developers") {
             val args =
-              """style="width: 400px; aspect-ratio: 10/11;" allowtransparency="true" frameborder="0""""
+              """title="HungKings" style="width: 400px; aspect-ratio: 10/11;" allowtransparency="true" frameborder="0""""
             frag(
               a(href := "#embed-puzzle")(
                 h1(cls := "box__top", id := "embed-puzzle")("Embed the daily puzzle in your site")
@@ -137,7 +137,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
           },
           br,
           st.section(cls := "box box-pad developers") {
-            val args = """style="width: 100%; aspect-ratio: 3/2;" frameborder="0""""
+            val args = """title="HungKings" style="width: 100%; aspect-ratio: 3/2;" frameborder="0""""
             frag(
               a(href := "#embed-study")(
                 h1(cls := "box__top", id := "embed-study")("Embed a chess analysis in your site")
@@ -163,7 +163,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
           },
           br,
           st.section(cls := "box box-pad developers") {
-            val args = """style="width: 100%; aspect-ratio: 3/2;" frameborder="0""""
+            val args = """title="HungKings" style="width: 100%; aspect-ratio: 3/2;" frameborder="0""""
             frag(
               a(href := "#embed-game")(
                 h1(cls := "box__top", id := "embed-game")("Embed a chess game in your site")
@@ -193,7 +193,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
           broadcastEnabled.option(
             frag(
               st.section(cls := "box box-pad developers", id := "broadcast") {
-                val args = """style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
+                val args = """title="HungKings" style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
                 frag(
                   a(href := "#embed-broadcast")(
                     h1(cls := "box__top", id := "embed-broadcast")("Embed a broadcast in your site")
@@ -219,7 +219,7 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
             )
           ),
           st.section(cls := "box box-pad developers", id := "analysis") {
-            val args = """style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
+            val args = """title="HungKings" style="width: 100%; aspect-ratio: 4/3;" frameborder="0""""
             // Iframe này TẢI THẬT bàn phân tích của lichess.org vào trang HungKings, và mẫu
             // copy-paste ngay dưới còn dạy webmaster khác đi nhúng Lichess — về hiệu ứng còn
             // tệ hơn, vì nó phát tán ra ngoài. /embed/analysis của CHÍNH HungKings đã đo = 200

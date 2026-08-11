@@ -160,7 +160,12 @@ object contact:
                 button(
                   cls := "thin button button-empty",
                   dataIcon := Icon.CautionTriangle,
-                  aria("hidden") := "true"
+                  aria("hidden") := "true",
+                  // `aria-hidden` tren mot phan tu VAN FOCUS DUOC la mot loi rieng
+                  // (`aria-hidden-focus`): ban phim van nhay vao mot thu ma trinh doc man
+                  // hinh khong he biet. Phai rut no khoi thu tu tab luon.
+                  tabindex := -1,
+                  disabled
                 )
               )
             ),

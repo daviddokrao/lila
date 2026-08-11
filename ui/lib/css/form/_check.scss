@@ -6,6 +6,13 @@
   .form-label {
     margin-bottom: 0;
     cursor: pointer;
+
+    // HungKings a11y `link-in-text-block`: link "Dieu khoan Dich vu" tren /signup nam
+    // trong NHAN cua o tich chu khong trong <p>, nen rule chung `p > a` khong phu toi.
+    // Cung ly do: mau link chi 2.8:1 so voi chu xung quanh (nguong 3:1).
+    a {
+      text-decoration: underline;
+    }
   }
 
   &:has(.form-label:hover) .form-check__label {

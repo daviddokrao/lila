@@ -45,6 +45,11 @@
     position: absolute;
     top: 0;
     padding: 4px 0;
+    // HungKings a11y `target-size` (WCAG 2.5.8): do that o 360px la 22.7x29.7px. Chieu
+    // ngang do `width` inline tinh theo do dai giai nen khong sua o day duoc; dat san
+    // toi thieu 24px de nhung giai ngan nhat van bam trung.
+    min-width: 24px;
+    min-height: 24px;
     background-color: #303e43;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.5);
     transition: filter 0.13s;
