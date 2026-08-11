@@ -68,7 +68,10 @@ function whatNext(ctrl: LearnCtrl) {
   const makeStage = (href: string, img: string, title: string, subtitle: string, done?: boolean) => {
     return h(`a.stage.done`, { attrs: { href } }, [
       done ? h('span.ribbon-wrapper', h('span.ribbon.done', makeStars(1))) : null,
-      h('img', { attrs: { src: assetUrl + 'images/learn/' + img + '.svg' } }),
+      // Cung ly do voi anh o danh sach bai hoc ben tren: alt RONG vi anh chi minh hoa
+      // cho tieu de ngay canh no. (Khoi "what next" o cuoi trang — do that tren live
+      // moi thay no la mot code path RIENG, khong dung chung voi vong lap kia.)
+      h('img', { attrs: { src: assetUrl + 'images/learn/' + img + '.svg', alt: '' } }),
       h('div.text', [h('h3', title), h('p.subtitle', subtitle)]),
     ]);
   };

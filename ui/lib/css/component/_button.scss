@@ -104,9 +104,13 @@
       text-shadow: 0.5px 0.5px 0 rgb(from $c-dimmer r g b / calc(alpha * 0.8));
     }
 
+    // HungKings a11y `color-contrast`: $c-primary tren nen toi chi 2.64:1 (do that o
+    // nut "xem loi giai" tren /streak). Dot thiet ke a11y hoi 05/08 da tach $c-link ra
+    // lam ban SANG cua cung mau nhan hieu, dung cho chu tren nen toi — dung lai chinh no
+    // o day. Theme SANG khong doi: o do $c-link duoc ghim = $c-primary.
     &,
     &:hover {
-      color: $c-primary;
+      color: $c-link;
     }
 
     &:not(.disabled):hover {
