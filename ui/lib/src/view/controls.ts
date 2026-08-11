@@ -42,7 +42,10 @@ export const boolPrefXhrToggle = (prefKey: string, val: boolean, effect: () => v
 export function copyMeInput(content: string, opts: { inputAttrs?: Attrs; on?: On } = {}): VNode {
   return h('div.copy-me', [
     h('input.copy-me__target', {
-      attrs: { spellcheck: 'false', ...opts.inputAttrs },
+      // HungKings a11y `label`: o nay khong co nhan nao (nut chep ben canh moi co title),
+      // nen trinh doc man hinh doc thanh mot o trong. Nhan mac dinh la nhan cua nut chep;
+      // noi goi dat `aria-label` rieng thi no de len (spread nam sau).
+      attrs: { spellcheck: 'false', 'aria-label': i18n.site.copyToClipboard, ...opts.inputAttrs },
       props: { value: content },
       on: opts.on,
     }),

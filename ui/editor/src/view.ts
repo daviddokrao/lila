@@ -150,6 +150,8 @@ function controls(ctrl: EditorCtrl, state: EditorState): VNode {
         h(
           'select',
           {
+            // HungKings a11y `select-name`: ba o chon tren /editor deu khong co nhan.
+            attrs: { 'aria-label': i18n.site.side },
             on: {
               change(e) {
                 ctrl.setTurn((e.target as HTMLSelectElement).value as Color);
@@ -231,6 +233,7 @@ function controls(ctrl: EditorCtrl, state: EditorState): VNode {
             return h(
               'select.positions',
               {
+                attrs: { 'aria-label': i18n.site.setTheBoard },
                 props: { value },
                 on: {
                   insert(vnode) {
@@ -258,7 +261,7 @@ function controls(ctrl: EditorCtrl, state: EditorState): VNode {
             h(
               'select',
               {
-                attrs: { id: 'variants' },
+                attrs: { id: 'variants', 'aria-label': i18n.site.variant },
                 on: {
                   change(e) {
                     const value = (e.target as HTMLSelectElement).value;

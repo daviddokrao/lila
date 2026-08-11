@@ -129,7 +129,10 @@
     border: $border;
     background: $c-bg-zebra;
     text-align: center;
-    color: $c-font-dimmer;
+    // HungKings a11y `color-contrast`: $c-font-dimmer tren $c-bg-zebra chi 2.36:1 (do
+    // that tren /storm va /streak). Cung ban va da dung cho puzzle/_session.scss hoi
+    // dot thiet ke a11y: ha mot bac xuong $c-font-dim.
+    color: $c-font-dim;
     font-weight: bold;
 
     span {

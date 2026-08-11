@@ -33,7 +33,10 @@ const mapView = (ctrl: LearnCtrl) =>
               const title = stage.title;
               return h(`a.stage.${status}`, { attrs: { href: hashHref(stage.id) } }, [
                 status !== 'future' ? ribbon(ctrl, stage, status, stageProgress) : undefined,
-                h('img', { attrs: { src: stage.image } }),
+                // HungKings a11y `image-alt`: anh quan co nay chi minh hoa cho tieu de
+                // ngay ben canh, nen alt RONG la dung — no bao trinh doc man hinh bo qua
+                // thay vi doc ten tep. Thieu han thuoc tinh alt moi la loi.
+                h('img', { attrs: { src: stage.image, alt: '' } }),
                 h('div.text', [h('h3', title), h('p.subtitle', stage.subtitle)]),
                 status === 'ongoing' ? h('div.attention-effect') : undefined,
               ]);

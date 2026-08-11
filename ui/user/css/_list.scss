@@ -74,9 +74,14 @@ $user-list-width: 30ch;
         margin: 0;
         background: $c-brag;
 
+        // HungKings a11y `color-contrast`: chu TRANG tren nen vang $c-brag (#ffcb24) chi
+        // dat 1.51:1 — gan nhu khong doc duoc. Cung lop loi da vá o _dasher.scss va
+        // puzzle/_session.scss hoi dot thiet ke a11y: nen mang mau nhan hieu thi chu
+        // phai la muc TOI. $c-over-accent la token san co cho dung viec nay (nut vang
+        // .hv2-btn--gold dung chinh no).
         &,
         a {
-          color: #fff;
+          color: $c-over-accent;
         }
 
         @include if-light {
