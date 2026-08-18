@@ -69,7 +69,7 @@ object homeV2:
             div(cls := "lobby__tv hv2-hero__board")(miniOf(g, tv = true)),
             div(cls := "hv2-hero__cast")(
               div(cls := "hv2-onair hv2-onair--live")(t("Đang phát trực tiếp", "Live now")),
-              h1(cls := "hv2-matchup")(t("Bàn cờ đang được theo dõi", "The board being watched")),
+              h2(cls := "hv2-matchup")(t("Bàn cờ đang được theo dõi", "The board being watched")),
               p(cls := "hv2-sub")(
                 t(
                   "Ván hay nhất đang diễn ra — bấm để vào phòng xem, bình luận cùng mọi người.",
@@ -98,7 +98,7 @@ object homeV2:
                   div(cls := "hv2-onair hv2-onair--replay")(
                     t("Ván hay gần đây · AI bình giải", "Recent game · AI commentary")
                   ),
-                  h1(cls := "hv2-matchup")(t("Xem lại và học từ ván này", "Replay and learn from this game")),
+                  h2(cls := "hv2-matchup")(t("Xem lại và học từ ván này", "Replay and learn from this game")),
                   p(cls := "hv2-sub")(
                     t(
                       "Chưa có ván trực tiếp lúc này. Trong lúc chờ, để AI giải thích ván gần nhất bằng tiếng Việt.",
@@ -118,7 +118,7 @@ object homeV2:
               )
             case None =>
               div(cls := "hv2-hero hv2-hero--empty")(
-                h1(cls := "hv2-matchup")(t("Sân khấu đang chờ ván đầu tiên", "The stage awaits its first game")),
+                h2(cls := "hv2-matchup")(t("Sân khấu đang chờ ván đầu tiên", "The stage awaits its first game")),
                 p(cls := "hv2-sub")(
                   t(
                     "Chưa có ván nào đang diễn ra. Hãy mở màn — ván tiếp theo của bạn có thể là bàn cờ cả cộng đồng dõi theo.",
@@ -420,6 +420,20 @@ object homeV2:
               "lobby-nope" -> (playban.isDefined || currentGame.isDefined || homepage.hasUnreadLichessMessage)
             )
           )(
+          // H1 CỦA TRANG — phải là phần tử tiêu đề ĐẦU TIÊN và nói đúng trang này là gì.
+          //
+          // Trước 18/08 trang chủ KHÔNG có h1 nào ở đầu: h1 duy nhất là tiêu đề của hero
+          // ("Xem lại và học từ ván này" / "Bàn cờ đang được theo dõi"), tức mô tả MỘT VÁN
+          // của người lạ chứ không mô tả trang. Sau khi đảo zone theo benchmark thì hero
+          // xuống cuối, nên đo trên live thấy thứ tự heading là H2 → H3 → H3 → H3 → H1,
+          // với h1 nằm ở y=3207 (đáy trang). Hỏng cả hai đường: trình đọc màn hình duyệt
+          // theo heading gặp cấu trúc lộn ngược, và h1 mà Google đọc được lại là tên một ván.
+          //
+          // Ba hero h1 bên dưới đã hạ xuống h2 — chúng là tiêu đề của KHỐI, không phải của
+          // trang. Giữ nguyên class `hv2-matchup` nên không đổi một pixel giao diện nào.
+          h1(cls := "hv2-h1")(
+            t("Cờ vua trực tuyến — chơi miễn phí, không quảng cáo", "Online chess — free, no ads")
+          ),
           // ---------- Zone 0: CHƠI TIẾP — chỉ người ĐÃ ĐĂNG NHẬP (A3), trên cùng ----------
           continueFrag,
           // ---------- Zone 1: THI ĐẤU (lobby app + bảng + giải) ----------

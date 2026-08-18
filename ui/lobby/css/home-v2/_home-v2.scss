@@ -799,3 +799,22 @@ main.home-v2 {
   font-size: 0.9rem;
   color: $c-font-dim;
 }
+
+/* H1 của trang chủ — thêm 18/08.
+ *
+ * Trước đó trang chủ KHÔNG có h1 ở đầu: h1 duy nhất là tiêu đề hero, mô tả MỘT VÁN của
+ * người lạ ("Xem lại và học từ ván này"), và sau khi đảo zone theo benchmark thì nó nằm
+ * ở đáy trang (đo trên live: y=3207). Thứ tự heading ra H2 → H3 → H3 → H3 → H1.
+ *
+ * Cố ý KHÔNG dùng cỡ chữ hero: đây là nhãn định danh trang, không phải khối hero thứ hai.
+ * Giữ nhỏ và lặng để không cạnh tranh với bảng ghép cặp ngay dưới — thứ mà benchmark
+ * xác định phải là điểm chạm đầu tiên.
+ */
+.hv2-h1 {
+  font-family: $hv2-serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.35;
+  margin: 0 0 0.6rem;
+  color: $c-font-dim;
+}
