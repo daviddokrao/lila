@@ -429,11 +429,16 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
   private val hubRealchessEnabled = sys.env.get("LILA_REALCHESS_INTERNAL_URL").exists(_.nonEmpty)
   private val hubArenaEnabled     = sys.env.getOrElse("LILA_ARENA", "false") == "true"
 
-  private def hubItem(href: String, vi: String, en: String)(using ctx: Context) =
-    // Link chữ inline trong danh sách: WCAG 2.5.8 chỉ đòi ≥24px, không phải 44px (BRAND.md
-    // §3b) — nhưng padding dưới đây cho ra ~30px, có biên an toàn.
+  // Tham so ten `url` chu KHONG phai `href`: dat ten `href` thi no CHE mat thuoc tinh
+  // `href` cua Scalatags trong pham vi ham, nen `href := href` bi hieu la gan vao mot
+  // String va compile chet ("value := is not a member of String").
+  // Doi chieu TAY khong bat duoc loai loi nay vi ca hai ten deu ton tai that — chi trinh
+  // bien dich moi thay. Da lam chet build 13 ngay 18/08.
+  private def hubItem(url: String, vi: String, en: String)(using ctx: Context) =
+    // Link chu inline trong danh sach: WCAG 2.5.8 chi doi >=24px, khong phai 44px
+    // (BRAND.md §3b) — padding duoi day cho ra ~30px, co bien an toan.
     li(style := "margin:0.5em 0;line-height:1.5")(
-      a(href := href, style := "display:inline-block;padding:0.3em 0.1em")(HomeI18n(vi, en))
+      a(href := url, style := "display:inline-block;padding:0.3em 0.1em")(HomeI18n(vi, en))
     )
 
   private def hubPage(
