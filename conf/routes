@@ -929,6 +929,13 @@ GET   /hlv/puzzle/$id<[a-zA-Z0-9]{5}>  controllers.Main.hlvCoachPuzzle(id: Strin
 GET   /hlv-app                         controllers.Main.hlvCoachProxy(path = "")
 GET   /hlv-app/*path                   controllers.Main.hlvCoachProxy(path: String)
 
+# Real Chess (bàn cờ 3D vật lý): proxy same-origin sang container realchess — David chốt
+# 13/08 đưa thẳng vào hungkings.com/realchess. Cùng khuôn /hlv-app (Main.streamProxy);
+# env LILA_REALCHESS_INTERNAL_URL rỗng = 404 (tắt/bật bằng env + deploy, không build lại).
+# Cùng bẫy `*path` không khớp rỗng: URL trần /realchess khớp route exact bên trên.
+GET   /realchess                       controllers.Main.realchessProxy(path = "")
+GET   /realchess/*path                 controllers.Main.realchessProxy(path: String)
+
 # HungKings: HỆ ĐIỂM tích luỹ + đổi quà + giới thiệu 33%. Gác sau cờ LILA_POINTS
 # (mặc định TẮT — mọi route dưới đây trả 404 khi tắt).
 GET   /diem                            controllers.Main.pointsHome

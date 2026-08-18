@@ -100,6 +100,16 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
   def hlvCoachProxy(path: String) = Anon:
     streamProxy(coachInternalUrl, "/hlv-app", path, "GET", none, Nil)(using ctx.req)
 
+  // Real Chess (bàn cờ 3D vật lý) same-origin tại /realchess — David chốt 13/08.
+  // Env RỖNG = tính năng TẮT (404): bật/tắt bằng env + deploy, KHÔNG build lại image
+  // (đúng khuôn mọi cờ tính năng của dự án).
+  private val realchessInternalUrl =
+    sys.env.getOrElse("LILA_REALCHESS_INTERNAL_URL", "")
+
+  def realchessProxy(path: String) = Anon:
+    if realchessInternalUrl.isEmpty then fuccess(NotFound("Real Chess chưa bật"))
+    else streamProxy(realchessInternalUrl, "/realchess", path, "GET", none, Nil)(using ctx.req)
+
   /**
    * DANH TINH CO KY cho he diem.
    *
