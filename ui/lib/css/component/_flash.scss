@@ -13,20 +13,23 @@
     font-size: 1.5em;
   }
 
+  // HungKings a11y: good/warn/bad la pastel o theme toi, $c-over ("white") luon trang bat
+  // ke theme nen rot AA tren pastel toi (1,5-2,8:1). $c-over-accent tu doi mau theo theme
+  // (muc toi #0D1733 o toi, trang o sang) giong cach da dung cho nen $c-accent.
   &__content {
     a {
-      color: $c-over;
+      color: $c-over-accent;
       unicode-bidi: plaintext;
     }
   }
 
   &-success {
-    color: $c-over;
+    color: $c-over-accent;
   }
 
   &-warning {
     background: $c-warn;
-    color: $c-over;
+    color: $c-over-accent;
 
     &::before {
       content: $licon-InfoCircle;
@@ -35,7 +38,7 @@
 
   &-failure {
     background: $c-bad;
-    color: $c-over;
+    color: $c-over-accent;
 
     &::before {
       content: $licon-CautionCircle;

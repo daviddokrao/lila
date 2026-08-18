@@ -101,9 +101,11 @@
       animation: shadow-glow 1s infinite;
     }
 
+    // HungKings a11y: c-good/c-bad la pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
     &.completed {
       background: $c-good;
-      color: $c-over;
+      color: $c-over-accent;
     }
 
     &.completed button {
@@ -112,7 +114,7 @@
 
     &.failed {
       background: $c-bad;
-      color: $c-over;
+      color: $c-over-accent;
     }
 
     &.failed button {

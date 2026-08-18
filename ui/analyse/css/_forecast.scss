@@ -60,7 +60,9 @@
       align-items: center;
       padding-inline-end: 0.5px;
       background: $c-bad;
-      color: $c-over;
+      // HungKings a11y: $c-bad la pastel o theme toi; $c-over-accent tu doi
+      // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+      color: $c-over-accent;
       border-radius: 50%;
       z-index: 1;
 

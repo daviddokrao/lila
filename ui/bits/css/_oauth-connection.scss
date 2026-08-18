@@ -38,7 +38,9 @@
 
       flex: 0 0 2.5em;
       height: 2.5em;
-      color: $c-over;
+      // HungKings a11y: $c-good la pastel o theme toi; $c-over-accent tu doi
+      // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+      color: $c-over-accent;
       background: $c-good;
       border-radius: 50px;
     }

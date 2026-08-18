@@ -96,14 +96,16 @@
     text-align: center;
   }
 
+  // HungKings a11y: c-good/c-bad la pastel o theme toi; $c-over-accent tu doi
+  // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
   .appeal-clean .root h2 {
     background: $c-good;
-    color: $c-over;
+    color: $c-over-accent;
   }
 
   .appeal-marked .root h2 {
     background: $c-bad;
-    color: $c-over;
+    color: $c-over-accent;
   }
 
   .form-toggle {

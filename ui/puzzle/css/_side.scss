@@ -318,7 +318,10 @@
     &:hover,
     &.active {
       background: $c-good;
-      color: $c-over !important;
+      // HungKings a11y: c-good/c-bad la pastel o theme toi (1,74:1 voi $c-over trang co
+      // dinh). $c-over-accent tu doi muc toi/trang theo theme, ap dung ca cho
+      // .vote-down (nen $c-bad) ben duoi.
+      color: $c-over-accent !important;
     }
 
     &.vote-down:hover,

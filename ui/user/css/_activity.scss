@@ -124,7 +124,9 @@
     strong {
       @extend %box-radius;
 
-      color: #fff;
+      // HungKings a11y: good/brag/bad (win/draw/loss, dong :141-151) la pastel o theme
+      // toi; $c-over-accent tu doi muc toi/trang theo theme, dat AA ca hai ben.
+      color: $c-over-accent;
       font-size: 1.2em;
       padding: 0 6px;
       display: inline-block;

@@ -93,6 +93,9 @@
 
 .mod-timeline__report-form--open .button {
   background: $c-bad;
+  // HungKings a11y: $c-bad la pastel o theme toi; chu ke thua tu .button ($c-over trang
+  // co dinh) chi dat 2,78:1. $c-over-accent tu doi muc toi/trang theo theme.
+  color: $c-over-accent;
 }
 
 .mod-timeline__text {

@@ -84,7 +84,9 @@ dialog {
         @include box-shadow;
 
         background: $c-bad;
-        color: #fff;
+        // HungKings a11y: $c-bad la pastel o theme toi; $c-over-accent tu doi
+        // muc toi/trang theo theme, dat AA ca hai ben (thay #fff co dinh).
+        color: $c-over-accent;
       }
     }
   }

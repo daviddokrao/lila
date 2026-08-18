@@ -21,12 +21,17 @@
       font-size: 0.9em;
     }
 
+    // HungKings a11y: good/bad/brag la pastel o theme toi, chu ke thua "color: #fff" o
+    // tren (dung cho .session-new nen $c-primary) chi dat 1,5-2,8:1 tren pastel. Tra ve
+    // muc toi/trang theo theme bang $c-over-accent cho 3 nen pastel nay.
     &.result-true {
       background: $c-good;
+      color: $c-over-accent;
     }
 
     &.result-false {
       background: $c-bad;
+      color: $c-over-accent;
 
       &.result-empty::before {
         content: $licon-X;
@@ -35,6 +40,7 @@
 
     &.current {
       background: $c-brag;
+      color: $c-over-accent;
     }
 
     &.session-new {

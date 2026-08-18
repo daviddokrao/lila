@@ -1,5 +1,7 @@
 .tour__notice {
-  color: #fff;
+  // HungKings a11y: nen mac dinh $c-good la pastel o theme toi nen can muc toi/trang theo
+  // theme ($c-over-accent); &.closed doi sang $c-primary (khong pastel) nen giu trang.
+  color: $c-over-accent;
   background: $c-good;
   text-align: center;
   padding: 0.5em 0;
@@ -7,6 +9,7 @@
 
   &.closed {
     background: $c-primary;
+    color: #fff;
   }
 }
 

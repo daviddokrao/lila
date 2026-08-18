@@ -16,7 +16,9 @@ dialog .help {
   th p {
     margin: 1.2em 0 0.6em 0;
     background: $c-brag;
-    color: $c-over;
+    // HungKings a11y: $c-brag la vang pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+    color: $c-over-accent;
     font-weight: bold;
     padding: 0.3em 0;
   }

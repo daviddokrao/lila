@@ -269,9 +269,11 @@
     cursor: default;
     padding: 0;
 
+    // HungKings a11y: $c-secondary = $c-good, pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
     .game_title {
       text-align: center;
-      color: $c-over;
+      color: $c-over-accent;
       margin: 3px 0 1px 0;
     }
 
@@ -280,8 +282,9 @@
       justify-content: space-between;
       text-transform: uppercase;
 
+      // HungKings a11y: nen la .game_menu ($c-secondary, pastel o theme toi).
       a {
-        color: #fff;
+        color: $c-over-accent;
         padding: 4px 8px;
       }
 

@@ -9,6 +9,9 @@
 
   &.required {
     background: $c-accent;
+    // HungKings a11y: $c-accent la vang pastel o theme toi; chu ke thua $c-font (gan
+    // trang) chi dat 1,47:1. $c-over-accent tu doi muc toi/trang theo theme.
+    color: $c-over-accent;
   }
 
   input {

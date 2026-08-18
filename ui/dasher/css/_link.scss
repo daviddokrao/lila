@@ -34,18 +34,23 @@
     }
   }
 
+  // HungKings a11y: $c-dasher = $c-secondary = $c-good, pastel o theme toi; $c-over-accent
+  // tu doi muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
   .links a:hover,
   .links a:hover::before,
   .links a:hover .line::before,
   .links button:hover,
   .subs .sub:hover {
     background: $c-dasher;
-    color: $c-over !important;
+    color: $c-over-accent !important;
     opacity: 1;
   }
 
   .logout button:hover {
     background: $c-error;
+    // HungKings a11y: $c-error = $c-bad, pastel o theme toi; chu ke thua $c-font (gan
+    // trang) tu #dasher_app khong dat AA. $c-over-accent tu doi muc toi/trang theo theme.
+    color: $c-over-accent;
   }
 
   .links button {
@@ -66,7 +71,7 @@
     }
 
     &:hover::before {
-      color: $c-over;
+      color: $c-over-accent;
       opacity: 0.9;
     }
   }

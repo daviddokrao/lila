@@ -15,7 +15,9 @@
   &.fail {
     padding: 2em 1.5em;
     background: $c-good;
-    color: $c-over;
+    // HungKings a11y: c-good/c-bad la pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, ap dung ca cho &.fail (nen $c-bad) ben duoi.
+    color: $c-over-accent;
     animation: 1.7s soft-bright ease-in-out infinite;
     opacity: 0.8;
 

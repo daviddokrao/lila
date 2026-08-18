@@ -16,7 +16,9 @@
     margin-inline-start: 0.5em;
     padding: 0.1em 0.3em;
     background-color: $c-brag;
-    color: $c-over;
+    // HungKings a11y: $c-brag la vang pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+    color: $c-over-accent;
   }
 }
 

@@ -80,8 +80,10 @@
     }
 
     .current {
+      // HungKings a11y: $c-dasher = $c-secondary = $c-good, pastel o theme toi;
+      // $c-over-accent tu doi muc toi/trang theo theme (thay $c-over trang co dinh).
       background: $c-dasher !important;
-      color: $c-over !important;
+      color: $c-over-accent !important;
       border-inline-start: none;
     }
 
@@ -138,7 +140,7 @@
 
       &.active::before {
         opacity: 1;
-        color: $c-over !important;
+        color: $c-over-accent !important;
       }
     }
 

@@ -91,10 +91,12 @@ $disclosure-btn-size: calc(15px + var(---button-size-pointer-adjust, 0px));
   &.context-menu {
     border: 0;
     background: $c-accent !important;
-    color: $c-over !important;
+    // HungKings a11y: $c-accent la vang pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+    color: $c-over-accent !important;
 
     index {
-      color: $c-over;
+      color: $c-over-accent;
     }
   }
 

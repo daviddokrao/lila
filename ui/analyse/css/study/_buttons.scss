@@ -21,7 +21,9 @@ $c-study-button: $c-accent;
 
   .behind {
     background: $c-bad;
-    color: $c-over;
+    // HungKings a11y: $c-bad la pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+    color: $c-over-accent;
     padding: 0 5px;
     border-radius: 9px;
     margin-inline-end: 4px;

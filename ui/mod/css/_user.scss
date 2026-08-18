@@ -160,9 +160,11 @@
     z-index: $z-mz-menu-4;
     padding: 0;
 
+    // HungKings a11y: $c-brag la vang pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
     a {
       padding: 1.2em 1.2em;
-      color: $c-over;
+      color: $c-over-accent;
       font-size: 1.1em;
       font-weight: bold;
       opacity: 0.5;

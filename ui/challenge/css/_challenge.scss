@@ -115,7 +115,9 @@
 
     button:hover {
       background: $c-good;
-      color: $c-over;
+      // HungKings a11y: c-good/c-bad la pastel o theme toi; $c-over-accent tu doi
+      // muc toi/trang theo theme, ap dung ca cho button.decline:hover (nen $c-bad).
+      color: $c-over-accent;
     }
 
     button.decline:hover {

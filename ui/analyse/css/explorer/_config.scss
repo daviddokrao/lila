@@ -43,7 +43,9 @@
       &[aria-pressed='true'],
       &.active {
         background: $c-secondary;
-        color: $c-over;
+        // HungKings a11y: $c-secondary = $c-good, pastel o theme toi; $c-over-accent tu
+        // doi muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+        color: $c-over-accent;
         font-weight: bold;
         box-shadow: 0 3px 5px rgb(0 0 0 / 0.2) inset !important;
 

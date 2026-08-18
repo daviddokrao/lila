@@ -63,11 +63,13 @@
       margin: 0.7em 0;
     }
 
+    // HungKings a11y: $c-bad la pastel o theme toi; $c-over-accent tu doi muc toi/trang
+    // theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
     .danger {
       @extend %box-neat;
 
       font-weight: bold;
-      color: $c-over;
+      color: $c-over-accent;
       background: $c-bad;
       padding: 0.3em 0.8em;
 
@@ -77,7 +79,7 @@
         font-size: 1.5em;
         margin-inline: 0 0.2em;
         content: $licon-CautionTriangle;
-        color: $c-over;
+        color: $c-over-accent;
       }
     }
   }
@@ -101,7 +103,9 @@
 
     padding: 2em;
     background: $c-good;
-    color: $c-over;
+    // HungKings a11y: $c-good la pastel o theme toi; $c-over-accent thay $c-over trang co
+    // dinh de tu doi muc toi/trang theo theme.
+    color: $c-over-accent;
     font-weight: bold;
   }
 

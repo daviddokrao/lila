@@ -17,6 +17,10 @@
   &.error {
     background: $c-error;
     flex-flow: column;
+    // HungKings a11y: $c-error = $c-bad, pastel o theme toi; chu ke thua $c-over ("white"
+    // co dinh) tu dong lot khoi banner chi con 2,78:1. $c-over-accent tu doi muc toi/trang
+    // theo theme nen ca hai ben deu dat AA.
+    color: $c-over-accent !important;
 
     code {
       font-size: 1rem;
@@ -29,6 +33,10 @@
   color: $c-over !important;
   text-decoration: underline;
   margin-left: 1em;
+}
+
+.email-confirm-banner.error a {
+  color: $c-over-accent !important;
 }
 
 body:has(.email-confirm, .signup-confirm) .signin-or-signup {

@@ -11,7 +11,9 @@
   font-size: 0.9rem;
   line-height: 2;
   background: $c-good;
-  color: #fff;
+  // HungKings a11y: $c-good/$c-bad la pastel o theme toi (4,5:1 doi hoi AA), $c-over-accent
+  // tu doi mau theo theme (muc toi #0D1733 o toi, trang o sang) nen doc duoc ca hai ben.
+  color: $c-over-accent;
 
   &-top {
     border-top-right-radius: $box-radius-size;

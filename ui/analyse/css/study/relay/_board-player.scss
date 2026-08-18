@@ -64,7 +64,9 @@
 
   &.ticking .analyse__clock {
     background: $c-secondary;
-    color: $c-over;
+    // HungKings a11y: $c-secondary = $c-good, pastel o theme toi; $c-over-accent tu doi
+    // muc toi/trang theo theme, dat AA ca hai ben (thay $c-over trang co dinh).
+    color: $c-over-accent;
     text-shadow: none;
     box-shadow: none;
   }

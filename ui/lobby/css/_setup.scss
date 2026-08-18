@@ -241,7 +241,9 @@ $c-slider: $c-setup;
 
           &.active {
             background: $c-setup;
-            color: $c-over;
+            // HungKings a11y: $c-setup = $c-secondary = $c-good, pastel o theme toi;
+            // $c-over-accent tu doi muc toi/trang theo theme (thay $c-over trang co dinh).
+            color: $c-over-accent;
           }
         }
       }

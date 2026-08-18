@@ -75,7 +75,9 @@
     display: block;
     padding: 0.5em 1em;
     background: $c-brag;
-    color: $c-over;
+    // HungKings a11y: $c-brag la vang pastel o theme toi; $c-over ("white" co dinh) chi
+    // dat 1,52:1. $c-over-accent tu doi muc toi/trang theo theme, dat AA ca hai ben.
+    color: $c-over-accent;
   }
 
   .content {

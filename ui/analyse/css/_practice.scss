@@ -40,15 +40,17 @@
     background: $c-shade;
   }
 
+  // HungKings a11y: good/brag/bad la pastel o theme toi; $c-over-accent tu doi
+  // muc toi/trang theo theme, dat AA ca hai ben (thay #fff co dinh).
   &.goodMove .progress div {
     background: $c-good;
-    color: #fff;
+    color: $c-over-accent;
   }
 
   &.inaccuracy .title,
   &.inaccuracy .progress div {
     background: $c-brag;
-    color: #fff;
+    color: $c-over-accent;
   }
 
   &.mistake .title,
@@ -56,7 +58,7 @@
   &.mistake .progress div,
   &.blunder .progress div {
     background: $c-bad;
-    color: #fff;
+    color: $c-over-accent;
   }
 
   .comment .wait {
@@ -72,7 +74,8 @@
   .verdict::before {
     width: 30px;
     height: 100%;
-    color: #fff;
+    // HungKings a11y: nen phia duoi (good/brag/bad, dong :86-110) la pastel o theme toi.
+    color: $c-over-accent;
     margin-inline-end: 7px;
     text-align: center;
     font-size: 1.4em;

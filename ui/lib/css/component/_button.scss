@@ -63,9 +63,14 @@
     );
 
     background: $c-secondary;
+    // HungKings a11y: $c-secondary = $c-good, pastel o theme toi; chu ke thua tu .button
+    // ($c-over trang co dinh) chi dat ~1,7:1. $c-over-accent tu doi muc toi/trang theo
+    // theme, dat AA ca hai ben.
+    color: $c-over-accent;
 
     &:not(.disabled):hover {
       background: hsl(from $c-secondary h s calc(l + 4));
+      color: $c-over-accent;
     }
   }
 
@@ -78,9 +83,14 @@
     );
 
     background: $c-bad;
+    // HungKings a11y: $c-bad la pastel o theme toi; chu ke thua tu .button ($c-over trang
+    // co dinh) chi dat 2,78:1. $c-over-accent tu doi muc toi/trang theo theme, dat AA
+    // ca hai ben.
+    color: $c-over-accent;
 
     &:not(.disabled):hover {
       background: hsl(from $c-bad h s calc(l + 11));
+      color: $c-over-accent;
     }
   }
 
@@ -172,13 +182,16 @@
   &.active {
     @extend %active;
 
-    color: #fff;
+    // HungKings a11y: %active da dat nen $c-accent + color: $c-over-accent dung; dong nay
+    // truoc day ghi de lai thanh #fff co dinh, lam mat AA tren nen vang pastel o theme
+    // toi (1,65:1). Giu dung gia tri cua %active thay vi ghi de.
+    color: $c-over-accent;
   }
 
   &.active:not(.disabled):hover {
     @extend %active-hover;
 
-    color: #fff;
+    color: $c-over-accent;
   }
 }
 

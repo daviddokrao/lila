@@ -50,12 +50,15 @@
     }
   }
 
+  // HungKings a11y: c-bad/c-good la pastel o theme toi; $c-over-accent tu doi
+  // muc toi/trang theo theme, dat AA ca hai ben.
   .todo icon {
     background: $c-bad;
-    color: $c-over;
+    color: $c-over-accent;
   }
 
   .done icon {
     background: $c-good;
+    color: $c-over-accent;
   }
 }
