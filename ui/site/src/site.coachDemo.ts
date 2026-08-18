@@ -247,11 +247,23 @@ function collapse(root: HTMLElement): void {
   }
   root.style.maxHeight = `${root.scrollHeight}px`;
   root.classList.add('hk-cdemo--collapsing');
-  // requestAnimationFrame để trình duyệt kịp ghi nhận max-height khởi điểm, nếu không
-  // transition không có điểm bắt đầu và khối biến mất tức thì.
+
+  // VIỆC GỠ PHẢI ĐƯỢC HẸN NGAY, KHÔNG ĐƯỢC NẰM TRONG requestAnimationFrame.
+  //
+  // rAF KHÔNG chạy khi tab đang ẩn (trình duyệt dừng hẳn nó để tiết kiệm pin). Bản trước
+  // đặt `setTimeout(remove, 400)` BÊN TRONG rAF, nên nếu người dùng bấm demo rồi chuyển
+  // tab trước lúc thu gọn thì callback không bao giờ chạy → hẹn giờ không bao giờ được
+  // đặt → khối kẹt ở "HLV đang xem nước của bạn…" VĨNH VIỄN khi họ quay lại.
+  //
+  // Đã tái hiện thật 18/08: đo trong tab ẩn (`document.hidden === true`), khối vào
+  // `--collapsing` rồi đứng nguyên hơn 10 giây, chữ không đổi. Ban đầu tưởng là hạn chế
+  // của môi trường đo, nhưng tab ẩn CHÍNH LÀ kịch bản người dùng thật.
+  //
+  // Nay hẹn giờ đứng độc lập; rAF chỉ còn lo phần NHÌN (cho transition có điểm bắt đầu).
+  // Tab ẩn thì không có animation để xem, nhưng khối vẫn biến mất đúng hẹn.
+  setTimeout(() => root.remove(), 400);
   requestAnimationFrame(() => {
     root.style.maxHeight = '0px';
-    setTimeout(() => root.remove(), 400);
   });
 }
 
