@@ -442,6 +442,16 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
         )
       )
 
+  // HungKings: hai lối vào MỚI trong sidebar. Cố ý đọc THẲNG `sys.env` thay vì đi qua
+  // WebConfig/HOCON như `pointsEnabled`:
+  //   - đi qua HOCON là 5 file (WebConfig + base.conf + Env + page.scala + đây), và HOCON
+  //     coi BIẾN RỖNG là "đã đặt" nên một dòng env trống làm parse bool NỔ lúc khởi động;
+  //   - `Main.scala` đã đọc đúng hai biến này bằng `sys.env`, nên đọc cùng cách ở đây giữ
+  //     MỘT nguồn sự thật: lối vào hiện đúng khi và chỉ khi route phía sau nó sống.
+  // Cùng ngữ nghĩa với Main.scala: URL rỗng = tính năng tắt.
+  private val realchessEnabled = sys.env.get("LILA_REALCHESS_INTERNAL_URL").exists(_.nonEmpty)
+  private val arenaEnabled = sys.env.getOrElse("LILA_ARENA", "false") == "true"
+
   // ---------- Sidebar toàn site (cờ LILA_HOME_SIDEBAR) ----------
   // Trước 04/08 sidebar chỉ sống trong homeV2.scala và chỉ dành cho khách vãng lai.
   // David chốt: áp cho MỌI trang, cả người đã đăng nhập. Nên nó về đây nằm cạnh
@@ -454,10 +464,17 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
 
     // Biểu tượng đứng trước nhãn, mỗi mục một dòng — cách xếp của Chess.com nhưng dùng
     // bộ biểu tượng SẴN CÓ của lila. `extra` là chỗ cho huy hiệu MỚI.
-    private def navItem(url: String, icon: Icon, label: Frag, extra: Modifier*)(subs: Frag*) =
+    // `label` là String chứ không phải Frag: cần chính chuỗi đó cho `aria-label`.
+    // Mọi chỗ gọi đều truyền `t(vi, en)` vốn trả String, nên không đổi gì ở call site.
+    private def navItem(url: String, icon: Icon, label: String, extra: Modifier*)(subs: Frag*) =
       // Mỗi mục là một khối riêng để panel con neo được theo nó (position:relative).
       div(cls := "hv2-side__item")(
-        a(href := url)(
+        // aria-label BẮT BUỘC: ở 5 trang có bàn cờ (/round /training /analyse /storm /racer)
+        // sidebar thu còn 64px và `_sidebar.scss` ẩn nhãn bằng `display:none` — mà
+        // display:none xoá phần tử khỏi cây trợ năng, nên 7 link điều hướng trở thành
+        // KHÔNG CÓ TÊN với trình đọc màn hình (đo trong báo cáo audit 18/08, lỗi #2).
+        // Biểu tượng là font-icon qua `data-icon` nên cũng không cấp tên thay được.
+        a(href := url, aria.label := label)(
           span(cls := "hv2-side__ico", dataIcon := icon),
           span(cls := "hv2-side__lb")(label),
           extra
@@ -487,21 +504,23 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
             div(cls := "site-name")(siteNameFrag)
           ),
           st.nav(cls := "hv2-side__nav", aria.label := t("Điều hướng chính", "Main navigation"))(
-            // `/tv` CỐ Ý vắng mặt: 404 vĩnh viễn tới khi có ván tiêu chuẩn tính hệ số của
-            // người thật (xem HANDOFF, mục "/tv trả 404 là ĐÚNG").
-            navItem(routes.Tv.games.url, Icon.AnalogTv, t("Trực tiếp", "Live"))(
-              subItem(routes.Tv.games.url, t("Ván đang diễn ra", "Current games")),
-              // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số navItem là `Frag*`, mà
-              // Option chỉ thành Modifier chứ không thành Frag (cùng lý do với forum bên dưới).
-              if broadcastEnabled then subItem(routes.RelayTour.index().url, t("Tiếp sóng giải đấu", "Broadcasts"))
-              else emptyFrag,
-              subItem(routes.Streamer.index().url, t("Người phát trực tiếp", "Streamers"))
-            ),
+            // THỨ TỰ ĐỔI 18/08 theo báo cáo benchmark (ui-redesign/reports/02): "Chơi" lên
+            // #1, "Trực tiếp" xuống #7. Lý do đo được: 3/4 nền tảng chuẩn (chess.com,
+            // lichess, chesskid) đặt Play ở #1, còn "Trực tiếp" của bản này là mục RỖNG
+            // NHẤT — `/tv` 404 có chủ ý, `/streamer` chưa ai phát. Điểm chạm đầu tiên
+            // không được là chỗ trống.
             navItem("/#hv2-play", Icon.PlayTriangle, t("Chơi", "Play"))(
               subItem("/#hv2-play", t("Xếp cặp nhanh", "Quick pairing")),
               subItem("/#hook", t("Tạo ván tại sảnh", "Create a game")),
               subItem("/#friend", t("Thách đấu bạn bè", "Play a friend")),
-              subItem("/#ai", t("Chơi với máy", "Play the computer"))
+              subItem("/#ai", t("Chơi với máy", "Play the computer")),
+              // Bàn cờ 3D: trước 18/08 chỉ vào được qua realchess.vssa.com và KHÔNG có
+              // liên kết nào từ site chính — mồ côi hoàn toàn (báo cáo 04). Đặt làm mục
+              // con của "Chơi" chứ không phải mục cấp 1: nó là một CÁCH CHƠI, và
+              // chess.com cũng để "Play Bots" làm mục con của Play.
+              // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số là `Frag*`, mà Option
+              // chỉ thành Modifier chứ không thành Frag.
+              if realchessEnabled then subItem("/realchess", t("Bàn cờ 3D", "3D board")) else emptyFrag
             ),
             navItem(routes.Puzzle.home.url, Icon.ArcheryTarget, t("Câu đố", "Puzzles"))(
               subItem(routes.Puzzle.home.url, t("Câu đố hằng ngày", "Daily puzzle")),
@@ -517,15 +536,70 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
               subItem(routes.UserAnalysis.index.url, t("Bàn phân tích", "Analysis board")),
               subItem(routes.Study.allDefault().url, t("Nghiên cứu", "Studies"))
             ),
+            // HLV AI có 6 endpoint nhưng trước 18/08 chỉ có ĐÚNG MỘT lối vào và không mục
+            // con nào (báo cáo 02, khoảng trống T4). Chỉ khai hai đường vào được mà KHÔNG
+            // cần id: `/hlv` và `/hlv/position`. Ba đường còn lại (`/hlv/<gameId>`,
+            // `/hlv/puzzle/<id>`) buộc phải có id nên không đặt vào menu tĩnh được —
+            // thêm link giả để menu trông đầy đặn là mời người dùng bấm vào 404.
             navItem(
               "/hlv",
               Icon.Cpu,
               t("Huấn luyện AI", "AI coach"),
               span(cls := "hv2-side__new")(t("MỚI", "NEW"))
-            )(),
+            )(
+              subItem("/hlv", t("Giải thích cả ván", "Explain a game")),
+              subItem("/hlv/position", t("Hỏi về thế cờ", "Ask about a position"))
+            ),
             // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số của st.nav là `Frag*`,
             // mà Option chỉ thành Modifier chứ không thành Frag (cùng lý do đã ghi ở
             // mục Diễn đàn/Tiếp sóng bên dưới).
+            // Ngoặc bao trọn biểu thức if: tiền lệ `if ... then x else emptyFrag,` trong
+            // file này đều nằm gọn MỘT dòng; dạng nhiều dòng kèm dấu phẩy theo sau thì
+            // cú pháp thụt lề dễ hiểu nhầm, mà một vòng build ở đây là 13-20 phút.
+            navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments"))(
+              subItem(routes.Tournament.home.url, t("Đấu trường", "Arenas")),
+              subItem(routes.Tournament.calendar.url, t("Lịch giải", "Calendar")),
+              // Giải cờ 2 Phái: trước 18/08 sống ở arena.vssa.com với ĐÚNG 0 liên kết từ
+              // site chính. Là mục con của "Giải đấu" vì nó LÀ một giải. Đường `/giai`
+              // chứ không phải `/arena` — "arena" đã là tên loại giải sẵn có của lila
+              // ngay phía trên, trùng tên là mời người dùng nhầm.
+              if arenaEnabled then subItem("/giai", t("Giải 2 Phái", "Two Sides")) else emptyFrag
+            ),
+            // NHÓM CÔNG CỤ — mới 18/08. Ba trang này vẫn trả 200 nhưng KHÔNG có liên kết
+            // nào từ điều hướng (báo cáo 04): chúng chỉ còn nằm trong `TopNav.scala`, mà
+            // TopNav không render trên site đang dùng sidebar. lichess có nhóm Tools riêng,
+            // chess.com gom vào Other. "Bàn phân tích" CỐ Ý lặp lại ở cả "Học cờ" lẫn đây —
+            // chess.com cũng lặp "Play Coach" ở hai nhánh, mục quan trọng được phép có hai lối.
+            navItem(routes.UserAnalysis.index.url, Icon.Tools, t("Công cụ", "Tools"))(
+              subItem(routes.UserAnalysis.index.url, t("Bàn phân tích", "Analysis board")),
+              subItem(routes.Editor.index.url, t("Sửa bàn cờ", "Board editor")),
+              subItem(routes.Importer.importGame.url, t("Nhập ván PGN", "Import game")),
+              subItem(routes.Coordinate.home.url, t("Luyện toạ độ", "Coordinate trainer"))
+            ),
+            // `/tv` CỐ Ý vắng mặt: 404 vĩnh viễn tới khi có ván tiêu chuẩn tính hệ số của
+            // người thật (xem HANDOFF, mục "/tv trả 404 là ĐÚNG").
+            navItem(routes.Tv.games.url, Icon.AnalogTv, t("Trực tiếp", "Live"))(
+              subItem(routes.Tv.games.url, t("Ván đang diễn ra", "Current games")),
+              // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số navItem là `Frag*`, mà
+              // Option chỉ thành Modifier chứ không thành Frag (cùng lý do với forum bên dưới).
+              if broadcastEnabled then subItem(routes.RelayTour.index().url, t("Tiếp sóng giải đấu", "Broadcasts"))
+              else emptyFrag,
+              subItem(routes.Streamer.index().url, t("Người phát trực tiếp", "Streamers"))
+            ),
+            navItem(routes.User.list.url, Icon.Group, t("Cộng đồng", "Community"))(
+              subItem(routes.User.list.url, t("Kỳ thủ", "Players")),
+              subItem(routes.Team.home().url, t("Đội", "Teams")),
+              // `/feed` có nội dung và trả 200 nhưng KHÔNG có liên kết nào trỏ tới (báo cáo
+              // 02, khoảng trống T5). Đây là khối duy nhất trong nhóm xã hội chạy được bằng
+              // MỘT người vận hành — lichess dùng đúng nó để trang có nhịp đập khi chưa có
+              // cộng đồng.
+              subItem(routes.Feed.index().url, t("Tin HungKings", "News")),
+              // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số ở đây là `Frag*`,
+              // mà Option chỉ tự chuyển thành Modifier chứ không thành Frag.
+              if forumEnabled then subItem(routes.ForumCateg.index.url, t("Diễn đàn", "Forum"))
+              else emptyFrag
+            ),
+            // Điểm thưởng xuống CUỐI: nó là hệ thống giữ chân, không phải điểm chạm đầu.
             // Ngoặc bao trọn biểu thức if: tiền lệ `if ... then x else emptyFrag,` trong
             // file này đều nằm gọn MỘT dòng; dạng nhiều dòng kèm dấu phẩy theo sau thì
             // cú pháp thụt lề dễ hiểu nhầm, mà một vòng build ở đây là 13-20 phút.
@@ -539,19 +613,7 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
                  subItem(routes.Main.pointsHome.url, t("Điểm của tôi", "My points")),
                  subItem(routes.Main.pointsShopHome.url, t("Đổi quà", "Rewards shop"))
                )
-             else emptyFrag),
-            navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments"))(
-              subItem(routes.Tournament.home.url, t("Đấu trường", "Arenas")),
-              subItem(routes.Tournament.calendar.url, t("Lịch giải", "Calendar"))
-            ),
-            navItem(routes.User.list.url, Icon.Group, t("Cộng đồng", "Community"))(
-              subItem(routes.User.list.url, t("Kỳ thủ", "Players")),
-              subItem(routes.Team.home().url, t("Đội", "Teams")),
-              // `emptyFrag` chứ KHÔNG phải `.option(...)`: tham số ở đây là `Frag*`,
-              // mà Option chỉ tự chuyển thành Modifier chứ không thành Frag.
-              if forumEnabled then subItem(routes.ForumCateg.index.url, t("Diễn đàn", "Forum"))
-              else emptyFrag
-            )
+             else emptyFrag)
           ),
           // Cụm đáy: tìm kiếm → (khách: mời đăng ký) → công cụ. Dasher xuống DÒNG CUỐI vì
           // bảng bung ra từ đây phải mở NGƯỢC LÊN, không thì đè cả cột (lỗi 03/08).

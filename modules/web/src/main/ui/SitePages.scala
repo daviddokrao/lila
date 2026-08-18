@@ -352,6 +352,37 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
 
   def pointsShop(using Context) = pointsEmbed("shop", "Đổi quà")
 
+  /**
+   * Giải cờ 2 Phái — trang vỏ có sidebar, nhúng arena qua /giai-app.
+   *
+   * KHÁC pointsEmbed ở một chỗ: arena phát URL theo header `X-Base-Path` mà Caddy nội bộ
+   * gắn, nên ở đây KHÔNG cần truyền tiền tố qua query. Vẫn truyền `lang` để arena biết
+   * ngôn ngữ, và `theme` để app nhúng khớp theme của trang cha — lila đổi theme bằng class
+   * `html.light` còn app nhúng vốn nghe `prefers-color-scheme`, hai cơ chế không biết nhau
+   * thì lila sáng + máy tối làm chữ trong iframe tụt xuống ~1:1 (đã đo ở /hlv).
+   */
+  def giaiHome(using ctx: Context) =
+    val lang = ctx.lang.language
+    // `currentBg` tra 4 gia tri: "light" | "dark" | "transp" | "system" (Pref.scala:130).
+    // "system" phai TRUYEN NGUYEN — ep thanh "dark" la sai dung truong hop nguoi dung chon
+    // "theo may": lila se render sang theo HDH trong khi iframe bi bao dark. Voi "system",
+    // app nhung tu roi ve `prefers-color-scheme` (dung thiet ke cua bo token dung chung).
+    // "transp" la bien the nen toi nen gom vao dark.
+    val theme = ctx.pref.currentBg match
+      case "light"  => "light"
+      case "system" => "system"
+      case _        => "dark"
+    Page("Giải cờ 2 Phái"):
+      // `width:100%` BẮT BUỘC đi kèm `margin:0 auto` — xem ghi chú ở pointsEmbed ngay dưới.
+      main(style := "width:100%;max-width:1100px;margin:0 auto;padding:1rem 1rem 2rem")(
+        iframe(
+          src            := s"/giai-app/?embed=1&lang=$lang&theme=$theme",
+          st.title       := "Giải cờ 2 Phái",
+          st.frameborder := "0",
+          style := "width:100%;height:88vh;border:0;display:block;border-radius:14px;background:transparent"
+        )
+      )
+
   private def pointsEmbed(path: String, title: String)(using ctx: Context) =
     val lang = ctx.lang.language
     val sep  = if path.contains("?") then "&" else "?"

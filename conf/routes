@@ -936,6 +936,13 @@ GET   /hlv-app/*path                   controllers.Main.hlvCoachProxy(path: Stri
 GET   /realchess                       controllers.Main.realchessProxy(path = "")
 GET   /realchess/*path                 controllers.Main.realchessProxy(path: String)
 
+# Giải cờ 2 Phái (arena) — CHỈ có trang vỏ ở đây. Đường `/giai-app/*` KHÔNG khai trong file
+# này: nó do Caddy nội bộ của image gộp phục vụ (conf/mono.Caddyfile), vì arena chạy
+# WebSocket mà Play không proxy được và matcher @websockets sẽ cướp mất. Gác bởi cờ
+# LILA_ARENA (mặc định false = 404). Đường là `/giai` chứ không phải `/arena`: "arena" đã là
+# khái niệm sẵn có của lila (giải đấu arena ở /tournament), để `/arena` là mời người dùng nhầm.
+GET   /giai                            controllers.Main.giaiHome
+
 # HungKings: HỆ ĐIỂM tích luỹ + đổi quà + giới thiệu 33%. Gác sau cờ LILA_POINTS
 # (mặc định TẮT — mọi route dưới đây trả 404 khi tắt).
 GET   /diem                            controllers.Main.pointsHome

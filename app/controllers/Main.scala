@@ -111,6 +111,26 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
     else streamProxy(realchessInternalUrl, "/realchess", path, "GET", none, Nil)(using ctx.req)
 
   /**
+   * GIAI CO 2 PHAI (arena) — trang vo co sidebar tai /giai.
+   *
+   * KHAC ba app kia: KHONG co proxy o day. Arena song bang WebSocket, ma
+   * `streamProxy` la HTTP client cua Play (khong nang cap duoc Upgrade), va Caddy
+   * noi bo cua image gop bat MOI request co `Upgrade: websocket` nem sang lila-ws
+   * TRUOC khi toi Play. Nen duong `/giai-app/*` do CHINH Caddy noi bo phuc vu —
+   * xem khoi `handle_path /giai-app/*` trong conf/mono.Caddyfile. O day chi con
+   * trang vo nhung iframe vao duong do.
+   *
+   * Co RIENG (khong dung chung voi duong proxy): tat co nay chi an LOI VAO, con
+   * /giai-app van song vi Caddy khong biet gi ve env cua Play. Do la chu y —
+   * tat loi vao khong duoc lam gay ket noi cua nguoi dang choi do dang.
+   */
+  private val arenaEnabled = sys.env.getOrElse("LILA_ARENA", "false") == "true"
+
+  def giaiHome = Open:
+    if !arenaEnabled then notFound
+    else Ok.page(views.site.ui.giaiHome)
+
+  /**
    * DANH TINH CO KY cho he diem.
    *
    * Service diem nam trong mang noi bo, nhung neu no chi doc `X-HK-User` tran
