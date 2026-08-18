@@ -927,6 +927,11 @@ GET   /hlv/puzzle/$id<[a-zA-Z0-9]{5}>  controllers.Main.hlvCoachPuzzle(id: Strin
 # `*path` KHÔNG khớp chuỗi rỗng → iframe home dùng `/hlv-app` (không dấu / cuối, khớp route
 # exact), còn favicon/SSE/điều hướng luôn có segment phía sau nên khớp `*path`.
 GET   /hlv-app                         controllers.Main.hlvCoachProxy(path = "")
+# Dòng có dấu `/` cuối là BẮT BUỘC, không phải thừa: `*path` không khớp chuỗi rỗng, nên
+# `/hlv-app/` (người gõ tay URL kèm dấu gạch — rất thường) rơi thẳng vào 404. Đo được
+# trên live 18/08 ở cả /hlv-app/ lẫn /realchess/. Bẫy này còn đánh lừa cả người ĐO: URL
+# kiểm thử có dấu / thừa trả về trang lỗi của lila, trông y như app con bị hỏng.
+GET   /hlv-app/                        controllers.Main.hlvCoachProxy(path = "")
 GET   /hlv-app/*path                   controllers.Main.hlvCoachProxy(path: String)
 
 # Real Chess (bàn cờ 3D vật lý): proxy same-origin sang container realchess — David chốt
@@ -934,6 +939,8 @@ GET   /hlv-app/*path                   controllers.Main.hlvCoachProxy(path: Stri
 # env LILA_REALCHESS_INTERNAL_URL rỗng = 404 (tắt/bật bằng env + deploy, không build lại).
 # Cùng bẫy `*path` không khớp rỗng: URL trần /realchess khớp route exact bên trên.
 GET   /realchess                       controllers.Main.realchessProxy(path = "")
+# Xem ghi chú ở /hlv-app/ ngay trên: dòng có dấu `/` cuối chặn 404 cho URL gõ tay.
+GET   /realchess/                      controllers.Main.realchessProxy(path = "")
 GET   /realchess/*path                 controllers.Main.realchessProxy(path: String)
 
 # Giải cờ 2 Phái (arena) — CHỈ có trang vỏ ở đây. Đường `/giai-app/*` KHÔNG khai trong file
@@ -953,6 +960,8 @@ GET   /r/$code<HK[A-Z2-9]{5}>          controllers.Main.pointsReferral(code: Str
 # Proxy same-origin sang container hệ điểm. POST cần cho việc đổi quà — proxy coach
 # chỉ có GET, xem Main.streamProxy. Cùng bẫy `*path` không khớp rỗng như /hlv-app.
 GET   /diem-app                        controllers.Main.pointsProxy(path = "")
+# Xem ghi chú ở /hlv-app/ bên trên: dòng có dấu `/` cuối chặn 404 cho URL gõ tay.
+GET   /diem-app/                       controllers.Main.pointsProxy(path = "")
 GET   /diem-app/*path                  controllers.Main.pointsProxy(path: String)
 POST  /diem-app/*path                  controllers.Main.pointsProxyPost(path: String)
 GET   /app                             controllers.Main.app
