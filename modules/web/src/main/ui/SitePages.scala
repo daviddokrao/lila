@@ -8,7 +8,12 @@ import ScalatagsTemplate.{ *, given }
 
 // broadcastEnabled: broadcast tạm tắt bằng env LILA_BROADCAST (David chốt 06/08) — mọi route
 // relay đều 404, nên trang tài liệu không được dạy nhúng một tính năng đang không tồn tại.
-final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastEnabled: Boolean):
+// forumEnabled: HungKings B6 (18/08) — trang hub /cong-dong ẩn mục "Diễn đàn" khi diễn đàn
+// tắt, đúng cơ chế sidebar đang dùng (xem layout.scala).
+final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
+    broadcastEnabled: Boolean,
+    forumEnabled: Boolean
+):
   import helpers.{ *, given }
   // Nhãn "Giới thiệu về X" phải đi theo net.site.name, đừng viết cứng: bản dịch
   // được thay thương hiệu lúc build, còn tham số truyền vào đây thì không — viết
@@ -401,6 +406,134 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(broadcastE
           style := "width:100%;height:88vh;border:0;display:block;border-radius:14px;background:transparent"
         )
       )
+
+  // ---------- HungKings B6 (18/08): 6 trang HUB cấp 1 ----------
+  // Mỗi hub thay MỘT mục cấp 1 sidebar đang trỏ neo/route "cụt" bằng một trang liệt kê + MỘT
+  // câu mô tả — chia sẻ được, index được, và không phụ thuộc có ai đang online (khuyến nghị
+  // B6, ui-redesign/reports/02-benchmark-ia.md mục 1.6 T6, 1.7 X2). "Huấn luyện AI" (đã có
+  // /hlv) và "Trực tiếp" (đã trỏ routes.Tv.games thật) KHÔNG có hub — không thuộc phạm vi B6.
+  // Route phía sau gác bởi cờ LILA_HUBS ở controllers.Main; file này chỉ vẽ, không tự đọc cờ
+  // đó (đối xứng với cách SitePages không đọc LILA_POINTS cho pointsHome/pointsShop).
+  //
+  // Song ngữ tại chỗ theo ctx.lang, KHÔNG thêm khoá registry dịch (sửa LangList ~19' compile)
+  // — cùng khuôn `t(vi, en)` mà layout.scala (sidebar) và onboarding.scala đã dùng, đặt tên
+  // theo quy ước dự án gọi hàm này ở onboarding.scala.
+  private def HomeI18n(vi: String, en: String)(using ctx: Context): String =
+    if ctx.lang.language == "vi" then vi else en
+
+  // Cùng lý do đã ghi ở layout.scala/Main.scala cho realchessEnabled/arenaEnabled: đọc THẲNG
+  // sys.env thay vì đi qua HOCON/WebConfig — giữ MỘT nguồn sự thật với route đằng sau mỗi
+  // link, và biến RỖNG không làm nổ parse bool lúc khởi động. Đây là "dùng lại cùng cơ chế
+  // cờ" theo đúng nghĩa: cùng tên biến, cùng ngữ nghĩa rỗng-là-tắt — không phải cùng một
+  // instance Scala (layout.scala ở module `web`, đây cũng ở module `web` nhưng lớp khác).
+  private val hubRealchessEnabled = sys.env.get("LILA_REALCHESS_INTERNAL_URL").exists(_.nonEmpty)
+  private val hubArenaEnabled     = sys.env.getOrElse("LILA_ARENA", "false") == "true"
+
+  private def hubItem(href: String, vi: String, en: String)(using ctx: Context) =
+    // Link chữ inline trong danh sách: WCAG 2.5.8 chỉ đòi ≥24px, không phải 44px (BRAND.md
+    // §3b) — nhưng padding dưới đây cho ra ~30px, có biên an toàn.
+    li(style := "margin:0.5em 0;line-height:1.5")(
+      a(href := href, style := "display:inline-block;padding:0.3em 0.1em")(HomeI18n(vi, en))
+    )
+
+  private def hubPage(
+      icon: Icon,
+      titleVi: String,
+      titleEn: String,
+      descVi: String,
+      descEn: String
+  )(items: Frag*)(using ctx: Context) =
+    Page(HomeI18n(titleVi, titleEn)).css("bits.page"):
+      main(cls := "page box box-pad")(
+        h1(cls := "box__top", dataIcon := icon)(HomeI18n(titleVi, titleEn)),
+        p(HomeI18n(descVi, descEn)),
+        ul(items)
+      )
+
+  def hubChoi(using ctx: Context) =
+    hubPage(
+      Icon.PlayTriangle,
+      "Chơi",
+      "Play",
+      "Vào đấu ngay: ghép cặp nhanh, tạo ván riêng, thách đấu bạn bè, hoặc chơi với máy.",
+      "Jump into a game: quick pairing, a private game, a friendly challenge, or play the computer."
+    )(
+      hubItem("/#hv2-play", "Xếp cặp nhanh", "Quick pairing"),
+      hubItem("/#hook", "Tạo ván tại sảnh", "Create a game"),
+      hubItem("/#friend", "Thách đấu bạn bè", "Play a friend"),
+      hubItem("/#ai", "Chơi với máy", "Play the computer"),
+      if hubRealchessEnabled then hubItem("/realchess", "Bàn cờ 3D", "3D board") else emptyFrag
+    )
+
+  def hubCauDo(using ctx: Context) =
+    hubPage(
+      Icon.ArcheryTarget,
+      "Câu đố",
+      "Puzzles",
+      "Luyện chiến thuật qua câu đố: hằng ngày, theo chủ đề, bão tốc độ, đua với người khác, hoặc giữ chuỗi thắng.",
+      "Sharpen your tactics: daily puzzles, puzzles by theme, puzzle storm, puzzle racer, or a puzzle streak."
+    )(
+      hubItem(routes.Puzzle.home.url, "Câu đố hằng ngày", "Daily puzzle"),
+      hubItem(routes.Puzzle.themes.url, "Theo chủ đề", "Puzzle themes"),
+      hubItem(routes.Storm.home.url, "Bão câu đố", "Puzzle storm"),
+      hubItem(routes.Racer.home.url, "Đua câu đố", "Puzzle racer"),
+      hubItem(routes.Puzzle.streak.url, "Chuỗi thắng", "Puzzle streak")
+    )
+
+  def hubHoc(using ctx: Context) =
+    hubPage(
+      Icon.GraduateCap,
+      "Học cờ",
+      "Learn",
+      "Học và luyện cờ vua: luật cơ bản, luyện thế cờ, bàn phân tích, và nghiên cứu ván đấu.",
+      "Learn and train: chess basics, practice positions, an analysis board, and studies."
+    )(
+      hubItem(routes.Learn.index.url, "Học cơ bản", "Chess basics"),
+      hubItem(routes.Practice.index.url, "Luyện thế cờ", "Practice"),
+      hubItem(routes.UserAnalysis.index.url, "Bàn phân tích", "Analysis board"),
+      hubItem(routes.Study.allDefault().url, "Nghiên cứu", "Studies")
+    )
+
+  def hubGiaiDau(using ctx: Context) =
+    hubPage(
+      Icon.Trophy,
+      "Giải đấu",
+      "Tournaments",
+      "Thi đấu trong các giải: đấu trường đang mở và lịch giải sắp tới.",
+      "Compete in tournaments: open arenas and the upcoming schedule."
+    )(
+      hubItem(routes.Tournament.home.url, "Đấu trường", "Arenas"),
+      hubItem(routes.Tournament.calendar.url, "Lịch giải", "Calendar"),
+      if hubArenaEnabled then hubItem("/giai", "Giải 2 Phái", "Two Sides") else emptyFrag
+    )
+
+  def hubCongDong(using ctx: Context) =
+    hubPage(
+      Icon.Group,
+      "Cộng đồng",
+      "Community",
+      "Kết nối với người chơi khác: danh sách kỳ thủ, các đội, và tin tức HungKings.",
+      "Connect with other players: the player list, teams, and HungKings news."
+    )(
+      hubItem(routes.User.list.url, "Kỳ thủ", "Players"),
+      hubItem(routes.Team.home().url, "Đội", "Teams"),
+      hubItem(routes.Feed.index().url, "Tin HungKings", "News"),
+      if forumEnabled then hubItem(routes.ForumCateg.index.url, "Diễn đàn", "Forum") else emptyFrag
+    )
+
+  def hubCongCu(using ctx: Context) =
+    hubPage(
+      Icon.Tools,
+      "Công cụ",
+      "Tools",
+      "Công cụ cờ vua độc lập: bàn phân tích, sửa bàn cờ, nhập ván PGN, và luyện toạ độ.",
+      "Standalone chess tools: analysis board, board editor, PGN import, and coordinate trainer."
+    )(
+      hubItem(routes.UserAnalysis.index.url, "Bàn phân tích", "Analysis board"),
+      hubItem(routes.Editor.index.url, "Sửa bàn cờ", "Board editor"),
+      hubItem(routes.Importer.importGame.url, "Nhập ván PGN", "Import game"),
+      hubItem(routes.Coordinate.home.url, "Luyện toạ độ", "Coordinate trainer")
+    )
 
   def lag(using Context) =
     import trans.lag as trl

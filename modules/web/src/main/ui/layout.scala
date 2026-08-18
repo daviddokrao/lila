@@ -452,6 +452,12 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
   private val realchessEnabled = sys.env.get("LILA_REALCHESS_INTERNAL_URL").exists(_.nonEmpty)
   private val arenaEnabled = sys.env.getOrElse("LILA_ARENA", "false") == "true"
 
+  // HungKings B6 (18/08): 6 trang hub cấp 1 (/choi /cau-do /hoc /giai-dau /cong-dong
+  // /cong-cu) — xem conf/routes và controllers.Main.hubsEnabled. Cờ TẮT (mặc định) = 0 byte
+  // đổi hành vi: 6 mục cấp 1 bên dưới giữ NGUYÊN đích neo/route cũ, mọi mục con không đổi gì.
+  // Cùng khuôn sys.env trực tiếp như realchessEnabled/arenaEnabled ngay trên.
+  private val hubsEnabled = sys.env.get("LILA_HUBS").contains("true")
+
   // ---------- Sidebar toàn site (cờ LILA_HOME_SIDEBAR) ----------
   // Trước 04/08 sidebar chỉ sống trong homeV2.scala và chỉ dành cho khách vãng lai.
   // David chốt: áp cho MỌI trang, cả người đã đăng nhập. Nên nó về đây nằm cạnh
@@ -509,7 +515,9 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
             // lichess, chesskid) đặt Play ở #1, còn "Trực tiếp" của bản này là mục RỖNG
             // NHẤT — `/tv` 404 có chủ ý, `/streamer` chưa ai phát. Điểm chạm đầu tiên
             // không được là chỗ trống.
-            navItem("/#hv2-play", Icon.PlayTriangle, t("Chơi", "Play"))(
+            // Mục cấp 1 trỏ hub /choi khi LILA_HUBS bật (chia sẻ/index được), giữ neo cũ khi
+            // tắt — cờ TẮT = 0 byte đổi hành vi (B6, báo cáo 02 mục 1.7 X2).
+            navItem(if hubsEnabled then "/choi" else "/#hv2-play", Icon.PlayTriangle, t("Chơi", "Play"))(
               subItem("/#hv2-play", t("Xếp cặp nhanh", "Quick pairing")),
               subItem("/#hook", t("Tạo ván tại sảnh", "Create a game")),
               subItem("/#friend", t("Thách đấu bạn bè", "Play a friend")),
@@ -522,7 +530,12 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
               // chỉ thành Modifier chứ không thành Frag.
               if realchessEnabled then subItem("/realchess", t("Bàn cờ 3D", "3D board")) else emptyFrag
             ),
-            navItem(routes.Puzzle.home.url, Icon.ArcheryTarget, t("Câu đố", "Puzzles"))(
+            // Hub /cau-do khi LILA_HUBS bật, giữ đích cũ khi tắt (xem ghi chú ở "Chơi" trên).
+            navItem(
+              if hubsEnabled then "/cau-do" else routes.Puzzle.home.url,
+              Icon.ArcheryTarget,
+              t("Câu đố", "Puzzles")
+            )(
               subItem(routes.Puzzle.home.url, t("Câu đố hằng ngày", "Daily puzzle")),
               subItem(routes.Puzzle.themes.url, t("Theo chủ đề", "Puzzle themes")),
               subItem(routes.Storm.home.url, t("Bão câu đố", "Puzzle storm")),
@@ -530,7 +543,12 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
               // /streak thuộc controller Puzzle chứ không có controller riêng
               subItem(routes.Puzzle.streak.url, t("Chuỗi thắng", "Puzzle streak"))
             ),
-            navItem(routes.Learn.index.url, Icon.GraduateCap, t("Học cờ", "Learn"))(
+            // Hub /hoc khi LILA_HUBS bật, giữ đích cũ khi tắt (xem ghi chú ở "Chơi" trên).
+            navItem(
+              if hubsEnabled then "/hoc" else routes.Learn.index.url,
+              Icon.GraduateCap,
+              t("Học cờ", "Learn")
+            )(
               subItem(routes.Learn.index.url, t("Học cơ bản", "Chess basics")),
               subItem(routes.Practice.index.url, t("Luyện thế cờ", "Practice")),
               subItem(routes.UserAnalysis.index.url, t("Bàn phân tích", "Analysis board")),
@@ -556,7 +574,12 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
             // Ngoặc bao trọn biểu thức if: tiền lệ `if ... then x else emptyFrag,` trong
             // file này đều nằm gọn MỘT dòng; dạng nhiều dòng kèm dấu phẩy theo sau thì
             // cú pháp thụt lề dễ hiểu nhầm, mà một vòng build ở đây là 13-20 phút.
-            navItem(routes.Tournament.home.url, Icon.Trophy, t("Giải đấu", "Tournaments"))(
+            // Hub /giai-dau khi LILA_HUBS bật, giữ đích cũ khi tắt (xem ghi chú ở "Chơi" trên).
+            navItem(
+              if hubsEnabled then "/giai-dau" else routes.Tournament.home.url,
+              Icon.Trophy,
+              t("Giải đấu", "Tournaments")
+            )(
               subItem(routes.Tournament.home.url, t("Đấu trường", "Arenas")),
               subItem(routes.Tournament.calendar.url, t("Lịch giải", "Calendar")),
               // Giải cờ 2 Phái: trước 18/08 sống ở arena.vssa.com với ĐÚNG 0 liên kết từ
@@ -570,7 +593,12 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
             // TopNav không render trên site đang dùng sidebar. lichess có nhóm Tools riêng,
             // chess.com gom vào Other. "Bàn phân tích" CỐ Ý lặp lại ở cả "Học cờ" lẫn đây —
             // chess.com cũng lặp "Play Coach" ở hai nhánh, mục quan trọng được phép có hai lối.
-            navItem(routes.UserAnalysis.index.url, Icon.Tools, t("Công cụ", "Tools"))(
+            // Hub /cong-cu khi LILA_HUBS bật, giữ đích cũ khi tắt (xem ghi chú ở "Chơi" trên).
+            navItem(
+              if hubsEnabled then "/cong-cu" else routes.UserAnalysis.index.url,
+              Icon.Tools,
+              t("Công cụ", "Tools")
+            )(
               subItem(routes.UserAnalysis.index.url, t("Bàn phân tích", "Analysis board")),
               subItem(routes.Editor.index.url, t("Sửa bàn cờ", "Board editor")),
               subItem(routes.Importer.importGame.url, t("Nhập ván PGN", "Import game")),
@@ -586,7 +614,12 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
               else emptyFrag,
               subItem(routes.Streamer.index().url, t("Người phát trực tiếp", "Streamers"))
             ),
-            navItem(routes.User.list.url, Icon.Group, t("Cộng đồng", "Community"))(
+            // Hub /cong-dong khi LILA_HUBS bật, giữ đích cũ khi tắt (xem ghi chú ở "Chơi" trên).
+            navItem(
+              if hubsEnabled then "/cong-dong" else routes.User.list.url,
+              Icon.Group,
+              t("Cộng đồng", "Community")
+            )(
               subItem(routes.User.list.url, t("Kỳ thủ", "Players")),
               subItem(routes.Team.home().url, t("Đội", "Teams")),
               // `/feed` có nội dung và trả 200 nhưng KHÔNG có liên kết nào trỏ tới (báo cáo

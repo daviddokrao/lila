@@ -136,6 +136,34 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
     if !arenaEnabled then notFound
     else Ok.page(views.site.ui.giaiHome)
 
+  // HungKings B6 (18/08): 6 trang hub cấp 1 thay các mục sidebar cấp 1 đang trỏ neo/route
+  // "cụt". Xem ghi chú đầy đủ ở conf/routes, Main.hubsEnabled (companion, dưới) và
+  // SitePages.scala (nội dung từng hub). Gác sau LILA_HUBS: tắt = 404, y hệt trước khi có
+  // các trang này.
+  def hubChoi = Open:
+    if !Main.hubsEnabled then notFound
+    else Ok.page(views.site.ui.hubChoi)
+
+  def hubCauDo = Open:
+    if !Main.hubsEnabled then notFound
+    else Ok.page(views.site.ui.hubCauDo)
+
+  def hubHoc = Open:
+    if !Main.hubsEnabled then notFound
+    else Ok.page(views.site.ui.hubHoc)
+
+  def hubGiaiDau = Open:
+    if !Main.hubsEnabled then notFound
+    else Ok.page(views.site.ui.hubGiaiDau)
+
+  def hubCongDong = Open:
+    if !Main.hubsEnabled then notFound
+    else Ok.page(views.site.ui.hubCongDong)
+
+  def hubCongCu = Open:
+    if !Main.hubsEnabled then notFound
+    else Ok.page(views.site.ui.hubCongCu)
+
   // HungKings B2 (18/08): trang /bat-dau — 3 lựa chọn sau đăng ký. Cờ TẮT (mặc định) = 404,
   // y hệt trước khi trang này tồn tại. Xem Main.onboardingEnabled ở companion object dưới.
   def onboardingStart = Open:
@@ -406,6 +434,12 @@ object Main:
   // an. Bat: LILA_ONBOARDING_CHOICE=true trong deploy/.env roi deploy, KHONG build lai
   // image.
   val onboardingEnabled: Boolean = sys.env.get("LILA_ONBOARDING_CHOICE").contains("true")
+
+  // B6 (18/08): 6 trang hub cấp 1 (/choi /cau-do /hoc /giai-dau /cong-dong /cong-cu). RỖNG
+  // hoặc bất kỳ giá trị nào khác "true" = TẮT (mọi route hub trả 404, sidebar giữ đích cũ) —
+  // cùng khuôn sys.env trực tiếp như Main.onboardingEnabled. Bật: LILA_HUBS=true trong
+  // deploy/.env rồi deploy, KHÔNG build lại image.
+  val hubsEnabled: Boolean = sys.env.get("LILA_HUBS").contains("true")
 
   // Cookie ghi lai lua chon o /bat-dau. Chi GHI trong vong nay — chua co noi nao doc lai
   // no (de danh cho ca nhan hoa sau nay); xem Main.onboardingChoose.

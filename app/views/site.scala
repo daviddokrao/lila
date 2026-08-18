@@ -4,7 +4,10 @@ import lila.app.UiEnv.{ *, given }
 import lila.cms.CmsPage
 
 val message = lila.web.ui.SiteMessage(helpers)
-val ui = lila.web.ui.SitePages(helpers, assetHelper)(env.web.config.broadcastEnabled)
+val ui = lila.web.ui.SitePages(helpers, assetHelper)(
+  env.web.config.broadcastEnabled,
+  env.web.config.forumEnabled
+)
 
 object page:
 

@@ -965,6 +965,19 @@ GET   /diem-app/                       controllers.Main.pointsProxy(path = "")
 GET   /diem-app/*path                  controllers.Main.pointsProxy(path: String)
 POST  /diem-app/*path                  controllers.Main.pointsProxyPost(path: String)
 
+# HungKings B6 (18/08): 6 trang HUB cấp 1 — mỗi mục sidebar cấp 1 (trừ "Huấn luyện AI" đã có
+# /hlv, và "Trực tiếp" đã trỏ route thật routes.Tv.games) cần một trang liệt kê tính năng con +
+# một câu mô tả, để chia sẻ được, index được, và trả lời "ở đây làm được gì" mà KHÔNG phụ
+# thuộc có ai online. Xem ui-redesign/reports/02-benchmark-ia.md mục 1.6 (T6), 1.7 (X2),
+# khuyến nghị B6. Gác sau cờ LILA_HUBS (mặc định TẮT = mọi route dưới đây trả 404, sidebar
+# giữ nguyên đích neo/route cũ) — xem controllers.Main.hubsEnabled và layout.scala.
+GET   /choi                            controllers.Main.hubChoi
+GET   /cau-do                          controllers.Main.hubCauDo
+GET   /hoc                             controllers.Main.hubHoc
+GET   /giai-dau                        controllers.Main.hubGiaiDau
+GET   /cong-dong                       controllers.Main.hubCongDong
+GET   /cong-cu                         controllers.Main.hubCongCu
+
 # HungKings B2 (18/08): /bat-dau — 3 lựa chọn sau đăng ký (mới học / biết chơi rồi / chơi lâu
 # rồi) thay vì thả thẳng vào khu thi đấu. Gác sau cờ LILA_ONBOARDING_CHOICE (mặc định TẮT =
 # route trả 404, hành vi y hệt trước khi có trang này). Xem controllers.Main.onboardingStart
