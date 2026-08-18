@@ -106,7 +106,9 @@ final class LilaComponents(
       env.web.config.forumEnabled,
       env.web.config.broadcastEnabled,
       env.web.config.patronEnabled,
-      env.web.config.videoEnabled
+      env.web.config.videoEnabled,
+      env.web.analyseEndpoints.explorerEnabled,
+      env.web.config.coachEnabled
     )
 
   lazy val devAssetsController =

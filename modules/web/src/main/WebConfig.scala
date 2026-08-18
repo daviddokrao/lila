@@ -27,7 +27,12 @@ final class WebConfig(
     // HungKings: hệ điểm tích luỹ + đổi quà + giới thiệu 33% (env LILA_POINTS).
     // Mặc định TẮT. Tắt = /diem + /cua-hang + /diem-app + /r/<mã> đều 404 và
     // huy hiệu điểm trên header không hiện. Bật lại = env + deploy, KHÔNG rebuild.
-    val pointsEnabled: Boolean
+    val pointsEnabled: Boolean,
+    // HungKings: danh bạ HLV NGƯỜI THẬT (/coach, env LILA_COACH_DIRECTORY — đặt tên khác
+    // LILA_COACH_INTERNAL_URL của HLV AI /hlv để khỏi nhầm hai tính năng). Mặc định TẮT vì
+    // sau khi gỡ 12 hồ sơ giả, danh bạ này còn 0 người thật. Tắt = /coach 404, KHÔNG
+    // chuyển hướng sang /hlv (đó là AI, đây là người thật — gộp là hiểu sai sản phẩm).
+    val coachEnabled: Boolean
 )
 
 object WebConfig:
@@ -60,7 +65,8 @@ object WebConfig:
       c.get[Boolean]("net.broadcast.enabled"),
       c.get[Boolean]("net.patron.enabled"),
       c.get[Boolean]("net.video.enabled"),
-      c.get[Boolean]("net.points.enabled")
+      c.get[Boolean]("net.points.enabled"),
+      c.get[Boolean]("net.coach.enabled")
     )
 
   def analyseEndpoints(c: Configuration) =

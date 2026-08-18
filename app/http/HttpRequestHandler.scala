@@ -18,7 +18,14 @@ final class HttpRequestHandler(
     // HungKings: trang bảo trợ tạm tắt (env LILA_PATRON). Cùng cơ chế chặn.
     patronEnabled: Boolean,
     // HungKings: thư viện video tạm tắt (env LILA_VIDEO). Cùng cơ chế chặn.
-    videoEnabled: Boolean
+    videoEnabled: Boolean,
+    // HungKings: khám phá khai cuộc (/opening) cần explorer thật, mà explorer TẮT có chủ ý
+    // trên bản gộp này (env LILA_EXPLORER, xem explorer.enabled trong WebConfig.analyseEndpoints).
+    // Dùng lại ĐÚNG cờ explorer — không tạo cờ riêng — vì /opening sống hay chết phụ thuộc
+    // 100% vào explorer có mặt hay không.
+    openingEnabled: Boolean,
+    // HungKings: danh bạ HLV người thật (/coach, env LILA_COACH_DIRECTORY). Cùng cơ chế chặn.
+    coachEnabled: Boolean
 ) extends DefaultHttpRequestHandler(() => router, errorHandler, configuration, filters)
     with lila.web.ResponseHeaders:
 
@@ -26,7 +33,7 @@ final class HttpRequestHandler(
     if request.method == "OPTIONS"
     then optionsHandler.some
     else if isForumPath(request) || isBroadcastPath(request) || isPatronPath(request) ||
-      isVideoPath(request)
+      isVideoPath(request) || isOpeningPath(request) || isCoachPath(request)
     then forumOffHandler.some
     else router.handlerFor(request)
 
@@ -76,6 +83,25 @@ final class HttpRequestHandler(
     !videoEnabled && {
       val p = req.path
       p.endsWith("/video") || p.contains("/video/")
+    }
+
+  // /opening (khám phá khai cuộc) trả 200 nhưng HỎNG khi explorer tắt: "Couldn't fetch the
+  // next moves, try again later", toàn tiếng Anh giữa site tiếng Việt (đo trên live 18/08).
+  // 6 route đều nằm dưới tiền tố /opening, không có bản lang-prefix nào trong conf/routes.
+  private def isOpeningPath(req: RequestHeader): Boolean =
+    !openingEnabled && {
+      val p = req.path
+      p == "/opening" || p.startsWith("/opening/")
+    }
+
+  // Cùng cơ chế: /coach (danh bạ HLV người thật). `endsWith("/coach")` bắt cả /coach,
+  // /$lang/coach (Coach.homeLang) lẫn /upload/image/coach; `startsWith("/coach/")` bắt
+  // /coach/edit, /coach/:username, /coach/:lang/:country/:order. Không đụng /hlv (AI coach,
+  // tiền tố khác hẳn, không kết thúc bằng "/coach").
+  private def isCoachPath(req: RequestHeader): Boolean =
+    !coachEnabled && {
+      val p = req.path
+      p.endsWith("/coach") || p.startsWith("/coach/")
     }
 
   // Trả về đúng trang 404 của lila khi request đủ điều kiện hiện trang lỗi (xem
