@@ -61,16 +61,31 @@ function analysisButton(ctrl: RoundController): VNode | false {
 
 // Liên kết sang bot giải thích ván bằng tiếng Việt (service riêng, ngoài lila).
 // Chỉ hiện khi ván đã kết thúc — bot đọc PGN của ván đã xong.
-function coachButton(ctrl: RoundController): VNode | false {
+// `primary`: cờ LILA_ROUND_REVIEW_CTA (xem followUp() bên dưới) bật nút này thành nút
+// cấp-chính của cụm sau ván — xem ui-redesign/reports/02-benchmark-ia.md mục 2.3/B3.
+// Mặc định false: nhãn + class y hệt trước đây, không đổi hành vi ở mọi call site cũ
+// (watcherFollowUp gọi coachButton(ctrl) không sửa gì vẫn ra đúng nút cũ).
+function coachButton(ctrl: RoundController, primary = false): VNode | false {
   const d = ctrl.data;
-  return (
-    finished(d) &&
-    hl(
-      'a.fbt',
-      { attrs: { href: `/hlv/${d.game.id}`, target: '_blank', rel: 'noopener' } },
-      'Giải thích ván (AI)',
-    )
+  if (!finished(d)) return false;
+  const label = primary
+    ? document.documentElement.lang.startsWith('vi')
+      ? 'Xem AI giải cả ván'
+      : 'Watch the full AI review'
+    : 'Giải thích ván (AI)';
+  return hl(
+    'a.fbt' + (primary ? '.strong.review-primary' : ''),
+    { attrs: { href: `/hlv/${d.game.id}`, target: '_blank', rel: 'noopener' } },
+    label,
   );
+}
+
+// Chỗ neo cho bits.aiSummary (ui/bits/src/bits.aiSummary.ts) trong CHÍNH cụm nút sau ván —
+// module đó tự dò mọi phần tử [data-ai-summary-game] trên trang, tự fetch bất đồng bộ có
+// timeout, tự gỡ khối nếu lỗi/timeout. Vì initModule() chạy sau khi cây nút đã render (esmInit
+// tách khỏi luồng dựng trang), div rỗng này KHÔNG chặn 4 nút phía trên hiện ra.
+function aiNoteMount(ctrl: RoundController): VNode {
+  return hl('div.follow-up__ai-note', { attrs: { 'data-ai-summary-game': ctrl.data.game.id } });
 }
 
 // P1.1: mời đăng ký đúng "khoảnh khắc vàng" — khách ẩn danh vừa chơi xong ván.
@@ -297,27 +312,48 @@ export function followUp(ctrl: RoundController): VNode {
       !d.game.boosted,
     newable = (finished(d) || aborted(d)) && ['lobby', 'pool', 'local'].includes(d.game.source),
     rematchZone = rematchable || d.game.rematch ? rematchButtons(ctrl) : [];
-  return hl('div.follow-up', [
-    rematchZone,
+  const tournamentLink =
     d.tournament &&
-      hl('a.fbt', { attrs: { href: '/tournament/' + d.tournament.id } }, i18n.site.viewTournament),
-    d.swiss && hl('a.fbt', { attrs: { href: '/swiss/' + d.swiss.id } }, i18n.site.viewTournament),
+    hl('a.fbt', { attrs: { href: '/tournament/' + d.tournament.id } }, i18n.site.viewTournament);
+  const swissLink =
+    d.swiss && hl('a.fbt', { attrs: { href: '/swiss/' + d.swiss.id } }, i18n.site.viewTournament);
+  const newOpponentButton =
     newable &&
-      hl(
-        'button.fbt.new-opponent',
-        {
-          hook: bind('click', () => {
-            if (d.game.source === 'local') d.local?.newOpponent();
-            else if (d.game.source === 'pool') location.href = poolUrl(d.clock!, d.opponent.user);
-            else location.href = '/?hook_like=' + d.game.id;
-          }),
-        },
-        i18n.site.newOpponent,
-      ),
+    hl(
+      'button.fbt.new-opponent',
+      {
+        hook: bind('click', () => {
+          if (d.game.source === 'local') d.local?.newOpponent();
+          else if (d.game.source === 'pool') location.href = poolUrl(d.clock!, d.opponent.user);
+          else location.href = '/?hook_like=' + d.game.id;
+        }),
+      },
+      i18n.site.newOpponent,
+    );
+  const secondary: LooseVNodes[] = [
+    rematchZone,
+    tournamentLink,
+    swissLink,
+    newOpponentButton,
     analysisButton(ctrl),
-    coachButton(ctrl),
-    signupNudge(ctrl),
-  ]);
+  ];
+
+  // HungKings: benchmark 02-benchmark-ia.md mục 2.3/B3 — 4 nút sau ván (Đấu lại/Đối thủ
+  // mới/Phân tích/Giải thích AI) đứng NGANG HÀNG chôn mất tài sản giữ chân mạnh nhất.
+  // Cờ LILA_ROUND_REVIEW_CTA (đọc qua data-round-review-cta trên <body>, xem
+  // app/views/base/page.scala) đổi thứ bậc: coachButton lên nút cấp-chính, 3 nút còn lại
+  // xuống hàng phụ nhỏ hơn. document.body.dataset đọc trực tiếp — không có sys.env nào ở
+  // đây, bẫy HOCON "biến rỗng vẫn tính đã đặt" chỉ áp dụng phía Scala.
+  // Tắt cờ (mặc định) hoặc ván chưa kết thúc → nhánh dưới, HTML y hệt trước khi có cờ này.
+  if (finished(d) && document.body.dataset.roundReviewCta === '1') {
+    return hl('div.follow-up.follow-up--review', [
+      coachButton(ctrl, true),
+      aiNoteMount(ctrl),
+      hl('div.follow-up__secondary', secondary),
+      signupNudge(ctrl),
+    ]);
+  }
+  return hl('div.follow-up', [...secondary, coachButton(ctrl, false), signupNudge(ctrl)]);
 }
 
 export function watcherFollowUp(ctrl: RoundController): LooseVNode {

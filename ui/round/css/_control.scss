@@ -170,6 +170,71 @@
     @include mq-is-col1 {
       margin-top: $block-gap;
     }
+
+    // HungKings — cờ LILA_ROUND_REVIEW_CTA (xem ui/round/src/view/button.ts followUp()):
+    // đổi thứ bậc cụm nút sau ván, nút "Xem AI giải cả ván" lên cấp-chính. Chỉ áp dụng
+    // trong biến thể "review" của follow-up (selector ngay dưới); nhánh mặc định (cờ
+    // tắt) không gắn biến thể này nên các quy tắc dưới đây không chạm tới HTML hôm nay.
+    &--review {
+      .review-primary {
+        background: color-mix(in oklab, $c-primary 88%, $c-bg);
+        color: $c-over-accent;
+        font-weight: bold;
+
+        @media (hover: hover) {
+          &:hover:not(.disabled, [disabled]) {
+            background: $c-primary;
+          }
+        }
+      }
+    }
+
+    &__ai-note {
+      .game-ai-summary {
+        border-inline-start: 3px solid $c-secondary;
+        margin: 0 1px 0.6rem 1px;
+        padding: 0.7em 0.9em;
+        opacity: 0.72;
+        transition: opacity 0.2s;
+
+        &.ready {
+          opacity: 1;
+        }
+
+        &__head {
+          font-size: 0.85em;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: $c-font-dim;
+          margin: 0;
+        }
+
+        &__body {
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        &__more {
+          display: block;
+          text-align: end;
+          font-weight: bold;
+          white-space: nowrap;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
+      }
+    }
+
+    // Nhóm nút phụ (Đấu lại/Đối thủ mới/Phân tích): cùng kích thước bấm (≥44px, không đổi
+    // padding/font-size của .fbt gốc) để không phá a11y — chỉ hạ tương phản thị giác.
+    &__secondary {
+      @extend %flex-column;
+
+      opacity: 0.8;
+      border-top: $border;
+    }
   }
 
   .analysis,

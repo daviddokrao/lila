@@ -38,6 +38,18 @@ object page:
   private val lobbyEscapeHatchEnabled: Boolean =
     sys.env.get("LILA_LOBBY_ESCAPE_HATCH").contains("true")
 
+  // HungKings: cụm nút sau ván (Đấu lại/Đối thủ mới/Phân tích/Giải thích AI) đứng ngang
+  // hàng nhau, chôn mất tài sản giữ chân mạnh nhất của sản phẩm — xem
+  // ui-redesign/reports/02-benchmark-ia.md mục 2.3/B3. Cờ này chỉ ảnh hưởng một
+  // data-attribute đọc ở phía client (ui/round/src/view/button.ts followUp() đọc
+  // document.body.dataset.roundReviewCta), lặp đúng khuôn lobbyEscapeHatchEnabled ở trên:
+  // sys.env.get(...).contains("true") để biến rỗng/không đặt = TẮT, tránh bẫy HOCON
+  // "biến rỗng vẫn tính đã đặt". Tắt (mặc định): không thêm attribute, hành vi y hệt hôm
+  // nay. Bật: LILA_ROUND_REVIEW_CTA=true trong deploy/.env rồi deploy — KHÔNG build lại
+  // image.
+  private val roundReviewCtaEnabled: Boolean =
+    sys.env.get("LILA_ROUND_REVIEW_CTA").contains("true")
+
   private def metaThemeColor(using ctx: Context): Frag =
     raw(s"""<meta name="theme-color" content="${ctx.pref.themeColor}">""")
 
@@ -161,6 +173,9 @@ object page:
           // HungKings: xem comment `lobbyEscapeHatchEnabled` ở trên. Chỉ ghi attribute khi
           // BẬT để tắt cờ = HTML y hệt hôm nay (không thêm attribute rỗng).
           attr("data-lobby-escape-hatch") := lobbyEscapeHatchEnabled.option("1"),
+          // HungKings: xem comment `roundReviewCtaEnabled` ở trên. Cùng khuôn: chỉ ghi
+          // attribute khi BẬT để tắt cờ = HTML y hệt hôm nay.
+          attr("data-round-review-cta") := roundReviewCtaEnabled.option("1"),
           attr("data-i18n-catalog") := assetHelper.manifest
             .js(s"i18n/${ctx.lang.code}")
             .map(name => staticAssetUrl(s"compiled/$name")),
