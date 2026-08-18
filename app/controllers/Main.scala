@@ -116,9 +116,15 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
    * KHAC ba app kia: KHONG co proxy o day. Arena song bang WebSocket, ma
    * `streamProxy` la HTTP client cua Play (khong nang cap duoc Upgrade), va Caddy
    * noi bo cua image gop bat MOI request co `Upgrade: websocket` nem sang lila-ws
-   * TRUOC khi toi Play. Nen duong `/giai-app/*` do CHINH Caddy noi bo phuc vu —
-   * xem khoi `handle_path /giai-app/*` trong conf/mono.Caddyfile. O day chi con
+   * TRUOC khi toi Play. Nen nhanh duoi `/giai-app` do CHINH Caddy noi bo phuc vu —
+   * xem khoi `handle_path` cua `/giai-app` trong conf/mono.Caddyfile. O day chi con
    * trang vo nhung iframe vao duong do.
+   *
+   * DUNG viet glob kieu dau-sao ngay sau dau gach trong khoi chu thich nay: block
+   * comment cua Scala LONG NHAU duoc, nen chuoi do mo mot khoi con va khoi ngoai
+   * khong bao gio dong. Da tra gia dung o day — build 3 ngay 18/08 chet voi
+   * "unclosed comment" o dong nay, keo theo mot loat Cyclic Error o file khac
+   * khien nguyen nhan that bi chon duoi nhieu chuc dong nhieu.
    *
    * Co RIENG (khong dung chung voi duong proxy): tat co nay chi an LOI VAO, con
    * /giai-app van song vi Caddy khong biet gi ve env cua Play. Do la chu y —
