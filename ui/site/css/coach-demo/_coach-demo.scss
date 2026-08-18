@@ -1,0 +1,176 @@
+// Khối demo HLV AI trên trang chủ. Namespace `hk-cdemo` riêng: không dùng chung selector
+// nào với `hv2-*` của home-v2.css để đường rollback (tắt cờ env) sạch tuyệt đối.
+//
+// Đo bằng chữ TIẾNG VIỆT, không phải tiếng Anh: nhãn Việt dài hơn bản Anh ~40% ("Thử nước
+// khác" / "Cho HLV giải cả một ván →"), nên mọi chỗ chứa chữ ở đây đều được phép xuống dòng.
+
+// Cùng ngăn xếp serif với `$hv2-serif` của home-v2 (khai lại vì bó CSS này độc lập):
+// 'Noto Serif' đứng trước Georgia — iOS không có Cambria/Palatino, rơi thẳng vào Georgia
+// thì dấu tiếng Việt render xấu (P0.2, audit 03/08).
+$hk-cdemo-serif: Cambria, 'Palatino Linotype', 'Noto Serif', Georgia, serif;
+
+.hk-cdemo {
+  border: 1px solid $c-accent-faint;
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 20px;
+
+  // Trạng thái khởi điểm: ẨN. Chỉ site.coachDemo.ts mới gỡ class này, và chỉ sau khi
+  // /hlv-app/healthz đã trả lời OK. Không có JS, hoặc coach chết ⇒ khách không thấy gì.
+  // Đây là ràng buộc quan trọng nhất của khối: trang chủ không phụ thuộc service nào.
+  &--init {
+    display: none;
+  }
+
+  // Thu khối lại khi chữ không về kịp 4 giây. `overflow: hidden` chỉ bật trong lúc thu,
+  // nếu không quân cờ đang kéo sẽ bị cắt mất ở trạng thái thường.
+  &--collapsing {
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      max-height 0.35s ease,
+      opacity 0.25s ease,
+      padding 0.35s ease,
+      margin 0.35s ease;
+    padding-block: 0;
+    margin-block: 0;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    align-items: start;
+
+    // Một cột từ 900px xuống: 260px bàn cờ + chữ Việt trong 1fr còn lại là quá chật.
+    // Hỏi CẢ container LẪN viewport: container mới đúng (sidebar 238px làm nội dung hẹp đi
+    // ở cùng viewport), nhưng @container chỉ ăn khi tổ tiên khai `container-type` — thứ do
+    // home-v2.css đặt trên `main.home-v2`. Nếu bó CSS đó vắng mặt vì bất kỳ lý do gì thì
+    // media query vẫn cứu được màn hẹp, chứ không để lưới 260px+1fr tràn ở 380px.
+    @container (max-width: 900px) {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
+
+  &__board {
+    width: 260px;
+    max-width: 100%;
+  }
+
+  &__t {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+  }
+
+  &__d {
+    margin: 0 0 14px;
+    color: $c-font-dim;
+    font-size: 0.9rem;
+  }
+
+  // Vùng chữ của HLV. `min-height` giữ chỗ sẵn cho hai câu trả lời để lúc chữ về không
+  // đẩy cả trang xuống — đo bằng chữ Việt (dài hơn Anh), 2 câu ~55 chữ.
+  &__say {
+    font-family: $hk-cdemo-serif;
+    font-style: italic;
+    line-height: 1.6;
+    min-height: 5.2em;
+    margin: 0 0 12px;
+  }
+
+  &--asking &__say {
+    color: $c-font-dim;
+  }
+
+  &--answered &__say {
+    font-style: normal;
+    color: $c-font;
+  }
+
+  &__pickslabel {
+    display: block;
+    width: 100%;
+    font-size: 0.8rem;
+    color: $c-font-dim;
+    margin-bottom: 2px;
+  }
+
+  &__picks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  // Nút ≥44px cả hai chiều (P1.10). padding một mình chỉ ra 42px — đã đo hụt 2px trên live.
+  &__pick,
+  &__again {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 16px;
+    border-radius: 6px;
+    border: $border;
+    background: $c-bg-zebra;
+    color: $c-font;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      border-color: $c-accent;
+      color: $c-accent;
+    }
+
+    // Vòng tiêu điểm phải khai TẠI ĐÂY: reset `button` toàn cục của lila
+    // (lib/css/base/_elements.scss) gỡ sạch chrome của nút, và rule `:focus-visible`
+    // sẵn có chỉ áp cho `a` và các control trong form — nút thường không được thừa hưởng.
+    &:focus-visible {
+      outline: $outline;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+  }
+
+  &__again {
+    margin-inline-end: 12px;
+  }
+
+  // `:not([hidden])` là BẮT BUỘC ở đây, không phải cho đẹp: liên kết này ra đời với thuộc
+  // tính `hidden` và chỉ hiện khi HLV đã trả lời. Một `display: inline-block` trần sẽ ĐÈ
+  // rule `[hidden] { display: none }` của trình duyệt — đo trên harness thì liên kết hiện
+  // ngay từ đầu, tức mời khách bấm trước khi có gì để đọc.
+  &__more:not([hidden]) {
+    display: inline-block;
+    min-height: 44px;
+    line-height: 44px;
+    color: $c-accent;
+    font-weight: 700;
+  }
+
+  // Chữ lớn 1,25× + 380px: cụm "Thử nước khác" và liên kết giải cả ván không đủ chỗ trên
+  // một dòng, không cho xuống dòng là chữ tràn ra ngoài khung.
+  &__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 4px;
+  }
+}
+
+// Tắt CHUYỂN ĐỘNG, không tắt HÀNH VI: khối vẫn biến mất khi chữ không về kịp, chỉ là
+// biến mất ngay chứ không trượt (site.coachDemo.ts gọi thẳng remove() ở nhánh này).
+@media (prefers-reduced-motion: reduce) {
+  .hk-cdemo--collapsing {
+    transition: none;
+  }
+}

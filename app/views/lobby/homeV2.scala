@@ -22,6 +22,20 @@ import lila.core.user.LightPerf
   */
 object homeV2:
 
+  // HungKings B5 (ui-redesign/reports/02-benchmark-ia.md mục 1.4 + khuyến nghị B5): khối
+  // DEMO tương tác của HLV AI trên trang chủ — khách đi một nước, AI nhận xét tại chỗ bằng
+  // tiếng Việt. Trước bản này chỗ đó chỉ có một trích dẫn TĨNH, tức lời quảng cáo chứ không
+  // phải bằng chứng, nên khách không có cách nào hiểu điều khác biệt thật của site trong
+  // 10 giây.
+  //
+  // Cùng khuôn với lobbyEscapeHatchEnabled / roundReviewCtaEnabled ở page.scala:
+  // sys.env.get(...).contains("true") nên biến RỖNG hoặc bất kỳ giá trị nào khác "true"
+  // đều là TẮT (tránh bẫy HOCON "biến rỗng vẫn tính đã đặt"). Tắt là mặc định, và khi tắt
+  // thì trang chủ không phát thêm một byte HTML/CSS/JS nào của khối này.
+  // Bật: LILA_HOME_COACH_DEMO=true trong deploy/.env rồi deploy — KHÔNG build lại image.
+  private val coachDemoEnabled: Boolean =
+    sys.env.get("LILA_HOME_COACH_DEMO").contains("true")
+
   def apply(
       homepage: Homepage,
       multiview: List[(lila.tv.Tv.Channel, Option[lila.core.game.Game])],
@@ -365,6 +379,47 @@ object homeV2:
         )
       )
 
+    // B5 — khối demo tương tác của HLV AI. Chỉ là một CÁI VỎ: bàn cờ, hàng nút chọn nhanh và
+    // mọi lượt gọi mạng đều do site.coachDemo.ts dựng SAU khi trang đã render xong.
+    //
+    // Vỏ này ra đời ở trạng thái ẨN (class hk-cdemo--init, CSS display:none) và chỉ hiện sau
+    // khi module hỏi được /hlv-app/healthz. Nhờ vậy có ba bảo đảm:
+    //   - coach chết / chưa deploy ⇒ khách KHÔNG thấy khối, không thấy hộp lỗi nào;
+    //   - không có JS ⇒ vỏ nằm im, không để lại nút chết;
+    //   - trang chủ không bao giờ phụ thuộc một service có thể chết. Đây là ràng buộc nặng
+    //     nhất của cả tính năng.
+    //
+    // Đường gọi coach là SAME-ORIGIN qua /hlv-app (proxy của lila), KHÔNG sang
+    // coach.hungkings.com: fetch cross-origin bị extension trình duyệt chặn (trả giá 06/08).
+    val coachDemoFrag: Option[Frag] =
+      coachDemoEnabled.option:
+        st.section(cls := "hk-cdemo hk-cdemo--init")(
+          div(cls := "hk-cdemo__grid")(
+            // `manipulable` cho phép quân đang kéo lòi ra ngoài mép bàn (component/board
+            // cắt overflow của mọi .mini-board KHÔNG mang class này) và đổi con trỏ.
+            div(cls := "hk-cdemo__board mini-board manipulable cg-wrap is2d")(cgWrapContent),
+            div(
+              h3(cls := "hk-cdemo__t")(
+                t("Đi thử một nước — nghe HLV AI giải thích", "Play a move — hear the AI coach")
+              ),
+              p(cls := "hk-cdemo__d")(
+                t(
+                  "Không cần đăng ký. Đi một nước cho Trắng, HLV sẽ nói ngay VÌ SAO nước đó hay hoặc dở — bằng tiếng Việt.",
+                  "No sign-up. Play one move for White and the coach explains WHY it works — or doesn't."
+                )
+              ),
+              // role=status + aria-live=polite: trình đọc màn hình đọc câu trả lời ngay khi
+              // nó về, mà không cướp tiêu điểm của người đang dùng bàn phím.
+              p(cls := "hk-cdemo__say", attr("role") := "status", aria("live") := "polite")(),
+              div(cls := "hk-cdemo__foot")(
+                a(cls := "hk-cdemo__more", href := "/hlv", attr("hidden").empty)(
+                  t("Cho HLV giải cả một ván →", "Have the coach explain a whole game →")
+                )
+              )
+            )
+          )
+        )
+
     // Dải thống kê nay xuống cụm đáy của sidebar TOÀN SITE (page.scala dựng sidebar cho
     // mọi trang, nên nó không thấy dữ liệu sảnh — chỉ trang chủ có). Xem Page.sidebarFoot.
     // Số tĩnh lúc render (LobbyApi luôn phát counters); live-update là phase 2.
@@ -398,7 +453,10 @@ object homeV2:
             .add("playban", playban.map(lila.playban.TempBan.lobbyJson))
         )
       )
+      // B5: module + bó CSS RIÊNG, chỉ nạp khi cờ bật. Tắt cờ ⇒ không thêm request nào.
+      .js(coachDemoEnabled.option(esmInit("site.coachDemo")))
       .css("home-v2")
+      .css(coachDemoEnabled.option("coach-demo"))
       .graph(
         OpenGraph(
           image = staticAssetUrl("logo/lichess-tile-wide.png").some,
@@ -466,6 +524,9 @@ object homeV2:
                 puzzle.map(p => views.puzzle.bits.dailyLink(p)())
               )
             ),
+            // B5: ngay dưới trích dẫn tĩnh của HLV — lời quảng cáo rồi tới bằng chứng.
+            // None khi cờ tắt, tức trang chủ về đúng HTML cũ, không thừa một thẻ nào.
+            coachDemoFrag,
             hooksFrag,
             // Người đã đăng nhập không cần mời "học cờ từ đầu" — họ đã ở đây rồi (A3).
             ctx.me.isEmpty.option(starterFrag)

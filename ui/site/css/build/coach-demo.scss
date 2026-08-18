@@ -1,0 +1,9 @@
+// B5 — khối demo "đi một nước, nghe HLV AI nói" trên trang chủ.
+//
+// Bó CSS RIÊNG chứ không nhét vào home-v2.css, có chủ ý: khối này bật/tắt bằng cờ env
+// LILA_HOME_COACH_DEMO, nên khi tắt thì trang chủ không tải thêm một byte nào. Bàn cờ
+// (cg-board, square, piece, .mini-board) đã nằm sẵn trong site.css của MỌI trang
+// (lib/css/page/_lichess.scss -> components -> component/board), nên ở đây chỉ còn phần
+// khung của riêng khối.
+@import '../../../lib/css/plugin';
+@import '../coach-demo/coach-demo';

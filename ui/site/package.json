@@ -14,6 +14,7 @@
     },
     "bundle": [
       "src/site.*Embed.ts",
+      "src/site.coachDemo.ts",
       {
         "module": "src/site.ts",
         "inline": "src/site.inline.ts"
