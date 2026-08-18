@@ -136,6 +136,34 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env):
     if !arenaEnabled then notFound
     else Ok.page(views.site.ui.giaiHome)
 
+  // HungKings B2 (18/08): trang /bat-dau — 3 lựa chọn sau đăng ký. Cờ TẮT (mặc định) = 404,
+  // y hệt trước khi trang này tồn tại. Xem Main.onboardingEnabled ở companion object dưới.
+  def onboardingStart = Open:
+    if !Main.onboardingEnabled then notFound
+    else Ok.page(views.onboarding.page.start)
+
+  // Ghi lại lựa chọn rồi chuyển tới đích tương ứng. KHÔNG ghi DB: một cookie là đủ rẻ để
+  // "nhớ" mà không cần thêm cột Pref mới (xem Main.onboardingCookieName). `choice` không
+  // khớp "hoc"/"choi" — kể cả "bo-qua" — đều rơi về "/#hv2-play", tức HÀNH VI CŨ trước khi
+  // có trang này.
+  def onboardingChoose(choice: String) = Open:
+    if !Main.onboardingEnabled then notFound
+    else
+      val dest = choice match
+        case "hoc" => routes.Learn.index.url
+        case "choi" => "/#ai"
+        case _ => "/#hv2-play"
+      Redirect(dest)
+        .withCookies(
+          env.security.lilaCookie.cookie(
+            Main.onboardingCookieName,
+            choice,
+            maxAge = (180 * 24 * 3600).some, // 180 ngày, viết bằng giây cho khỏi phụ thuộc import
+            httpOnly = true.some
+          )
+        )
+        .toFuccess
+
   /**
    * DANH TINH CO KY cho he diem.
    *
@@ -372,6 +400,16 @@ object Main:
 
   /** Cookie link moi. `hk_ref` — dat boi /r/<ma>, doc luc TAO TAI KHOAN. */
   val referralCookieName = "hk_ref"
+
+  // B2 (18/08): 3 lua chon o /bat-dau. RONG hoac bat ky gia tri nao khac "true" = TAT
+  // (route tra 404) — dung sys.env truc tiep, cung khuon voi moi co feature khac cua du
+  // an. Bat: LILA_ONBOARDING_CHOICE=true trong deploy/.env roi deploy, KHONG build lai
+  // image.
+  val onboardingEnabled: Boolean = sys.env.get("LILA_ONBOARDING_CHOICE").contains("true")
+
+  // Cookie ghi lai lua chon o /bat-dau. Chi GHI trong vong nay — chua co noi nao doc lai
+  // no (de danh cho ca nhan hoa sau nay); xem Main.onboardingChoose.
+  val onboardingCookieName = "hk_onboard"
 
   val pointsInternalUrl =
     sys.env.getOrElse("LILA_POINTS_INTERNAL_URL", "http://hungkings-points-web:8091")

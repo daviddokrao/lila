@@ -964,6 +964,13 @@ GET   /diem-app                        controllers.Main.pointsProxy(path = "")
 GET   /diem-app/                       controllers.Main.pointsProxy(path = "")
 GET   /diem-app/*path                  controllers.Main.pointsProxy(path: String)
 POST  /diem-app/*path                  controllers.Main.pointsProxyPost(path: String)
+
+# HungKings B2 (18/08): /bat-dau — 3 lựa chọn sau đăng ký (mới học / biết chơi rồi / chơi lâu
+# rồi) thay vì thả thẳng vào khu thi đấu. Gác sau cờ LILA_ONBOARDING_CHOICE (mặc định TẮT =
+# route trả 404, hành vi y hệt trước khi có trang này). Xem controllers.Main.onboardingStart
+# và ui-redesign/reports/02-benchmark-ia.md mục 2.2 (khuyến nghị B2).
+GET   /bat-dau                         controllers.Main.onboardingStart
+GET   /bat-dau/chon/:choice            controllers.Main.onboardingChoose(choice: String)
 GET   /app                             controllers.Main.app
 GET   /app-store                       controllers.Main.redirectToAppStore
 GET   /$lang<\w\w\w?>/app              controllers.Main.appLang(lang: Language)

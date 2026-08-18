@@ -478,7 +478,11 @@ final class Auth(env: Env, accountC: => Account) extends LilaController(env):
         authenticateCookie(sessionId, remember = true):
           // HungKings P1.2: tài khoản mới hạ cánh vào khu thi đấu trang chủ thay vì
           // trang hồ sơ RỖNG của chính mình (điểm đứt phễu — audit 03/08).
-          Redirect(referrerOrUrl("/#hv2-play"))
+          // B2 (18/08): khi cờ LILA_ONBOARDING_CHOICE bật, hạ cánh ở /bat-dau (3 lựa chọn
+          // trình độ, xem controllers.Main.onboardingStart) thay vì thẳng vào khu thi đấu.
+          // Cờ TẮT (mặc định) = HÀNH VI CŨ giữ nguyên. referrer (nếu có) vẫn thắng cả hai.
+          val landing = if Main.onboardingEnabled then "/bat-dau" else "/#hv2-play"
+          Redirect(referrerOrUrl(landing))
             // HungKings: dong nay la CAU DAU TIEN mot tai khoan moi nhin thay, ngay
             // sau khi bam dang ky. Re theo ngon ngu tai cho — khong them khoa registry.
             .flashSuccess(
