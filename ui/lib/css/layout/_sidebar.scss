@@ -191,6 +191,18 @@ aside#top.hv2-side {
 
       &:focus-within {
         border-color: $c-accent;
+
+        /* Ô tìm kiếm là control DUY NHẤT trên trang KHÔNG có chỉ báo focus nhìn thấy được.
+         * Đo trên live 18/08: gõ Tab tới đây thì `:focus-within` KHỚP (đã kiểm bằng
+         * `matches()`), focus THẬT SỰ vào input (`document.activeElement` đúng), nhưng
+         * `border-color` tính ra vẫn là `rgb(27,47,99)` chứ không thành `$c-accent` —
+         * tức dòng ngay trên bị ĐÈ trong cascade. Rule có tồn tại trong mã không đồng
+         * nghĩa với có tác dụng trên trang.
+         * Dùng `outline` để khỏi phụ thuộc vào cuộc đấu specificity của `border`, và đúng
+         * token focus của BRAND.md §3b (2px solid primary, offset 2px). 14 control khác
+         * trên trang đã dùng đúng vòng này. */
+        outline: 2px solid $c-primary;
+        outline-offset: 2px;
       }
 
       a.link {
