@@ -205,11 +205,25 @@ aside#top.hv2-side {
         outline-offset: 2px;
       }
 
-      a.link {
+      /* `button.link` chứ không chỉ `a.link`: nút tìm kiếm trong #clinput là
+       * `<button class="link" data-icon aria-label="Search">`, nên rule cũ chỉ nhắm `a.link`
+       * KHÔNG áp vào nó. Đo trên live 18/08 ở viewport 1280: nút chỉ **17×20px**.
+       *
+       * WCAG 2.5.8 (mức AA) đòi vùng bấm ≥ 24×24 CSS px — 17×20 rớt cả hai chiều.
+       * Cho nó cao trọn khung và rộng tối thiểu 28px ⇒ 28×38, đạt AA thoải mái.
+       *
+       * CỐ Ý KHÔNG ép 44px như BRAND §3b: cả ô tìm kiếm chỉ cao 38px, ép 44 sẽ phá bố cục
+       * để đổi lấy một con số. 3b vốn đã chừa ngoại lệ cho control nằm TRONG cụm chật —
+       * ở đây vùng bấm hiệu dụng là toàn ô 167×38 vì bấm vào input cũng mở tìm kiếm.
+       * Icon KHÔNG to lên: chỉ vùng bấm rộng ra. */
+      a.link,
+      button.link {
         flex: none;
         display: flex;
         align-items: center;
-        height: auto;
+        justify-content: center;
+        height: 100%;
+        min-width: 28px;
         width: auto;
         padding: 0 4px;
         color: $c-font-dim;
