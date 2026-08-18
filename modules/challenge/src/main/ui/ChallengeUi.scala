@@ -12,6 +12,25 @@ import lila.ui.*
 
 import ScalatagsTemplate.{ *, given }
 
+object ChallengeUi:
+
+  /**
+   * HungKings: MOT lien ket vua thach dau vua mang ma gioi thieu (bao cao 02, B4).
+   *
+   * Mac dinh TAT = trang thach dau khong doi mot byte nao. Bat bang
+   * `LILA_INVITE_LINK=true` + deploy, KHONG dung lai image.
+   *
+   * Doc thang tu `sys.env` chu KHONG qua HOCON: bien env RONG thi HOCON coi la
+   * "da dat" roi parse bool se no luc khoi dong. `contains("true")` thi rong =
+   * khong khop = TAT, dung mot duong.
+   *
+   * Scala chi phat ra LIEN KET VAN tran. Viec gan `?moi=<ma>` nam tron ben
+   * `ui/bits/src/bits.hkInvite.ts` vi ma chi lay duoc tu trinh duyet (goi
+   * `/diem-app/api/me` bang phien dang nhap) — nen ten tham so cung chi co MOT
+   * cho khai, o file TypeScript do.
+   */
+  val inviteLinkEnabled: Boolean = sys.env.get("LILA_INVITE_LINK").contains("true")
+
 final class ChallengeUi(helpers: Helpers):
   import helpers.{ *, given }
 
@@ -19,7 +38,7 @@ final class ChallengeUi(helpers: Helpers):
       ctx: Context
   ) =
     val title = challengeTitle(c)
-    Page(title)
+    val base = Page(title)
       .graph(
         title = title,
         url = routeUrl(routes.Round.watcher(c.gameId, Color.white)),
@@ -37,6 +56,9 @@ final class ChallengeUi(helpers: Helpers):
         )
       )
       .css("challenge.page")
+    // Nap CA o trang cua nguoi tao (de dung link) LAN trang cua nguoi nhan (de
+    // bat `?moi=` dat cookie) — hai viec o hai phia cua cung mot lien ket.
+    if ChallengeUi.inviteLinkEnabled then base.js(Esm("bits.hkInvite")) else base
 
   private def challengeTitle(c: Challenge)(using ctx: Context) =
     val speed = c.clock.map(_.config).fold(chess.Speed.Correspondence.name) { clock =>
@@ -99,6 +121,69 @@ final class ChallengeUi(helpers: Helpers):
       case GameRule.noClaimWin => ("No claiming of win", Flair("objects.hourglass-done"));
       case GameRule.noEarlyDraw => ("No early draw", Flair("people.handshake-light-skin-tone"));
 
+  // ------------------------------------------------ HungKings: mot lien ket, hai viec
+
+  /**
+   * O chep lien ket moi ban vao van.
+   *
+   * Co co TAT (mac dinh) tra ve DUNG khoi cu, khong them mot thuoc tinh nao —
+   * "mac dinh tat = hanh vi y het hien nay" phai dung o muc HTML, khong chi o
+   * muc "trong nhu cu".
+   *
+   * Co co BAT: van la lien ket van do, nhung mang them `?moi=<ma>` do JS gan
+   * vao. Ma LAY TU MAY CHU (`/diem-app/api/me`, danh tinh ky bang HMAC theo
+   * phien dang nhap) chu khong lay tu trang, nen khong ai gan duoc ma nguoi khac.
+   */
+  private def inviteUrlBlock(challengeLink: Url)(using ctx: Context): Frag =
+    if !ChallengeUi.inviteLinkEnabled then
+      div(cls := "invite__url")(
+        h2(cls := "ninja-title", trans.site.toInviteSomeoneToPlayGiveThisUrl()),
+        br,
+        copyMeInput(challengeLink.value),
+        br,
+        p(trans.site.theFirstPersonToComeOnThisUrlWillPlayWithYou())
+      )
+    else
+      def t(vi: String, en: String): String = if ctx.lang.language == "vi" then vi else en
+      div(
+        // Giu nguyen `invite__url`: `bits.challengePage` doc dung lop nay de
+        // dua lien ket vao khay chia se cua may — doi ten la mat tinh nang do.
+        cls := "invite__url invite__hk",
+        attr("data-hk-link") := challengeLink.value
+      )(
+        h2(cls := "ninja-title", trans.site.toInviteSomeoneToPlayGiveThisUrl()),
+        br,
+        copyMeInput(challengeLink.value),
+        div(cls := "invite__hk__actions")(
+          button(
+            cls := "button button-metal text invite__hk__copy",
+            tpe := "button",
+            dataIcon := Icon.Clipboard,
+            attr("data-copied") := t("Đã chép", "Copied")
+          )(t("Chép liên kết", "Copy link")),
+          // La the <a> that, khong phai <button> cho JS: khong co JS thi van
+          // chia se duoc lien ket van (chi thieu ma moi). Link hong => nut chet,
+          // do la ly do nut chep van la duong bao dam.
+          a(
+            cls := "button button-metal text invite__hk__zalo",
+            dataIcon := Icon.ShareAndroid,
+            href := s"https://sp.zalo.me/plugins/share?u=${urlencode(challengeLink.value)}",
+            targetBlank
+          )(t("Chia sẻ Zalo", "Share on Zalo"))
+        ),
+        p(cls := "invite__hk__say", role := "status", aria("live") := "polite"),
+        br,
+        p(trans.site.theFirstPersonToComeOnThisUrlWillPlayWithYou()),
+        // An cho toi khi JS gan duoc ma that. Chua co ma ma van hua "ghi nhan
+        // nguoi moi" la noi doi voi chinh nguoi dung cua minh.
+        p(cls := "invite__hk__note none")(
+          t(
+            "Liên kết này còn mang mã mời của bạn: nếu người nhận đăng ký tài khoản, hệ điểm ghi nhận đúng bạn là người mời.",
+            "This link also carries your invite code: if your friend signs up, you get credited as the inviter."
+          )
+        )
+      )
+
   def mine(
       c: Challenge,
       json: JsObject,
@@ -139,15 +224,9 @@ final class ChallengeUi(helpers: Helpers):
                       p(trans.site.waitingForOpponent())
                     )
                   else
-                    div(cls := "invite")(
+                    div(cls := s"invite${ChallengeUi.inviteLinkEnabled.so(" invite--hk")}")(
                       button(cls := "mobile-instructions button none")("Tap here to share"),
-                      div(cls := "invite__url")(
-                        h2(cls := "ninja-title", trans.site.toInviteSomeoneToPlayGiveThisUrl()),
-                        br,
-                        copyMeInput(challengeLink.value),
-                        br,
-                        p(trans.site.theFirstPersonToComeOnThisUrlWillPlayWithYou())
-                      ),
+                      inviteUrlBlock(challengeLink),
                       ctx.isAuth.option(
                         div(cls := "invite__user")(
                           h2(cls := "ninja-title", trans.challenge.inviteLichessUser()),

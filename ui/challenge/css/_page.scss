@@ -41,6 +41,50 @@
     }
   }
 
+  /* HungKings: khối "một liên kết vừa thách đấu vừa mang mã mời" (cờ LILA_INVITE_LINK).
+     Mọi luật đều nằm sau `.invite--hk` / `.invite__hk`, hai lớp CHỈ được in ra khi cờ
+     bật — nên cờ tắt thì trang không đổi một pixel nào. */
+  .invite--hk {
+    /* Đo thật ở 380px trên hungkings.com: cỡ chữ gốc là 12,18px nên `25em` = 304px,
+       luật cũ CHƯA tràn. Nhưng ép cỡ chữ gốc lên 16px / 20px thì luật cũ tràn 45px /
+       145px, còn `min(25em, 100%)` vẫn 0. Tức đây là chỗ hỏng của người dùng để chữ
+       lớn, không phải của màn hẹp — và bố cục màn rộng không đổi. */
+    grid-template-columns: repeat(auto-fill, minmax(min(25em, 100%), 1fr));
+  }
+
+  .invite__hk {
+    &__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6em;
+      margin-top: 1em;
+
+      .button {
+        @extend %flex-center-center;
+
+        /* Ngón tay chứ không phải con trỏ. */
+        min-height: 44px;
+        /* Chữ tiếng Việt dài hơn tiếng Anh ~40%: cho phép nút co và chữ xuống dòng
+           thay vì đẩy nhau tràn khỏi hộp. */
+        min-width: 0;
+        flex: 1 1 12ch;
+        text-transform: none;
+        white-space: normal;
+        text-align: center;
+      }
+    }
+
+    &__say {
+      min-height: 1.4em;
+      color: $c-good;
+    }
+
+    &__note {
+      margin-top: 0.6em;
+      color: $c-font-dim;
+    }
+  }
+
   .waiting {
     text-align: center;
 
