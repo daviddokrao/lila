@@ -766,6 +766,32 @@ main.home-v2 {
   }
 }
 
+// A3 (bao cao 02, muc 1.6 T8): khoi "Choi tiep" cho nguoi DA DANG NHAP, dat TREN CUNG
+// trang chu — truoc ban nay homeV2 khong co nhanh ctx.me nao, nguoi quen thay y het
+// khach la. Card don gian: loi chao + 1-2 nut CTA, khong luoi.
+.hv2-continue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: $border;
+  border-radius: 14px;
+  padding: 18px 24px;
+  background: $c-bg-box;
+
+  // .hv2-cta co san margin-top:16px (dung cho hero, nam duoi 1 doan van). O day no la
+  // item hang ngang cua flex row nen bo margin, khong thi lech tam theo chieu doc.
+  .hv2-cta {
+    margin-top: 0;
+  }
+
+  &__hi {
+    font-family: $hv2-serif;
+    font-size: 1.15rem;
+  }
+}
+
 .hv2-empty {
   display: flex;
   flex-direction: column;

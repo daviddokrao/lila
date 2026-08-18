@@ -101,10 +101,13 @@ object homeV2:
                     )
                   ),
                   div(cls := "hv2-cta")(
-                    a(cls := "hv2-btn hv2-btn--gold", href := s"/hlv/${g.id}")(
+                    // A2 (báo cáo 02, mục 2.1): nút vàng đầu tiên phải là hành động CHƠI của
+                    // chính người dùng, không phải "nghe AI giải ván người lạ". Giữ nguyên
+                    // href="#ai" (2 cú bấm khách→ván đầu, benchmark ngang chess.com/lichess).
+                    a(cls := "hv2-btn hv2-btn--gold", href := "#ai")(t("Chơi với máy", "Play the computer")),
+                    a(cls := "hv2-btn hv2-btn--line", href := s"/hlv/${g.id}")(
                       t("Nghe AI giải cả ván", "Hear the full AI commentary")
-                    ),
-                    a(cls := "hv2-btn hv2-btn--line", href := "#ai")(t("Chơi với máy", "Play the computer"))
+                    )
                   )
                 )
               )
@@ -310,6 +313,37 @@ object homeV2:
         a(cls := "hv2-btn hv2-btn--gold", href := routes.Learn.index)(t("Bắt đầu miễn phí", "Start for free"))
       )
 
+    // A3 (báo cáo 02, mục 1.6 T8 + 2.2): trước bản này KHÔNG có nhánh ctx.me nào — người đã
+    // đăng nhập thấy trang chủ y hệt khách lạ. Chỉ dùng dữ liệu ĐÃ CÓ SẴN trong Homepage
+    // (currentGame, ctx.me) — KHÔNG thêm truy vấn Mongo mới. BỎ (không đủ dữ liệu sẵn có):
+    // "ván gần đây" (cần query lịch sử ván), "gợi ý đối thủ" (cần rating range), "tiếp tục
+    // học/luyện" theo tiến độ — homepage không preload các thứ đó.
+    val continueFrag: Frag =
+      ctx.me.map { user =>
+        st.section(cls := "hv2-zone hv2-zone--continue")(
+          div(cls := "hv2-continue")(
+            span(cls := "hv2-continue__hi")(
+              t(s"Chào mừng trở lại, ${user.username.value}", s"Welcome back, ${user.username.value}")
+            ),
+            currentGame.fold(
+              div(cls := "hv2-cta")(
+                a(cls := "hv2-btn hv2-btn--gold", href := "#hv2-play")(t("Chơi tiếp", "Play again")),
+                a(cls := "hv2-btn hv2-btn--line", href := "/hlv")(t("Xem HLV AI", "See AI coach"))
+              )
+            ) { cg =>
+              div(cls := "hv2-cta")(
+                a(cls := "hv2-btn hv2-btn--gold", href := routes.Round.player(cg.pov.fullId))(
+                  t("Vào ván đang chờ bạn", "Resume your game")
+                ),
+                span(cls := "hv2-hint")(
+                  t(s"Đang đấu với ${cg.opponent}", s"Playing against ${cg.opponent}")
+                )
+              )
+            }
+          )
+        )
+      }
+
     val coachFrag: Frag =
       div(cls := "hv2-coach")(
         div(cls := "hv2-coach__who")(t("Huấn luyện viên AI · tiếng Việt", "AI coach"))
@@ -381,13 +415,9 @@ object homeV2:
               "lobby-nope" -> (playban.isDefined || currentGame.isDefined || homepage.hasUnreadLichessMessage)
             )
           )(
-          // ---------- Zone 1: TRỰC TIẾP ----------
-          st.section(cls := "hv2-zone hv2-zone--live")(
-            zlabel(t("Trực tiếp", "Live"), Some((t("Tất cả ván →", "All games →"), routes.Tv.games.url))),
-            heroFrag,
-            multiviewFrag
-          ),
-          // ---------- Zone 2: THI ĐẤU (lobby app + bảng + giải) ----------
+          // ---------- Zone 0: CHƠI TIẾP — chỉ người ĐÃ ĐĂNG NHẬP (A3), trên cùng ----------
+          continueFrag,
+          // ---------- Zone 1: THI ĐẤU (lobby app + bảng + giải) ----------
           st.section(cls := "hv2-zone hv2-zone--play", id := "hv2-play")(
             zlabel(t("Thi đấu", "Play")),
             div(cls := "hv2-play")(
@@ -408,7 +438,7 @@ object homeV2:
             ),
             toursFrag
           ),
-          // ---------- Zone 3: HLV AI + RÈN LUYỆN + BẮT ĐẦU ----------
+          // ---------- Zone 2: HLV AI + RÈN LUYỆN + BẮT ĐẦU ----------
           st.section(cls := "hv2-zone hv2-zone--train")(
             zlabel(t("Rèn luyện", "Train")),
             div(cls := "hv2-train")(
@@ -418,9 +448,10 @@ object homeV2:
               )
             ),
             hooksFrag,
-            starterFrag
+            // Người đã đăng nhập không cần mời "học cờ từ đầu" — họ đã ở đây rồi (A3).
+            ctx.me.isEmpty.option(starterFrag)
           ),
-          // ---------- Zone 4: CỘNG ĐỒNG ----------
+          // ---------- Zone 3: CỘNG ĐỒNG ----------
           st.section(cls := "hv2-zone hv2-zone--comm", id := "hv2-comm")(
             zlabel(t("Cộng đồng", "Community")),
             div(cls := "hv2-comm")(
@@ -428,6 +459,12 @@ object homeV2:
               div(communityStreams),
               div(blogFrag)
             )
+          ),
+          // ---------- Zone 4: TRỰC TIẾP — khối rỗng nhất, xuống cuối (báo cáo 02, mục 3) ----------
+          st.section(cls := "hv2-zone hv2-zone--live")(
+            zlabel(t("Trực tiếp", "Live"), Some((t("Tất cả ván →", "All games →"), routes.Tv.games.url))),
+            heroFrag,
+            multiviewFrag
           ),
           // ---------- chân trang chủ: liên kết về site (giữ nghĩa vụ AGPL /source) ----------
           div(cls := "lobby__about")(
