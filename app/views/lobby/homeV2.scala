@@ -77,7 +77,12 @@ object homeV2:
                 )
               ),
               div(cls := "hv2-cta")(
-                a(cls := "hv2-btn hv2-btn--gold", href := routes.Tv.index)(t("Vào phòng xem", "Watch now")),
+                // `routes.Tv.games` (/games) chứ KHÔNG phải `routes.Tv.index` (/tv): trên bản
+                // này `/tv` trả 404 VĨNH VIỄN có chủ ý cho tới khi có ván tiêu chuẩn tính hệ số
+                // của người thật (xem HANDOFF). Sidebar đã tránh `/tv` từ lâu, nhưng trang chủ
+                // thì chưa — nút vàng nổi nhất của nhánh này vẫn trỏ thẳng vào trang lỗi.
+                // Đo trên live 18/08: `/tv` = 404, `/games` = 200.
+                a(cls := "hv2-btn hv2-btn--gold", href := routes.Tv.games)(t("Vào phòng xem", "Watch now")),
                 span(cls := "hv2-hint")(
                   t("Ván kết thúc sẽ có lời giải AI tiếng Việt", "Finished games get AI commentary")
                 )
