@@ -2,6 +2,7 @@
 @import 'hook-chart';
 @import 'hook-filters';
 @import 'hook-list';
+@import 'escape-hatch';
 
 .lobby__app {
   @extend %flex-column;

@@ -4,6 +4,7 @@ import { spinnerVdom as spinner } from 'lib/view';
 
 import type LobbyController from '../ctrl';
 import renderSeeks from './correspondence';
+import renderEscapeHatch from './escapeHatch';
 import renderPlaying from './playing';
 import * as renderPools from './pools';
 import renderRealTime from './realTime/main';
@@ -34,5 +35,6 @@ export default function (ctrl: LobbyController) {
   return h(`div.lobby__app.lobby__app-${ctrl.tab}.lck-${contentKey}`, [
     h('div.tabs-horiz', { attrs: { role: 'tablist' } }, renderTabs(ctrl)),
     h(`div.lobby__app__content.l${redirBlock ? 'redir' : ctrl.tab}`, data, body),
+    renderEscapeHatch(ctrl),
   ]);
 }

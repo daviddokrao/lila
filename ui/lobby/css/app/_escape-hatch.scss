@@ -1,0 +1,49 @@
+// HungKings: khối "lối thoát" khi xếp cặp ẩn danh (`.lpool` → `clickPool`) không khớp sau
+// 45-60s (site còn ít người chơi trực tuyến). Gác sau cờ env LILA_LOBBY_ESCAPE_HATCH — xem
+// `ui/lobby/src/ctrl.ts: scheduleEscapeHatch` + `app/views/base/page.scala`.
+.lobby__escape-hatch {
+  @extend %flex-column;
+
+  gap: $block-gap;
+  padding: $block-gap 1.5em;
+  margin-top: $block-gap;
+  background: $c-bg-zebra;
+  border-radius: $box-radius-size;
+  text-align: center;
+
+  &__text {
+    margin: 0;
+    color: $c-font-dim;
+    font-size: 0.95em;
+    line-height: 1.5;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc($block-gap / 2);
+    justify-content: center;
+  }
+
+  &__action {
+    // a11y: vùng chạm ≥44px cả hai chiều dù nội dung chữ ngắn (nút tiếng Việt dài hơn
+    // tiếng Anh ~40%, không được giả định 1 dòng luôn đủ cao).
+    min-height: 44px;
+    min-width: 44px;
+    padding-inline: 1.2em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: lobby-escape-hatch-in 0.25s ease-out;
+  }
+}
+
+@keyframes lobby-escape-hatch-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

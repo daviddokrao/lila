@@ -43,9 +43,13 @@ export default class LobbyController {
   pools: Pool[];
   filter: Filter;
   setupCtrl: SetupController;
+  // HungKings: khối "lối thoát" hiện sau 45-60s xếp cặp ẩn danh không khớp. Xem
+  // `scheduleEscapeHatch` bên dưới cho toàn bộ ngữ cảnh + cờ env.
+  escapeHatch: { pool: Pool } | null = null;
 
   private readonly poolInStorage: LichessStorage;
   private flushHooksTimeout?: number;
+  private escapeHatchTimeout?: number;
   private readonly alreadyWatching: string[] = [];
 
   constructor(
@@ -271,12 +275,34 @@ export default class LobbyController {
 
   clickPool = (id: string) => {
     if (!this.me) {
-      xhr.anonPoolSeek(this.pools.find(p => p.id === id)!);
+      const pool = this.pools.find(p => p.id === id)!;
+      xhr.anonPoolSeek(pool);
       this.setTab('real_time');
+      this.scheduleEscapeHatch(pool);
     } else if (this.poolMember?.id === id) this.leavePool();
     else this.enterPool({ id });
     this.redraw();
   };
+
+  // HungKings: xếp cặp ẩn danh (`xhr.anonPoolSeek`) đăng một seek công khai rồi chờ khớp —
+  // site hiện có rất ít người chơi trực tuyến nên seek gần như không bao giờ khớp và khách
+  // ngồi chờ vô hạn không một gợi ý lối thoát nào. Sau 45-60s không khớp (server vẫn giữ
+  // seek chạy nền), hiện khối lối thoát: chơi với máy GIỮ ĐÚNG mốc thời gian đã chọn, hoặc
+  // mời bạn bằng liên kết. KHÔNG bịa số người online, KHÔNG bot giả danh — chỉ một câu
+  // trung thực. Gác sau cờ env LILA_LOBBY_ESCAPE_HATCH: tắt cờ = data-attribute không tồn
+  // tại = hành vi y hệt hiện nay (đọc `app/views/base/page.scala`).
+  private scheduleEscapeHatch(pool: Pool) {
+    if (document.body.dataset.lobbyEscapeHatch !== '1') return;
+    if (this.escapeHatchTimeout) clearTimeout(this.escapeHatchTimeout);
+    this.escapeHatch = null;
+    this.escapeHatchTimeout = setTimeout(
+      () => {
+        this.escapeHatch = { pool };
+        this.redraw();
+      },
+      45_000 + Math.round(Math.random() * 15_000), // 45-60s, tiêu chí đề bài
+    );
+  }
 
   enterPool = (member: PoolMember) => {
     poolRangeStorage.set(this.me?.username, member.id, member.range);

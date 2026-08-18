@@ -27,6 +27,17 @@ object page:
     env.web.config.pointsEnabled
   )
 
+  // HungKings: khối "lối thoát" khi xếp cặp ẩn danh không khớp (site còn ít người chơi
+  // trực tuyến nên seek /setup/hook có thể chờ vô hạn). Đọc thẳng sys.env thay vì luồng
+  // qua WebConfig/HOCON — layout.scala/homeV2.scala đang do phiên khác giữ, và đây là
+  // cờ CHỈ ẢNH HƯỞNG một data-attribute dùng ở phía client (ui/lobby/src/ctrl.ts đọc
+  // document.body.dataset.lobbyEscapeHatch), không cần đi qua bất kỳ view nào khác.
+  // sys.env.get(...).contains("true") tránh đúng bẫy HOCON "biến rỗng vẫn tính đã đặt":
+  // ở đây biến rỗng hoặc bất kỳ giá trị nào khác "true" đều là TẮT, không có gì để nổ.
+  // Bật: LILA_LOBBY_ESCAPE_HATCH=true trong deploy/.env rồi deploy — KHÔNG build lại image.
+  private val lobbyEscapeHatchEnabled: Boolean =
+    sys.env.get("LILA_LOBBY_ESCAPE_HATCH").contains("true")
+
   private def metaThemeColor(using ctx: Context): Frag =
     raw(s"""<meta name="theme-color" content="${ctx.pref.themeColor}">""")
 
@@ -147,6 +158,9 @@ object page:
           dataBoard3d := pref.is3d.option(pref.currentTheme3d.name),
           dataPieceSet3d := pref.is3d.option(pref.currentPieceSet3d.name),
           dataAnnounce := lila.web.AnnounceApi.get.map(a => safeJsonValue(a.json)),
+          // HungKings: xem comment `lobbyEscapeHatchEnabled` ở trên. Chỉ ghi attribute khi
+          // BẬT để tắt cờ = HTML y hệt hôm nay (không thêm attribute rỗng).
+          attr("data-lobby-escape-hatch") := lobbyEscapeHatchEnabled.option("1"),
           attr("data-i18n-catalog") := assetHelper.manifest
             .js(s"i18n/${ctx.lang.code}")
             .map(name => staticAssetUrl(s"compiled/$name")),
