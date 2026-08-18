@@ -63,7 +63,13 @@ export function boot() {
 
     serviceWorker();
 
-    console.info('Lichess is open source! See https://lichess.org/source');
+    // Ghi công nguồn mở — GIỮ, đó là nghĩa vụ AGPL-3.0. Nhưng phải trỏ về kho của CHÍNH
+    // MÌNH: AGPL buộc công khai mã đang CHẠY, mà mã đang chạy là fork này chứ không phải
+    // Lichess. Cùng lý do và cùng cách viết với `topComment` trong layout.scala.
+    // Vì sao lọt qua mọi đợt rà thương hiệu trước: chuỗi này không nằm trong HTML nên curl
+    // không thấy, còn grep trong bundle JS thì esbuild đã escape. Chỉ lộ ra khi MỞ CONSOLE
+    // trình duyệt thật — phát hiện 18/08 lúc chạy cổng chất lượng.
+    console.info('HungKings is open source, forked from Lichess. See /source');
 
     // if not already connected by a ui module, setup default connection
     eventuallySetupDefaultConnection();
