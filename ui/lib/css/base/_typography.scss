@@ -1,6 +1,28 @@
 html {
   @extend %base-font-fallback;
-  @include fluid-size('font-size', 12px, 14px);
+
+  /* GỐC REM PHẢI THEO THIẾT LẬP CỦA NGƯỜI DÙNG, KHÔNG ĐƯỢC GHIM BẰNG PX.
+   *
+   * Trước đây: `@include fluid-size('font-size', 12px, 14px)` — đặt font-size của <html>
+   * bằng px thuần. Hệ quả đo được trên live 18/08 ở viewport 375px:
+   * `getComputedStyle(document.documentElement).fontSize` = **12,1667px**. Vì mọi thứ trong
+   * lila tính theo rem, cả site co lại còn ~76% cỡ dự kiến trên mobile — và tệ hơn, người
+   * dùng chỉnh "cỡ chữ mặc định" trong trình duyệt thì KHÔNG có tác dụng gì (WCAG 1.4.4).
+   * Đó chính là những người cần nó nhất.
+   *
+   * Nay dùng clamp() với hai đầu neo bằng rem: rem trên phần tử gốc quy chiếu về giá trị
+   * KHỞI TẠO (thiết lập của người dùng), nên nó co giãn theo người dùng.
+   *
+   * SỐ ĐÃ TÍNH ĐỂ HIỂN THỊ MẶC ĐỊNH KHÔNG ĐỔI MỘT PIXEL (gốc 16px):
+   *   0,70833rem = 11,3333px · 0,2222vw · cận 0,75rem=12px … 0,875rem=14px
+   *   tại 300px : 11,3333 + 0,6667  = 12,000px  (cũ: 12px)
+   *   tại 375px : 11,3333 + 0,8333  = 12,1667px (cũ: 12,1667px — khớp số đo live)
+   *   tại 1200px: 11,3333 + 2,6667  = 14,000px  (cũ: 14px)
+   * Người đặt gốc 20px nay được sàn 15px thay vì bị ghim 12px.
+   *
+   * Đây là file gốc của upstream và chi phối thang chữ TOÀN SITE — đừng chỉnh "cho đẹp hơn"
+   * mà không đo lại đúng ba mốc trên. */
+  font-size: clamp(0.75rem, 0.70833rem + 0.2222vw, 0.875rem);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
