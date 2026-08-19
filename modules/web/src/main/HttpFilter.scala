@@ -10,7 +10,11 @@ import lila.core.net.LichessMobileUa
 
 final class HttpFilter(
     net: NetConfig,
-    parseMobileUa: RequestHeader => Option[LichessMobileUa]
+    parseMobileUa: RequestHeader => Option[LichessMobileUa],
+    // HungKings B4: dung mot HAM thay vi keo ca `lila.security.LilaCookie` vao day —
+    // cung khuon voi `parseMobileUa` ngay tren, va giu module `web` khong phai phu
+    // thuoc module `security` chi de dat mot cai cookie.
+    hkReferralCookie: String => Cookie
 )(using val mat: Materializer)(using Executor)
     extends Filter
     with ResponseHeaders:
@@ -29,7 +33,8 @@ final class HttpFilter(
             monitoring(lilaReq, startTime):
               addContextualResponseHeaders(lilaReq):
                 addEmbedderPolicyHeaders(lilaReq):
-                  result
+                  addHkReferralCookie(lilaReq):
+                    result
 
   private def toLilaReq(req: RequestHeader) =
     val clientName =
@@ -80,6 +85,41 @@ final class HttpFilter(
     else if result.header.status == OK
     then result.withHeaders(permissionsPolicyHeader)
     else result
+
+  /**
+   * HungKings B4 — loi moi mot lien ket: `https://hungkings.com/<idVan>?moi=HK7F2QX`.
+   *
+   * Truoc day viec bat `?moi=` nam trong module JS `bits.hkInvite`, ma module do CHI duoc
+   * nap o trang thach dau. Nguoi nhan bam link SAU khi da co nguoi khac vao van thi roi
+   * vao trang round — khong co gi doc tham so, cookie khong duoc dat, cong gioi thieu mat
+   * am tham. Dat o tang loc thi moi trang deu bat duoc, va bat duoc CA KHI TAT JavaScript.
+   *
+   * Chi dat cookie, KHONG ghi DB — dung nguyen tac cua `/r/<ma>` (Main.pointsReferral):
+   * quan he gioi thieu chi ghi luc TAO TAI KHOAN. Cookie dung chung ham sinh voi `/r/`
+   * nen mien/secure/sameSite khong the lech nhau.
+   *
+   * Chi nhan GET cua trinh duyet: response API khong phai cho nguoi bam link, va POST mang
+   * tham so `moi` thi khong phai luot ghe tham.
+   *
+   * KHONG chuyen huong de go tham so khoi thanh dia chi (JS o trang thach dau lam viec do):
+   * doi mot lien ket van thanh 302 la doi hanh vi dieu huong cua MOI loi moi, dat hon nhieu
+   * so voi cai duoc — mot tham so con lai tren URL.
+   */
+  private val hkInviteEnabled: Boolean = sys.env.get("LILA_INVITE_LINK").contains("true")
+
+  /** Trung rang buoc route `/r/$code<HK[A-Z2-9]{5}>` va `CODE_RE` trong bits.hkInvite.ts. */
+  private val hkRefCodePattern = """HK[A-Z2-9]{5}""".r
+
+  private def addHkReferralCookie(req: RequestHeader)(result: Result): Result =
+    if !hkInviteEnabled || req.method != "GET" || HTTPRequest.isApiOrApp(req) then result
+    else
+      req.queryString
+        .get("moi")
+        .flatMap(_.headOption)
+        .collect { case code @ hkRefCodePattern() => code }
+        // Da co dung ma do roi thi khong gui lai header Set-Cookie moi lan tai trang.
+        .filterNot(code => req.cookies.get("hk_ref").exists(_.value == code))
+        .fold(result)(code => result.withCookies(hkReferralCookie(code)))
 
   private def addEmbedderPolicyHeaders(req: RequestHeader)(result: Result) =
     if result.header.status != NO_CONTENT

@@ -84,7 +84,21 @@ final class LilaComponents(
     c.result
 
   val httpFilters = Seq(
-    lila.web.HttpFilter(env.net, lila.security.Mobile.LichessMobileUa.parse)
+    lila.web.HttpFilter(
+      env.net,
+      lila.security.Mobile.LichessMobileUa.parse,
+      // HungKings B4: CUNG ham sinh cookie ma `/r/<ma>` dung (Main.pointsReferral) — hai
+      // duong vao cua cung mot cookie thi mien/secure/sameSite khong the lech nhau.
+      code =>
+        env.security.lilaCookie.cookie(
+          controllers.Main.referralCookieName,
+          code,
+          // Some(...) chu khong phai `.some`: file nay khong import prelude nao ca, moi
+          // ten no dung deu la Play/macwire — khong dat cuoc vao export cap package.
+          maxAge = Some(90 * 24 * 3600),
+          httpOnly = Some(false)
+        )
+    )
   )
 
   override lazy val httpErrorHandler =

@@ -1,3 +1,32 @@
 #blind-mode {
   @extend %visually-hidden;
 }
+
+// HungKings J3 (19/08): nut "Bat che do mu" nam trong LUONG TAB nhung bi day ra
+// -99999px va KHONG bao gio quay lai — do tren live: nut 214x19 o x=-99999, goi
+// .focus() xong van x=-99999. Nguoi dung ban phim SANG MAT vi vay tab vao mot dieu
+// khien vo hinh (WCAG 2.4.7 Focus Visible, muc A) — nang hon con so 24px cua 2.5.8
+// ma bao cao a11y ghi ban dau. Cach chuan cho loai nut nay la khuon "skip link":
+// an cho chuot, HIEN khi nhan duoc focus.
+//
+// Chi ap khi che do mu DANG TAT: khi bat, `ui/bits/css/_blind.scss` dat
+// `#blind-mode { position: static }` de thanh nut thanh mot dai that tren dau trang.
+// Rule duoi day co do uu tien CAO HON (id + pseudo-class) nen neu khong chan bang
+// `body:not(.blind-mode)` thi no se giat dai do thanh hop noi moi lan focus.
+body:not(.blind-mode) #blind-mode:focus-within {
+  position: fixed;
+  inset-inline-start: 0.5rem;
+  inset-block-start: 0.5rem;
+  z-index: $z-above-site-header-107;
+  padding: 0.5rem 0.75rem;
+  background: $c-bg-box;
+  color: $c-font;
+  border: 1px solid $c-border;
+  // BRAND.md muc 3b: bo goc CONTROL = 8px
+  border-radius: 8px;
+
+  button {
+    // WCAG 2.5.8 muc AA: 24x24. Nut chi that su la dich cham khi no da hien ra day.
+    min-height: 24px;
+  }
+}

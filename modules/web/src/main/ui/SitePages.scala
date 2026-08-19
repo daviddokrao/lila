@@ -467,8 +467,8 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       Icon.PlayTriangle,
       "Chơi",
       "Play",
-      "Vào đấu ngay: ghép cặp nhanh, tạo ván riêng, thách đấu bạn bè, hoặc chơi với máy.",
-      "Jump into a game: quick pairing, a private game, a friendly challenge, or play the computer."
+      "Vào đấu ngay: ghép cặp nhanh, tạo ván riêng, thách đấu bạn bè, chơi với máy, hoặc đấu đồng loạt.",
+      "Jump into a game: quick pairing, a private game, a friendly challenge, the computer, or a simul."
     )(
       hubItem(
         "/#hv2-play",
@@ -497,6 +497,15 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
         "Play the computer",
         "Đấu với máy tính theo trình độ",
         "Play the engine at your level"
+      ),
+      // J2 (19/08): `/simul` truoc day 200 nhung KHONG co loi vao nao — loi cuoi trong 8 loi
+      // cua bao cao 03. Da curl truoc khi liet ke (luat noi dung cua B6): 200, tieng Viet.
+      hubItem(
+        routes.Simul.home.url,
+        "Cờ đồng loạt",
+        "Simuls",
+        "Một kỳ thủ đấu nhiều người cùng lúc",
+        "One player takes on many at once"
       ),
       if hubRealchessEnabled then
         hubItem(
@@ -559,8 +568,8 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       Icon.GraduateCap,
       "Học cờ",
       "Learn",
-      "Học và luyện cờ vua: luật cơ bản, luyện thế cờ, bàn phân tích, và nghiên cứu ván đấu.",
-      "Learn and train: chess basics, practice positions, an analysis board, and studies."
+      "Học và luyện cờ vua: luật cơ bản, luyện thế cờ, bàn phân tích, nghiên cứu ván đấu, và luật các biến thể.",
+      "Learn and train: chess basics, practice positions, an analysis board, studies, and the variant rules."
     )(
       hubItem(
         routes.Learn.index.url,
@@ -589,6 +598,16 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
         "Studies",
         "Bài giảng và ván cờ có chú giải",
         "Lessons and annotated games"
+      ),
+      // J2 (19/08): `/variant` cung mo coi nhu `/simul`. Xep vao "Hoc co" chu khong phai
+      // "Choi": trang nay GIAI THICH luat tung bien the (noi dung CMS), duong CHOI bien the
+      // nam o sanh. Da curl: 200, tieu de tieng Viet "Bien the".
+      hubItem(
+        routes.Cms.variantHome.url,
+        "Biến thể cờ",
+        "Chess variants",
+        "Luật của Chess960, Crazyhouse và các thể loại khác",
+        "The rules of Chess960, Crazyhouse and the rest"
       )
     )
 
