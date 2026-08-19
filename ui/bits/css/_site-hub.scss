@@ -1,0 +1,61 @@
+// Bo cuc the (card) cho 6 trang hub site: /choi /cau-do /hoc /giai-dau /cong-dong
+// /cong-cu (SitePages.scala, ham hubItem/hubPage). Namespace rieng .site-hub, khong
+// dung chung selector voi .page (bits/_page.scss) hay .hv2-* (lobby/home-v2) de doc
+// lap, de rollback rieng. Mau + bo goc theo BRAND.md muc 2 (mau) va muc 3b (kich
+// thuoc): chi dung bien theme co san (theme/gen/_wrap.scss), khong hardcode hex moi.
+.site-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 1em 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-hub__item {
+  margin: 0;
+}
+
+.site-hub__card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  // BRAND.md muc 3b: vung cham cua mot control doc lap tren mobile phai >=44px.
+  // The nay khong phai lien ket chu inline (ngoai le 24px), no la mot khoi rieng.
+  min-height: 44px;
+  background: $c-bg-box;
+  border: 1px solid $c-border;
+  // BRAND.md muc 3b: bo goc CARD = 14px
+  border-radius: 14px;
+  color: $c-font;
+  text-decoration: none;
+  // Liet ke thuoc tinh cu the, cam transition: all (BRAND.md muc 3b). Reduced-motion
+  // da co nhanh chung o base/_elements.scss (*, @media prefers-reduced-motion), khong
+  // can lap lai o day.
+  @include transition(border-color background-color);
+
+  &:hover,
+  &:focus-visible {
+    border-color: $c-primary;
+    background: $c-bg-zebra;
+  }
+
+  &:focus-visible {
+    // BRAND.md muc 3b: focus ring site = primary (coach moi dung accent)
+    outline: 2px solid $c-primary;
+    outline-offset: 2px;
+  }
+}
+
+.site-hub__title {
+  font-weight: 700;
+}
+
+.site-hub__desc {
+  font-size: 0.85rem;
+  color: $c-font-dim;
+  line-height: 1.4;
+}

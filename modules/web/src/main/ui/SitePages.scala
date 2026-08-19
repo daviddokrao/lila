@@ -429,16 +429,23 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
   private val hubRealchessEnabled = sys.env.get("LILA_REALCHESS_INTERNAL_URL").exists(_.nonEmpty)
   private val hubArenaEnabled     = sys.env.getOrElse("LILA_ARENA", "false") == "true"
 
-  // Tham so ten `url` chu KHONG phai `href`: dat ten `href` thi no CHE mat thuoc tinh
-  // `href` cua Scalatags trong pham vi ham, nen `href := href` bi hieu la gan vao mot
-  // String va compile chet ("value := is not a member of String").
+  // Tham so ten `url` chu KHONG phai `href`, ten `label*` chu KHONG phai `title`: dat
+  // trung ten thuoc tinh Scalatags se CHE mat thuoc tinh do trong pham vi ham, nen
+  // vd `href := href` bi hieu la gan vao mot String va compile chet
+  // ("value := is not a member of String").
   // Doi chieu TAY khong bat duoc loai loi nay vi ca hai ten deu ton tai that — chi trinh
   // bien dich moi thay. Da lam chet build 13 ngay 18/08.
-  private def hubItem(url: String, vi: String, en: String)(using ctx: Context) =
-    // Link chu inline trong danh sach: WCAG 2.5.8 chi doi >=24px, khong phai 44px
-    // (BRAND.md §3b) — padding duoi day cho ra ~30px, co bien an toan.
-    li(style := "margin:0.5em 0;line-height:1.5")(
-      a(href := url, style := "display:inline-block;padding:0.3em 0.1em")(HomeI18n(vi, en))
+  private def hubItem(url: String, titleVi: String, titleEn: String, descVi: String, descEn: String)(using
+      ctx: Context
+  ) =
+    // The (card) la mot control doc lap tren mobile (khong phai lien ket chu inline
+    // trong cau/doan), nen phai dat vung cham >=44px theo BRAND.md muc 3b, khong duoc
+    // dung ngoai le 24px cua WCAG 2.5.8 nhu link chu thuong.
+    li(cls := "site-hub__item")(
+      a(cls := "site-hub__card", href := url)(
+        span(cls := "site-hub__title")(HomeI18n(titleVi, titleEn)),
+        span(cls := "site-hub__desc")(HomeI18n(descVi, descEn))
+      )
     )
 
   private def hubPage(
@@ -448,11 +455,11 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       descVi: String,
       descEn: String
   )(items: Frag*)(using ctx: Context) =
-    Page(HomeI18n(titleVi, titleEn)).css("bits.page"):
+    Page(HomeI18n(titleVi, titleEn)).css("bits.page").css("bits.siteHub"):
       main(cls := "page box box-pad")(
         h1(cls := "box__top", dataIcon := icon)(HomeI18n(titleVi, titleEn)),
         p(HomeI18n(descVi, descEn)),
-        ul(items)
+        ul(cls := "site-hub__grid")(items)
       )
 
   def hubChoi(using ctx: Context) =
@@ -463,11 +470,43 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       "Vào đấu ngay: ghép cặp nhanh, tạo ván riêng, thách đấu bạn bè, hoặc chơi với máy.",
       "Jump into a game: quick pairing, a private game, a friendly challenge, or play the computer."
     )(
-      hubItem("/#hv2-play", "Xếp cặp nhanh", "Quick pairing"),
-      hubItem("/#hook", "Tạo ván tại sảnh", "Create a game"),
-      hubItem("/#friend", "Thách đấu bạn bè", "Play a friend"),
-      hubItem("/#ai", "Chơi với máy", "Play the computer"),
-      if hubRealchessEnabled then hubItem("/realchess", "Bàn cờ 3D", "3D board") else emptyFrag
+      hubItem(
+        "/#hv2-play",
+        "Xếp cặp nhanh",
+        "Quick pairing",
+        "Ghép đối thủ ngay, không cần chờ",
+        "Get matched instantly, no waiting"
+      ),
+      hubItem(
+        "/#hook",
+        "Tạo ván tại sảnh",
+        "Create a game",
+        "Đặt ván mới ở sảnh chờ",
+        "Post a new game in the lobby"
+      ),
+      hubItem(
+        "/#friend",
+        "Thách đấu bạn bè",
+        "Play a friend",
+        "Gửi lời mời tới bạn bè",
+        "Send a challenge to a friend"
+      ),
+      hubItem(
+        "/#ai",
+        "Chơi với máy",
+        "Play the computer",
+        "Đấu với máy tính theo trình độ",
+        "Play the engine at your level"
+      ),
+      if hubRealchessEnabled then
+        hubItem(
+          "/realchess",
+          "Bàn cờ 3D",
+          "3D board",
+          "Trải nghiệm bàn cờ vật lý 3D",
+          "Play on a physical 3D board"
+        )
+      else emptyFrag
     )
 
   def hubCauDo(using ctx: Context) =
@@ -478,11 +517,41 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       "Luyện chiến thuật qua câu đố: hằng ngày, theo chủ đề, bão tốc độ, đua với người khác, hoặc giữ chuỗi thắng.",
       "Sharpen your tactics: daily puzzles, puzzles by theme, puzzle storm, puzzle racer, or a puzzle streak."
     )(
-      hubItem(routes.Puzzle.home.url, "Câu đố hằng ngày", "Daily puzzle"),
-      hubItem(routes.Puzzle.themes.url, "Theo chủ đề", "Puzzle themes"),
-      hubItem(routes.Storm.home.url, "Bão câu đố", "Puzzle storm"),
-      hubItem(routes.Racer.home.url, "Đua câu đố", "Puzzle racer"),
-      hubItem(routes.Puzzle.streak.url, "Chuỗi thắng", "Puzzle streak")
+      hubItem(
+        routes.Puzzle.home.url,
+        "Câu đố hằng ngày",
+        "Daily puzzle",
+        "Một câu đố chiến thuật mỗi ngày",
+        "One tactical puzzle every day"
+      ),
+      hubItem(
+        routes.Puzzle.themes.url,
+        "Theo chủ đề",
+        "Puzzle themes",
+        "Luyện theo từng dạng chiến thuật",
+        "Train by tactical theme"
+      ),
+      hubItem(
+        routes.Storm.home.url,
+        "Bão câu đố",
+        "Puzzle storm",
+        "Giải càng nhiều càng nhanh trong 3 phút",
+        "Solve as many as you can in 3 minutes"
+      ),
+      hubItem(
+        routes.Racer.home.url,
+        "Đua câu đố",
+        "Puzzle racer",
+        "Thi tốc độ giải với người khác",
+        "Race other players to solve first"
+      ),
+      hubItem(
+        routes.Puzzle.streak.url,
+        "Chuỗi thắng",
+        "Puzzle streak",
+        "Giữ mạch thắng, sai một lần là dừng",
+        "Keep your streak alive, one miss ends it"
+      )
     )
 
   def hubHoc(using ctx: Context) =
@@ -493,10 +562,34 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       "Học và luyện cờ vua: luật cơ bản, luyện thế cờ, bàn phân tích, và nghiên cứu ván đấu.",
       "Learn and train: chess basics, practice positions, an analysis board, and studies."
     )(
-      hubItem(routes.Learn.index.url, "Học cơ bản", "Chess basics"),
-      hubItem(routes.Practice.index.url, "Luyện thế cờ", "Practice"),
-      hubItem(routes.UserAnalysis.index.url, "Bàn phân tích", "Analysis board"),
-      hubItem(routes.Study.allDefault().url, "Nghiên cứu", "Studies")
+      hubItem(
+        routes.Learn.index.url,
+        "Học cơ bản",
+        "Chess basics",
+        "Luật đi quân và nước cơ bản cho người mới",
+        "Piece moves and the basic rules, for beginners"
+      ),
+      hubItem(
+        routes.Practice.index.url,
+        "Luyện thế cờ",
+        "Practice",
+        "Luyện từng thế cờ theo chủ đề",
+        "Drill positions theme by theme"
+      ),
+      hubItem(
+        routes.UserAnalysis.index.url,
+        "Bàn phân tích",
+        "Analysis board",
+        "Xem lại nước đi cùng máy phân tích",
+        "Review your moves with the engine"
+      ),
+      hubItem(
+        routes.Study.allDefault().url,
+        "Nghiên cứu",
+        "Studies",
+        "Bài giảng và ván cờ có chú giải",
+        "Lessons and annotated games"
+      )
     )
 
   def hubGiaiDau(using ctx: Context) =
@@ -507,9 +600,29 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       "Thi đấu trong các giải: đấu trường đang mở và lịch giải sắp tới.",
       "Compete in tournaments: open arenas and the upcoming schedule."
     )(
-      hubItem(routes.Tournament.home.url, "Đấu trường", "Arenas"),
-      hubItem(routes.Tournament.calendar.url, "Lịch giải", "Calendar"),
-      if hubArenaEnabled then hubItem("/giai", "Giải 2 Phái", "Two Sides") else emptyFrag
+      hubItem(
+        routes.Tournament.home.url,
+        "Đấu trường",
+        "Arenas",
+        "Giải đang mở, vào là đấu ngay",
+        "Open tournaments you can join right now"
+      ),
+      hubItem(
+        routes.Tournament.calendar.url,
+        "Lịch giải",
+        "Calendar",
+        "Xem các giải sắp diễn ra",
+        "See what is coming up"
+      ),
+      if hubArenaEnabled then
+        hubItem(
+          "/giai",
+          "Giải 2 Phái",
+          "Two Sides",
+          "Hai đội Vua Nam và Vua Nữ, tự chọn phe",
+          "Two teams — pick the side you play for"
+        )
+      else emptyFrag
     )
 
   def hubCongDong(using ctx: Context) =
@@ -520,10 +633,36 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       "Kết nối với người chơi khác: danh sách kỳ thủ, các đội, và tin tức HungKings.",
       "Connect with other players: the player list, teams, and HungKings news."
     )(
-      hubItem(routes.User.list.url, "Kỳ thủ", "Players"),
-      hubItem(routes.Team.home().url, "Đội", "Teams"),
-      hubItem(routes.Feed.index().url, "Tin HungKings", "News"),
-      if forumEnabled then hubItem(routes.ForumCateg.index.url, "Diễn đàn", "Forum") else emptyFrag
+      hubItem(
+        routes.User.list.url,
+        "Kỳ thủ",
+        "Players",
+        "Danh sách người chơi trên HungKings",
+        "Browse the players on HungKings"
+      ),
+      hubItem(
+        routes.Team.home().url,
+        "Đội",
+        "Teams",
+        "Tìm đội để tham gia, hoặc lập đội mới",
+        "Find a team to join, or start one"
+      ),
+      hubItem(
+        routes.Feed.index().url,
+        "Tin HungKings",
+        "News",
+        "Thông báo và tin mới của trang",
+        "Site announcements and updates"
+      ),
+      if forumEnabled then
+        hubItem(
+          routes.ForumCateg.index.url,
+          "Diễn đàn",
+          "Forum",
+          "Thảo luận cùng cộng đồng",
+          "Discuss with the community"
+        )
+      else emptyFrag
     )
 
   def hubCongCu(using ctx: Context) =
@@ -534,10 +673,34 @@ final class SitePages(helpers: Helpers, assetHelper: AssetFullHelper)(
       "Công cụ cờ vua độc lập: bàn phân tích, sửa bàn cờ, nhập ván PGN, và luyện toạ độ.",
       "Standalone chess tools: analysis board, board editor, PGN import, and coordinate trainer."
     )(
-      hubItem(routes.UserAnalysis.index.url, "Bàn phân tích", "Analysis board"),
-      hubItem(routes.Editor.index.url, "Sửa bàn cờ", "Board editor"),
-      hubItem(routes.Importer.importGame.url, "Nhập ván PGN", "Import game"),
-      hubItem(routes.Coordinate.home.url, "Luyện toạ độ", "Coordinate trainer")
+      hubItem(
+        routes.UserAnalysis.index.url,
+        "Bàn phân tích",
+        "Analysis board",
+        "Xem lại nước đi cùng máy phân tích",
+        "Review your moves with the engine"
+      ),
+      hubItem(
+        routes.Editor.index.url,
+        "Sửa bàn cờ",
+        "Board editor",
+        "Dựng thế cờ rồi phân tích hoặc chia sẻ",
+        "Set up a position to analyse or share"
+      ),
+      hubItem(
+        routes.Importer.importGame.url,
+        "Nhập ván PGN",
+        "Import game",
+        "Dán PGN để xem lại và phân tích",
+        "Paste a PGN to review and analyse"
+      ),
+      hubItem(
+        routes.Coordinate.home.url,
+        "Luyện toạ độ",
+        "Coordinate trainer",
+        "Luyện nhớ tên ô cờ cho nhanh mắt",
+        "Train your square-name recall"
+      )
     )
 
   def lag(using Context) =
