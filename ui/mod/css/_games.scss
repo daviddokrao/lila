@@ -5,7 +5,15 @@
     @extend %box-radius;
 
     font-weight: bold;
-    color: white;
+    // HungKings a11y: hai nen o duoi chi pha 50% nen chung THEO chieu cua theme (toi:
+    // #28745e / #774853; sang: #94bba6 / #e7a094). Chieu nay NGUOC voi hai cho tren:
+    // o day theme SANG moi la ben rot — chu trang dat 5,60:1 / 7,40:1 o theme toi nhung
+    // tut con 2,12:1 / 2,13:1 o theme sang. Vi vay khong dung $c-over-mix (muc toi co
+    // dinh, chi 3,16:1 / 2,39:1 o theme toi) va cang khong dung $c-over-accent (rot ca
+    // hai theme). $c-font la muc trang tu dao chieu dung: 4,99:1 / 6,60:1 (toi) va
+    // 8,35:1 / 8,30:1 (sang). Nguong 4,5:1 (chu thuong: huy hieu nho trong bang mod,
+    // dam nhung ke thua co chu body nen khong du 18,66px de xin nguong 3:1).
+    color: $c-font;
     margin-inline-end: 1ch;
     padding: 2px 1em;
   }

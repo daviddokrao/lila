@@ -8,7 +8,13 @@
   @media (hover: hover) {
     &:hover:not(.disabled, [disabled]) {
       background: color-mix(in oklab, $c-secondary 75%, $c-bg);
-      color: #fff;
+      // HungKings a11y: nen la $c-secondary PHA LOANG chu khong phai pastel nguyen khoi,
+      // nen no khong dao chieu theo theme: #39a870 (toi) va #5f9a7c (sang) deu la mau
+      // trung tinh. Chu trang chi dat 3,00:1 (toi) / 3,28:1 (sang). Dung $c-over-accent o
+      // day la sai: theme sang no thanh trang, van 3,28:1 ma trong nhu da sua. $c-over-mix
+      // la muc TOI o ca hai theme => 5,90:1 / 5,39:1. Nguong 4,5:1 (chu thuong: .fbt
+      // khong dat font-size, ke thua co chu body).
+      color: $c-over-mix;
     }
   }
 

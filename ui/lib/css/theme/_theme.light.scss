@@ -42,6 +42,12 @@ html.light {
   // so accents borrow the dark gold. Being dark, it carries white text again.
   --c-accent: #785900;
   --c-over-accent: white;
+  // MUST be re-pinned, and NOT to white like the line above. A solid accent fill flips
+  // with the theme, so its ink flips too; a diluted color-mix() fill does not flip, it
+  // stays mid-tone, so its ink must stay dark in both themes. Inheriting the shared value
+  // would resolve through the white over-accent above and fail AA at ~3,3:1. Page ink is
+  // the same value the dark theme uses, so both themes land on one dark ink.
+  --c-over-mix: var(--c-font);
   --c-dimmer: white;
   --c-clearer: black;
   --c-bg-input: hsl(from var(--c-bg-page) h s 98);

@@ -86,6 +86,14 @@
   // Text and icons laid over a solid accent fill. Gold is far too light to carry white,
   // so this is the page ink instead; the light theme flips it back.
   --c-over-accent: #0d1733;
+  // Ink laid over a color-mix() fill that is DILUTED but still strongly tinted (accent
+  // 70% + bg, secondary 75% + bg). Such a surface lands mid-tone in BOTH themes: the dark
+  // theme lightens the tint toward the accent, the light theme darkens it toward the
+  // accent, so it never follows the page polarity. That is why the over-accent ink is the
+  // wrong token here. Over-accent flips to white in the light theme and drops these
+  // surfaces to 3,28-3,39:1, i.e. it looks fixed while still failing AA. Dark ink in both
+  // themes: 5,90/5,39:1 (fbt hover) and 5,48/5,22:1 (crosstable current).
+  --c-over-mix: var(--c-over-accent);
   --c-dasher: var(--c-secondary);
   --c-bot: var(--c-fancy);
   --c-good: #4ade80;
