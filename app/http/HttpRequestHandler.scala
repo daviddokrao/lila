@@ -75,39 +75,13 @@ final class HttpRequestHandler(
     // Play đọc phần đường dẫn THÔ từ `uriString` khi rút tham số động, mà `withPath` không
     // cập nhật trường đó. Dựng đủ ba phần là hết phân biệt.
     val thu = req.withTarget(play.api.mvc.request.RequestTarget(dich, goc, req.queryString))
-    // ── LOG TẠM K11 (2026-08-20) — GỠ SAU KHI ĐỌC XONG ───────────────────────────────
-    // 5 trang CMS (`/about/ /privacy/ /thanks/ /ads/ /changelog/`) vẫn 404 trong khi 12 đường
-    // khác đã 301. HAI giả thuyết đã thử và SAI (chỉ `withPath`; và "trang 404 khác loại"),
-    // nên lần này KHÔNG đoán tiếp: in thẳng ra thứ Play đang giữ.
-    // Một vòng build lila tốn ~13-20 phút, nên hỏi NHIỀU câu trong CÙNG một vòng:
-    //   (1) route thật của 5 trang này trông như thế nào trong bảng của Play?
-    //   (2) handlerFor trả gì cho từng biến thể request thử?
-    if p.startsWith("/about") || p.startsWith("/privacy") || p.startsWith("/thanks") ||
-      p.startsWith("/ads") || p.startsWith("/changelog")
-    then
-      // CHỈ dùng API đã có mặt sẵn trong file này (`withTarget` + `RequestTarget`).
-      // Vòng build đầu chết vì tôi gọi `req.withPath` và `router.documentation` — cả hai
-      // KHÔNG tồn tại ở bản Play này, và một vòng build tốn 13-20 phút mới cho biết điều đó.
-      // Luật rút ra: trước khi dùng một API lạ trong vòng build đắt, grep xem repo đã dùng
-      // nó ở đâu chưa; chưa ai dùng thì đừng đoán chữ ký.
-      val bienThe = List(
-        "A. uri=dich, path=goc, query=req" ->
-          req.withTarget(play.api.mvc.request.RequestTarget(dich, goc, req.queryString)),
-        "B. uri=goc, path=goc, query=rỗng" ->
-          req.withTarget(play.api.mvc.request.RequestTarget(goc, goc, Map.empty)),
-        // D phân biệt Play đọc tham số động từ ĐÂU: nếu chỉ D trả CÓ thì nó đọc `path`;
-        // nếu chỉ B trả CÓ thì nó đọc `uriString`; cả hai cùng không thì vấn đề nằm chỗ khác.
-        "D. uri=CÓ dấu, path=goc" ->
-          req.withTarget(play.api.mvc.request.RequestTarget(p, goc, Map.empty)),
-        "E. uri=goc, path=CÓ dấu" ->
-          req.withTarget(play.api.mvc.request.RequestTarget(goc, p, Map.empty))
-      )
-      val ketQua = bienThe
-        .map((ten, r) => s"$ten → ${if router.handlerFor(r).isDefined then "CÓ" else "không"}")
-        .mkString(" | ")
-      println(s"[K11] path=$p goc=$goc dich=$dich method=${req.method} getHead=$laGetHead")
-      println(s"[K11] handlerFor: $ketQua")
-    // ── HẾT LOG TẠM ──────────────────────────────────────────────────────────────────
+    // ⚠️ GIỚI HẠN CỦA CHỖ NÀY, đo bằng log tạm ngày 20/08 (K11): hàm này chỉ chạy khi router
+    // KHÔNG tìm được handler nào (`orElse` ở trên). Mà route CUỐI của lila là
+    // `GET /*path → User.redirect` — BẮT TẤT CẢ. Log của chính lila:
+    //     `404 GET /about/  User.redirect`   ← có handler ⇒ hàm này không hề chạy
+    //     `301 GET /choi/   NoHandler`       ← không handler ⇒ hàm này chạy, 301 đúng
+    // Nên đừng sửa thêm ở đây khi thấy một đường vẫn 404 kèm dấu `/`: phần rơi vào catch-all
+    // được xử lý ở `controllers.User.boDauGachCuoi`. Hai chỗ, hai đường vào, cùng kết quả.
     if !laGetHead || p.length <= 1 || !p.endsWith("/") || goc.isEmpty then None
     else if router.handlerFor(thu).isEmpty then None
     else

@@ -620,8 +620,29 @@ final class User(
               case _ => Ok.page(views.user.perfStat.ratingDistribution(perfKey, data, none))
 
   def redirect(path: String) = Open:
-    staticRedirect(path) |
+    staticRedirect(path).orElse(boDauGachCuoi(path)) |
       UserStr.read(path).so(tryRedirect).getOrElse(notFound)
+
+  /**
+   * HungKings K11 (20/08): URL kèm dấu `/` cuối → 301 về bản không dấu.
+   *
+   * Vì sao ở ĐÂY chứ không ở tầng lọc `HttpRequestHandler.boDauGachCuoi`: tầng lọc đó chỉ
+   * chạy khi router KHÔNG tìm được handler nào (`orElse`), mà route CUỐI của lila là
+   * `GET /*path → User.redirect` — bắt tất cả. Log của chính lila nói thẳng điều đó:
+   *   `404 GET /about/  User.redirect`   ← có handler ⇒ tầng lọc không bao giờ chạy
+   *   `301 GET /choi/   NoHandler`       ← không có handler ⇒ tầng lọc chạy, 301 đúng
+   * Đó là lý do 12 đường đã 301 mà đúng 5 trang CMS vẫn 404: chúng rơi vào catch-all.
+   * (Hai giả thuyết trước — "dựng RequestTarget chưa đủ" và "trang 404 khác loại" — đều
+   * đo bằng NỘI DUNG trang nên không phân biệt được; log handler mới là thứ trả lời.)
+   *
+   * Đặt ở đây còn phủ luôn mọi route thêm sau này, và KHÔNG thể giẫm lên `/hlv-app/`
+   * `/diem-app/` `/realchess/` `/giai-app/`: bốn đường đó có route thật nên không bao giờ
+   * rơi xuống catch-all. Không lặp vô hạn vì đích đã bỏ dấu `/` cuối.
+   */
+  private def boDauGachCuoi(path: String)(using ctx: Context): Option[Fu[Result]] =
+    Option.when(path.endsWith("/") && path.length > 1):
+      val query = ctx.req.rawQueryString
+      fuccess(MovedPermanently("/" + path.dropRight(1) + (if query.isEmpty then "" else "?" + query)))
 
   def tryRedirect(username: UserStr)(using Context): Fu[Option[Result]] =
     meOrFetch(username).map:
