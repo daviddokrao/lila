@@ -75,6 +75,33 @@ final class HttpRequestHandler(
     // Play đọc phần đường dẫn THÔ từ `uriString` khi rút tham số động, mà `withPath` không
     // cập nhật trường đó. Dựng đủ ba phần là hết phân biệt.
     val thu = req.withTarget(play.api.mvc.request.RequestTarget(dich, goc, req.queryString))
+    // ── LOG TẠM K11 (2026-08-20) — GỠ SAU KHI ĐỌC XONG ───────────────────────────────
+    // 5 trang CMS (`/about/ /privacy/ /thanks/ /ads/ /changelog/`) vẫn 404 trong khi 12 đường
+    // khác đã 301. HAI giả thuyết đã thử và SAI (chỉ `withPath`; và "trang 404 khác loại"),
+    // nên lần này KHÔNG đoán tiếp: in thẳng ra thứ Play đang giữ.
+    // Một vòng build lila tốn ~13-20 phút, nên hỏi NHIỀU câu trong CÙNG một vòng:
+    //   (1) route thật của 5 trang này trông như thế nào trong bảng của Play?
+    //   (2) handlerFor trả gì cho từng biến thể request thử?
+    if p.startsWith("/about") || p.startsWith("/privacy") || p.startsWith("/thanks") ||
+      p.startsWith("/ads") || p.startsWith("/changelog")
+    then
+      val bienThe = List(
+        "A. uri=dich, path=goc, query=req" ->
+          req.withTarget(play.api.mvc.request.RequestTarget(dich, goc, req.queryString)),
+        "B. uri=goc,  path=goc, query=rỗng" ->
+          req.withTarget(play.api.mvc.request.RequestTarget(goc, goc, Map.empty)),
+        "C. chỉ withPath(goc)" -> req.withPath(goc)
+      )
+      val ketQua = bienThe
+        .map((ten, r) => s"$ten → ${if router.handlerFor(r).isDefined then "CÓ" else "không"}")
+        .mkString(" | ")
+      val docs = router.documentation
+        .filter((_, pattern, _) => pattern.contains("about") || pattern.contains("privacy"))
+        .map((m, pattern, ctrl) => s"$m $pattern → ${ctrl.take(60)}")
+      println(s"[K11] path=$p goc=$goc dich=$dich getHead=$laGetHead")
+      println(s"[K11] handlerFor: $ketQua")
+      println(s"[K11] route khớp 'about|privacy' trong bảng Play (${docs.size}): ${docs.mkString(" ;; ")}")
+    // ── HẾT LOG TẠM ──────────────────────────────────────────────────────────────────
     if !laGetHead || p.length <= 1 || !p.endsWith("/") || goc.isEmpty then None
     else if router.handlerFor(thu).isEmpty then None
     else
