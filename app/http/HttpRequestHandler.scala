@@ -85,22 +85,28 @@ final class HttpRequestHandler(
     if p.startsWith("/about") || p.startsWith("/privacy") || p.startsWith("/thanks") ||
       p.startsWith("/ads") || p.startsWith("/changelog")
     then
+      // CHỈ dùng API đã có mặt sẵn trong file này (`withTarget` + `RequestTarget`).
+      // Vòng build đầu chết vì tôi gọi `req.withPath` và `router.documentation` — cả hai
+      // KHÔNG tồn tại ở bản Play này, và một vòng build tốn 13-20 phút mới cho biết điều đó.
+      // Luật rút ra: trước khi dùng một API lạ trong vòng build đắt, grep xem repo đã dùng
+      // nó ở đâu chưa; chưa ai dùng thì đừng đoán chữ ký.
       val bienThe = List(
         "A. uri=dich, path=goc, query=req" ->
           req.withTarget(play.api.mvc.request.RequestTarget(dich, goc, req.queryString)),
-        "B. uri=goc,  path=goc, query=rỗng" ->
+        "B. uri=goc, path=goc, query=rỗng" ->
           req.withTarget(play.api.mvc.request.RequestTarget(goc, goc, Map.empty)),
-        "C. chỉ withPath(goc)" -> req.withPath(goc)
+        // D phân biệt Play đọc tham số động từ ĐÂU: nếu chỉ D trả CÓ thì nó đọc `path`;
+        // nếu chỉ B trả CÓ thì nó đọc `uriString`; cả hai cùng không thì vấn đề nằm chỗ khác.
+        "D. uri=CÓ dấu, path=goc" ->
+          req.withTarget(play.api.mvc.request.RequestTarget(p, goc, Map.empty)),
+        "E. uri=goc, path=CÓ dấu" ->
+          req.withTarget(play.api.mvc.request.RequestTarget(goc, p, Map.empty))
       )
       val ketQua = bienThe
         .map((ten, r) => s"$ten → ${if router.handlerFor(r).isDefined then "CÓ" else "không"}")
         .mkString(" | ")
-      val docs = router.documentation
-        .filter((_, pattern, _) => pattern.contains("about") || pattern.contains("privacy"))
-        .map((m, pattern, ctrl) => s"$m $pattern → ${ctrl.take(60)}")
-      println(s"[K11] path=$p goc=$goc dich=$dich getHead=$laGetHead")
+      println(s"[K11] path=$p goc=$goc dich=$dich method=${req.method} getHead=$laGetHead")
       println(s"[K11] handlerFor: $ketQua")
-      println(s"[K11] route khớp 'about|privacy' trong bảng Play (${docs.size}): ${docs.mkString(" ;; ")}")
     // ── HẾT LOG TẠM ──────────────────────────────────────────────────────────────────
     if !laGetHead || p.length <= 1 || !p.endsWith("/") || goc.isEmpty then None
     else if router.handlerFor(thu).isEmpty then None
