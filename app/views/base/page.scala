@@ -118,7 +118,17 @@ object page:
           // No caller ever sets the site name on an OpenGraph, so without this every page
           // advertises the upstream default when shared. Taken from config rather than
           // hardcoded, so each environment names itself correctly.
-          p.openGraph.map(og => lila.web.ui.openGraph(og.copy(siteName = siteName))),
+          // L10 (20/08): thêm og:locale theo ngôn ngữ đang render. `ctx.lang.code` cho
+          // "vi-VN"; Open Graph đòi gạch dưới nên đổi "-" thành "_".
+          // Dùng dạng ngoặc chứ KHÔNG dùng `map:` (fewer-braces) ở đây: phần tử này nằm giữa
+          // một danh sách ngăn cách bằng dấu phẩy, nơi khối thụt lề rất dễ nuốt dấu phẩy kế
+          // tiếp — và mỗi lần đoán sai cú pháp tốn một vòng build 13-20 phút.
+          p.openGraph.map(og =>
+            lila.web.ui.openGraph(
+              og.copy(siteName = siteName),
+              locale = ctx.lang.code.replace("-", "_").some
+            )
+          ),
           p.atomLinkTag | dailyNewsAtom,
           (pref.bg == lila.pref.Pref.Bg.TRANSPARENT).option(pref.bgImgOrDefault).map { loc =>
             val url =
