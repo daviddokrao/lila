@@ -35,7 +35,44 @@ final class HttpRequestHandler(
     else if isForumPath(request) || isBroadcastPath(request) || isPatronPath(request) ||
       isVideoPath(request) || isOpeningPath(request) || isCoachPath(request)
     then forumOffHandler.some
-    else router.handlerFor(request)
+    else router.handlerFor(request).orElse(boDauGachCuoi(request))
+
+  /**
+   * HungKings K1 (20/08): URL gõ tay kèm dấu `/` cuối → 301 về bản không dấu.
+   *
+   * Đo trên live: **13** đường trả 404 chỉ vì dấu gạch thừa, gồm cả 6 trang hub và ba lối
+   * vào chính `/giai/` `/hlv/` `/diem/`. Gõ tay URL kèm `/` là hành vi rất thường.
+   *
+   * Vì sao ở ĐÂY chứ không thêm 13 dòng vào `conf/routes`: 13 dòng chỉ vá đúng 13 đường
+   * đang biết, còn mọi route thêm sau này lại hỏng lại — mà chẳng ai nhớ ra để thêm dòng
+   * thứ 14. Một chỗ phủ hết, kể cả route tương lai.
+   *
+   * Ba chốt an toàn, có chủ ý:
+   *  1. **Chỉ chạy khi bản CÓ dấu `/` không có route.** Nên nó không bao giờ giẫm lên
+   *     `/hlv-app/` `/diem-app/` `/realchess/` `/giai-app/` — bốn đường này CÓ route riêng
+   *     và phải giữ dấu `/` (bỏ đi là đường dẫn tương đối của asset trong app con hỏng hết).
+   *  2. **Chỉ chuyển khi bản KHÔNG dấu có route thật.** URL rác vẫn 404 đúng như trước,
+   *     không biến 404 thành một vòng chuyển hướng vô nghĩa.
+   *  3. **Chỉ GET/HEAD.** 301 một POST là làm mất thân yêu cầu.
+   *
+   * Dùng 301 (không phải 200 cùng nội dung) để hai URL không thành nội dung trùng lặp trước
+   * Google — cùng lập luận đã dùng khi cho www 301 về apex.
+   */
+  private def boDauGachCuoi(req: RequestHeader): Option[Handler] =
+    val p = req.path
+    // KHÔNG mở điều kiện `if` bằng dấu ngoặc: Scala 3 sẽ đọc `if (a) b` theo cú pháp CŨ và
+    // hiểu phần sau `||` là nhánh `then`. Đặt tên biến trước là hết mơ hồ — rẻ hơn nhiều so
+    // với một vòng build 20 phút để biết mình gõ sai dấu ngoặc.
+    val laGetHead = req.method == "GET" || req.method == "HEAD"
+    val goc = p.reverse.dropWhile(_ == '/').reverse
+    if !laGetHead || p.length <= 1 || !p.endsWith("/") || goc.isEmpty then None
+    else if router.handlerFor(req.withTarget(req.target.withPath(goc))).isEmpty then None
+    else
+      val query = if req.rawQueryString.isEmpty then "" else "?" + req.rawQueryString
+      val dich = goc + query
+      Some(controllerComponents.actionBuilder { (_: RequestHeader) =>
+        Results.MovedPermanently(dich)
+      })
 
   // Chặn ở ĐÂY chứ không rải guard vào 3 controller Forum*: một chỗ duy nhất phủ hết
   // 18 route (kể cả /diagnostic, vốn nằm trong ForumTopic) và không phải đụng module

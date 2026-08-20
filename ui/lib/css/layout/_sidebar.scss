@@ -508,6 +508,11 @@ aside#top.hv2-side {
       // 3 gach ben trong van 24px nho padding.
       width: 44px;
       height: 44px;
+      // K4 (20/08): `width: 44px` KHONG du. Day la flex item, ma flex item mac dinh CO LAI
+      // duoc — o co chu 1,6x thi brand + Dang nhap + Dang ky no ra, ep nut hamburger xuong
+      // con 24px (do that tren live o 4 trang). `flex: none` khoa lai. Bay nay khong thay
+      // duoc neu chi doc CSS: khai bao ghi 44px va no dung la 44px o co chu thuong.
+      flex: none;
       padding: 10px;
       background: none;
       border: none;
