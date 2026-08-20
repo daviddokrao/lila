@@ -50,7 +50,9 @@ object homeV2:
     // (home.scala đặt nó trong khối hrefLangs vì mọi thứ đều dựng tại chỗ trong đó.)
     given Option[UserWithPerfs] = homepage.me
     // Chuỗi mới: song ngữ tại chỗ, KHÔNG thêm key registry dịch (19' compile LangList).
-    def t(viText: String, enText: String): String = if ctx.lang.language == "vi" then viText else enText
+    // K7 (20/08): đi qua `HkI18n` — xem ghi chú đầy đủ ở `modules/web/src/main/HkI18n.scala`.
+    // 61 call site trong file này giữ nguyên; chưa có file JSON nào thì output không đổi 1 byte.
+    def t(viText: String, enText: String): String = lila.web.HkI18n(ctx.lang.language, viText, enText)
     // Nhãn kênh khớp bản dịch vi-VN của lila (bullet="Cờ đạn"... đã tra file dịch)
     def channelName(c: lila.tv.Tv.Channel): String = c.key match
       case "blitz"     => t("Cờ chớp", "Blitz")

@@ -59,14 +59,21 @@ trait ResponseBuilder(using Executor)
     Redirect:
       path + req.rawQueryString.nonEmptyOption.so("?" + _)
 
+  // HungKings L11 (20/08) — bảng này chưa từng bị rà. Đo trên live trước khi sửa:
+  //   /yt    → 301 sang kênh YouTube của Lichess
+  //   /dmca  → 301 sang Google Form DMCA của Lichess  ⇒ người dùng HungKings gửi khiếu nại
+  //            bản quyền vào form của một tổ chức khác. Đây là mục nặng nhất trong ba mục.
+  //   /donate → 301 sang /patron, mà /patron ĐÃ TẮT có chủ ý (LILA_PATRON=false) ⇒ ngõ cụt.
+  // Gỡ hai lối trỏ sang tài sản của người khác (404 tử tế còn hơn gửi người dùng đi nhầm
+  // nhà), và cho `donate` về /contact — nơi duy nhất đang thật sự có người nhận thư.
+  // `fishnet` giữ nguyên: đó là link tới PHẦN MỀM nguồn mở đang thật sự chạy sau lưng, không
+  // phải kênh truyền thông của ai; giữ nó là ghi nguồn đúng, cùng tinh thần credit AGPL.
   private val movedMap: Map[String, String] = Map(
-    "yt" -> "https://youtube.com/@LichessDotOrg",
-    "dmca" -> "https://docs.google.com/forms/d/e/1FAIpQLSdRVaJ6Wk2KHcrLcY0BxM7lTwYSQHDsY2DsGwbYoLUBo3ngfQ/viewform",
     "fishnet" -> "https://github.com/lichess-org/fishnet",
     "qa" -> "/faq",
     "help" -> "/contact",
     "support" -> "/contact",
-    "donate" -> "/patron",
+    "donate" -> "/contact",
     "how-to-cheat" -> "/page/how-to-cheat"
   )
   def staticRedirect(key: String): Option[Fu[Result]] = movedMap.get(key).map { MovedPermanently(_) }

@@ -497,8 +497,11 @@ final class layout(helpers: Helpers, assetHelper: lila.web.ui.AssetFullHelper)(
         foot: Option[Frag]
     )(using ctx: PageContext) =
       // Chuỗi song ngữ tại chỗ, KHÔNG thêm khoá registry dịch (sửa LangList = 19' compile).
+      // K7 (20/08): thân hàm nay đi qua `HkI18n` — ngôn ngữ khác vi/en tra `hk-i18n/<lang>.json`
+      // với KHOÁ là chính chuỗi tiếng Anh. Chưa có file nào thì hành vi y hệt dòng cũ, nên
+      // 55 call site trong file này không phải sửa một chữ.
       def t(viText: String, enText: String): String =
-        if ctx.lang.language == "vi" then viText else enText
+        lila.web.HkI18n(ctx.lang.language, viText, enText)
       // Neo PHẢI có `/` đứng trước: sidebar nay hiện ở mọi trang, mà trên trang chi tiết
       // `#ai` trần chỉ đổi hash chứ không có hộp thoại nào để mở. `/#ai` tải trang chủ
       // rồi ctrl.ts đọc hash lúc dựng. Từ chính trang chủ thì path trùng nên trình duyệt
