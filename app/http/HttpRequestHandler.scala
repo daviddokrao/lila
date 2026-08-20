@@ -65,11 +65,19 @@ final class HttpRequestHandler(
     // với một vòng build 20 phút để biết mình gõ sai dấu ngoặc.
     val laGetHead = req.method == "GET" || req.method == "HEAD"
     val goc = p.reverse.dropWhile(_ == '/').reverse
+    val query = if req.rawQueryString.isEmpty then "" else "?" + req.rawQueryString
+    val dich = goc + query
+    // Dựng request thử với ĐỦ CẢ BA phần (uriString, path, queryString), không chỉ `withPath`.
+    // Đo trên live sau lần deploy đầu: `withPath` một mình đủ cho route CHỮ THƯỜNG (`/choi/`,
+    // `/contact/`, cả `/tv/`) nhưng KHÔNG đủ cho route dạng tham số có ràng buộc regex —
+    // `/$key<privacy|thanks|about|ads|changelog>` — nên đúng 5 trang CMS `/about/` `/privacy/`
+    // `/thanks/` `/ads/` `/changelog/` vẫn 404 trong khi 12 đường kia đã 301. Bộ so khớp của
+    // Play đọc phần đường dẫn THÔ từ `uriString` khi rút tham số động, mà `withPath` không
+    // cập nhật trường đó. Dựng đủ ba phần là hết phân biệt.
+    val thu = req.withTarget(play.api.mvc.request.RequestTarget(dich, goc, req.queryString))
     if !laGetHead || p.length <= 1 || !p.endsWith("/") || goc.isEmpty then None
-    else if router.handlerFor(req.withTarget(req.target.withPath(goc))).isEmpty then None
+    else if router.handlerFor(thu).isEmpty then None
     else
-      val query = if req.rawQueryString.isEmpty then "" else "?" + req.rawQueryString
-      val dich = goc + query
       Some(controllerComponents.actionBuilder { (_: RequestHeader) =>
         Results.MovedPermanently(dich)
       })
