@@ -628,7 +628,11 @@ final class User(
    *
    * Vì sao ở ĐÂY chứ không ở tầng lọc `HttpRequestHandler.boDauGachCuoi`: tầng lọc đó chỉ
    * chạy khi router KHÔNG tìm được handler nào (`orElse`), mà route CUỐI của lila là
-   * `GET /*path → User.redirect` — bắt tất cả. Log của chính lila nói thẳng điều đó:
+   * `GET` + đường bắt-tất-cả cuối `conf/routes` (`*path`) → `User.redirect`. Ở đây KHÔNG viết
+   * liền dấu gạch chéo với dấu sao: Scala cho phép comment LỒNG NHAU, nên chuỗi đó mở một
+   * comment con không đóng và giết cả file (đã trả giá một vòng build 13 phút, mà lỗi hiện ra
+   * lại là "tryRedirect không phải member" ở một file KHÁC — hệ quả, không phải nguyên nhân).
+   * Log của chính lila nói thẳng điều đó:
    *   `404 GET /about/  User.redirect`   ← có handler ⇒ tầng lọc không bao giờ chạy
    *   `301 GET /choi/   NoHandler`       ← không có handler ⇒ tầng lọc chạy, 301 đúng
    * Đó là lý do 12 đường đã 301 mà đúng 5 trang CMS vẫn 404: chúng rơi vào catch-all.

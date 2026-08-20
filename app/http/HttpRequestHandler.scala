@@ -77,7 +77,9 @@ final class HttpRequestHandler(
     val thu = req.withTarget(play.api.mvc.request.RequestTarget(dich, goc, req.queryString))
     // ⚠️ GIỚI HẠN CỦA CHỖ NÀY, đo bằng log tạm ngày 20/08 (K11): hàm này chỉ chạy khi router
     // KHÔNG tìm được handler nào (`orElse` ở trên). Mà route CUỐI của lila là
-    // `GET /*path → User.redirect` — BẮT TẤT CẢ. Log của chính lila:
+    // đường bắt-tất-cả cuối `conf/routes` (`*path`) → `User.redirect` — BẮT TẤT CẢ.
+    // (Đừng viết liền gạch chéo với dấu sao trong comment Scala: comment LỒNG NHAU được,
+    //  nên chuỗi đó mở một comment con không đóng và giết cả file.) Log của chính lila:
     //     `404 GET /about/  User.redirect`   ← có handler ⇒ hàm này không hề chạy
     //     `301 GET /choi/   NoHandler`       ← không handler ⇒ hàm này chạy, 301 đúng
     // Nên đừng sửa thêm ở đây khi thấy một đường vẫn 404 kèm dấu `/`: phần rơi vào catch-all
