@@ -495,7 +495,15 @@ aside#top.hv2-side {
     align-items: center;
     gap: 12px;
     padding: 0 12px;
-    height: 52px;
+    // K4 (20/08): chieu cao CO DINH + khong cho xuong dong = o co chu 1,6x thanh khong du
+    // cho, nen BUOC mot control nao do bi bop. Khoa hamburger bang `flex: none` xong thi cho
+    // bop DICH sang link thuong hieu: do duoc 6x44px, tuc coi nhu bien mat. Cho xuong dong
+    // va de chieu cao tu gian: chu to thi thanh thanh hai hang, khong control nao bi nghien.
+    // Hang luoi `bar` khai o dau file khong ghim chieu cao nen no gian theo duoc.
+    // O co chu thuong moi thu van vua mot hang => khong doi mot pixel nao.
+    flex-wrap: wrap;
+    align-content: center;
+    min-height: 52px;
     background: $c-bg-box;
     border-bottom: $border;
 
